@@ -1,0 +1,51 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.1.2'
+	id 'io.spring.dependency-management' version '1.1.2'
+}
+
+group = 'com.OkxdemoTradingApi2'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+
+	repositories {
+		mavenCentral()
+	}
+
+
+
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.fryske-akademy:CDIConfiguration:14.2'
+	implementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation(files("src/OKX/okex-java-sdk-api-1.0.0.jar"))
+
+	implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+	implementation group: 'com.alibaba', name: 'fastjson', version: '1.2.62'
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
+	implementation 'com.squareup.okio:okio:2.10.0'
+
+
+	implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+	implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+	implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+	implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+	implementation 'com.google.code.gson:gson:2.8.8'
+	implementation 'com.squareup.retrofit2:adapter-rxjava:2.9.0'
+	implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
+
+//	implementation("org.springframework.boot:spring-boot-starter-websocket")
+//	implementation("org.webjars:webjars-locator")
+//	implementation('org.webjars:sockjs-client:1.5.1')
+
+	//implementation 'com.okex:okex-java-sdk-api:1.0.0'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
