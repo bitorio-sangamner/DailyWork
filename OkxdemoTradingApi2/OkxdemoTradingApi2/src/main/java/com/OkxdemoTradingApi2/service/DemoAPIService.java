@@ -1,6 +1,9 @@
 package com.OkxdemoTradingApi2.service;
 
+import com.OkxdemoTradingApi2.exception.ResourceNotFoundException;
 import com.alibaba.fastjson.JSONObject;
+import com.okex.open.api.bean.account.param.SetLeverage;
+import com.okex.open.api.bean.account.param.SetPositionMode;
 import com.okex.open.api.config.APIConfiguration;
 import com.okex.open.api.service.account.AccountAPIService;
 import com.okex.open.api.service.publicData.PublicDataAPIService;
@@ -8,7 +11,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-//import static com.okex.open.api.client.ApiHttp.JSON;
+
 
 
 @Service
@@ -31,41 +34,16 @@ public class DemoAPIService<JSON> {
         this.accountAPIService = accountAPIService;
     }
 
-    /*public DemoAPIService(APIConfiguration apiConfiguration, CloseableHttpClient httpClient,  PublicDataAPIService publicDataAPIService) {
-        this.apiConfiguration = apiConfiguration;
-        this.httpClient = httpClient;
 
-        //this.publicDataAPIServiceImpl = publicDataAPIServiceImpl;
-        //this.publicDataAPIService = publicDataAPIService;
-        this.publicDataAPIService = publicDataAPIService;
-    }*/
 
-  /*  public String callDemoAPI() throws Exception {
-        String url = apiConfiguration.getDomain();
-        System.out.println(url);
-        HttpGet request = new HttpGet(url);
-
-        HttpResponse response = httpClient.execute(request);
-        System.out.println(response);
-        // Process the response and return the result
-        System.out.println(response.getStatusLine());
-        System.out.println(response.getAllHeaders());
-        return String.valueOf((response.getStatusLine()));
-        //return response.toString();
-    }*/
 
    public JSONObject callDemoAPI()
    {
-       //PublicDataAPIService publicDataAPIService = new PublicDataAPIServiceImpl(apiConfiguration);
+
        publicDataAPIService.getSystemTime();
        System.out.println(publicDataAPIService.getSystemTime());
        return publicDataAPIService.getSystemTime();
 
-      /* PublicDataAPIService publicDataAPIService = new PublicDataAPIServiceImpl(apiConfiguration);
-
-       JSONObject systemTime = publicDataAPIService.getSystemTime();
-       System.out.println("System Time: " + systemTime);
-       return systemTime;*/
 
 
    }
@@ -89,5 +67,43 @@ public class DemoAPIService<JSON> {
        accountAPIService.getBalance(currency);
        System.out.println(accountAPIService.getBalance(currency));
        return accountAPIService.getBalance(currency);
+   }
+
+   public JSONObject setPosionMode(SetPositionMode setPositionMode)
+   {
+       JSONObject json=accountAPIService.setPositionMode(setPositionMode);
+       return json;
+   }
+
+   public JSONObject setLeverage(SetLeverage setLeverage)
+   {
+       JSONObject json=accountAPIService.setLeverage(setLeverage);
+       return json;
+   }
+
+   public JSONObject getPositions(String instType, String instId,String posId)
+   {
+       JSONObject json=accountAPIService.getPositions(instType,instId,posId);
+       return json;
+   }
+
+   public JSONObject getInterestRate(String ccy)
+   {
+       JSONObject json=accountAPIService.getInterestRate(ccy);
+       if(json.isEmpty())
+       {
+           throw new ResourceNotFoundException("Interest Rate with given currency is not found!!");
+       }
+       return json;
+   }
+
+   public JSONObject getLeverage(String instId, String mgnMode)
+   {
+       JSONObject json=accountAPIService.getLeverage(instId,mgnMode);
+       if(json.isEmpty())
+       {
+         throw new ResourceNotFoundException("leverage with given instId and mgnMode is not found!!");
+       }
+       return json;
    }
 }
