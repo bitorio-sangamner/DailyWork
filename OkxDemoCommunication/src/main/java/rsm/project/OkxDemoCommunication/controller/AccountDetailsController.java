@@ -13,15 +13,34 @@ public class AccountDetailsController {
     @Autowired
     private AccountAPIService accountAPIService;
 
-    @GetMapping("/display_account_details")
-    public ResponseEntity<Object> getAccountDetails() {
-        JSONObject jsonData = accountAPIService.getBalance("BTC");
+    @GetMapping("/get_account_currency_balance/{currency}")
+    public ResponseEntity<Object> getAccountDetails(@PathVariable String currency) {
+        JSONObject jsonData = accountAPIService.getBalance(currency);
         return new ResponseEntity<>(jsonData, HttpStatus.OK);
     }
 
-    @GetMapping("/display_account_configs")
+    @GetMapping("/get_account_configs")
     public ResponseEntity<Object> getAccountConfigs() {
         JSONObject jsonData = accountAPIService.getAccountConfiguration();
         return new ResponseEntity<>(jsonData, HttpStatus.OK);
     }
+
+    @GetMapping("/get_risk_state")
+    public ResponseEntity<Object> getRiskState() {
+        JSONObject jsonData = accountAPIService.getRiskState();
+        return new ResponseEntity<>(jsonData, HttpStatus.OK);
+    }
+    @GetMapping("/get_currency_interest_rate/{currency}")
+    public ResponseEntity<Object> getInterestRate(@PathVariable String currency) {
+        JSONObject jsonData = accountAPIService.getInterestRate(currency);
+        return new ResponseEntity<>(jsonData, HttpStatus.OK);
+    }
+
+    @GetMapping("/get_account_greeks/{currency}")
+    public ResponseEntity<Object> getAccountGreeks(@PathVariable String currency) {
+        JSONObject jsonData = accountAPIService.getAccountGreeks(currency);
+        return new ResponseEntity<>(jsonData, HttpStatus.OK);
+    }
+
+
 }
