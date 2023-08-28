@@ -2,8 +2,11 @@ package com.OkxdemoTradingApi2.service;
 
 import com.OkxdemoTradingApi2.exception.ResourceNotFoundException;
 import com.alibaba.fastjson.JSONObject;
+import com.okex.open.api.bean.account.param.IncreaseDecreaseMargin;
+import com.okex.open.api.bean.account.param.SetIsolatedMode;
 import com.okex.open.api.bean.account.param.SetLeverage;
 import com.okex.open.api.bean.account.param.SetPositionMode;
+//import com.okex.open.api.bean.account.param.AccountMode;
 import com.okex.open.api.config.APIConfiguration;
 import com.okex.open.api.service.account.AccountAPIService;
 import com.okex.open.api.service.publicData.PublicDataAPIService;
@@ -24,7 +27,7 @@ public class DemoAPIService<JSON> {
     @Autowired
     private final PublicDataAPIService publicDataAPIService;
 
-    @Autowired
+
     private final AccountAPIService accountAPIService;
 
     public DemoAPIService(APIConfiguration apiConfiguration, CloseableHttpClient httpClient, PublicDataAPIService publicDataAPIService, AccountAPIService accountAPIService) {
@@ -81,9 +84,9 @@ public class DemoAPIService<JSON> {
        return json;
    }
 
-   public JSONObject getPositions(String instType, String instId,String posId)
+   public JSONObject getPositions()
    {
-       JSONObject json=accountAPIService.getPositions(instType,instId,posId);
+       JSONObject json=accountAPIService.getPositions("SWAP","BTC-USD-SWAP","null");
        return json;
    }
 
@@ -106,4 +109,50 @@ public class DemoAPIService<JSON> {
        }
        return json;
    }
+
+   public JSONObject getAccountAndPosition(String instType)
+   {
+       JSONObject json=accountAPIService.getAccountAndPosition(instType);
+       return json;
+   }
+
+   public JSONObject getBillsDetails7Days()
+   {
+       JSONObject json= accountAPIService.getBillsDetails7Days("SWAP","BTC","isolated","linear","Trade","null","1","2","100");
+       return json;
+   }
+
+   public JSONObject getPositionTiers(String instType, String uly,String instFamily)
+   {
+       JSONObject json=accountAPIService.getPositionTiers(instType,uly,instFamily);
+       return json;
+   }
+
+    public JSONObject setRiskOffsetType(IncreaseDecreaseMargin increaseDecreaseMargin)
+    {
+        JSONObject json=accountAPIService.setRiskOffsetType(increaseDecreaseMargin);
+        return json;
+    }
+
+    /*public JSONObject setAccountLevel(AccountMode accountMode)
+    {
+
+    }*/
+
+    public JSONObject activateOption()
+    {
+        JSONObject json=accountAPIService.activateOption();
+        return json;
+    }
+    public JSONObject getAccountGreeks(String ccy)
+    {
+        JSONObject json=accountAPIService.getAccountGreeks(ccy);
+        return json;
+    }
+
+    public JSONObject setIsolatedMode(SetIsolatedMode setIsolatedMode)
+    {
+        JSONObject json=accountAPIService.setIsolatedMode(setIsolatedMode);
+        return json;
+    }
 }
