@@ -2,17 +2,14 @@ package com.OkxdemoTradingApi2.service;
 
 import com.OkxdemoTradingApi2.exception.ResourceNotFoundException;
 import com.alibaba.fastjson.JSONObject;
-import com.okex.open.api.bean.account.param.IncreaseDecreaseMargin;
-import com.okex.open.api.bean.account.param.SetIsolatedMode;
-import com.okex.open.api.bean.account.param.SetLeverage;
-import com.okex.open.api.bean.account.param.SetPositionMode;
-//import com.okex.open.api.bean.account.param.AccountMode;
+import com.okex.open.api.bean.account.param.*;
 import com.okex.open.api.config.APIConfiguration;
 import com.okex.open.api.service.account.AccountAPIService;
 import com.okex.open.api.service.publicData.PublicDataAPIService;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 
 
@@ -86,7 +83,7 @@ public class DemoAPIService<JSON> {
 
    public JSONObject getPositions()
    {
-       JSONObject json=accountAPIService.getPositions("SWAP","BTC-USD-SWAP","null");
+       JSONObject json=accountAPIService.getPositions("SWAP","BTC-USD-SWAP","");
        return json;
    }
 
@@ -116,7 +113,7 @@ public class DemoAPIService<JSON> {
        return json;
    }
 
-   public JSONObject getBillsDetails7Days()
+   public JSONObject getBillsDetails7Days()//ERROR
    {
        JSONObject json= accountAPIService.getBillsDetails7Days("SWAP","BTC","isolated","linear","Trade","null","1","2","100");
        return json;
@@ -134,9 +131,9 @@ public class DemoAPIService<JSON> {
         return json;
     }
 
-    /*public JSONObject setAccountLevel(AccountMode accountMode)
+    /*public JSONObject setAccountLevel(AccountMode accountModeObj)
     {
-
+        accountAPIService.setAccountLevel(accountModeObj);
     }*/
 
     public JSONObject activateOption()
@@ -144,15 +141,58 @@ public class DemoAPIService<JSON> {
         JSONObject json=accountAPIService.activateOption();
         return json;
     }
-    public JSONObject getAccountGreeks(String ccy)
+    public JSONObject getAccountGreeks(String ccy)//------>Account mode is required
     {
         JSONObject json=accountAPIService.getAccountGreeks(ccy);
         return json;
     }
 
-    public JSONObject setIsolatedMode(SetIsolatedMode setIsolatedMode)
+    public JSONObject setIsolatedMode(SetIsolatedMode setIsolatedMode)//----->Account mode is required
     {
         JSONObject json=accountAPIService.setIsolatedMode(setIsolatedMode);
         return json;
+    }
+
+    public JSONObject getFeeRates(String instType, String instId, String uly,String instFamily)
+    {
+        JSONObject json=accountAPIService.getFeeRates(instType,instId,uly,instFamily);
+        return json;
+    }
+
+    public JSONObject setAutoLoan(SetAutoLoan setAutoLoan)//---->Only cross-margin accounts that cross currencies can be set to borrow coins automatically
+    {
+        JSONObject json=accountAPIService.setAutoLoan(setAutoLoan);
+
+        return json;
+    }
+
+
+    //Mmp class not found in library
+    /*public JSONObject mmpConfig(Mmp mmpConfig)
+    {
+
+    }*/
+
+    /*public JSONObject getMmp(String instTypr)
+    {
+
+    }*/
+
+    //bellow method not found in library----->okex-java-sdk-api-1.0.0
+   /* public JSONObject getAdjustLeverageInfo(String instType, String mgnMode, String lever, String instId, String ccy, String posSide)
+    {
+        accountAPIService.getAdjustLeverageInfo(instType,mgnMode,lever,instId,ccy,posSide);
+    }*/
+
+   /* public JSONObject getInterestLimits()
+    {
+        accountAPIService.getInterestLimits()
+    }*/
+
+    public JSONObject getMaximumTradableSizeForInstrument(String instId, String tdMode, String ccy, String px,String leverage,Boolean unSpotOffset)
+    {
+        JSONObject json=accountAPIService.getMaximumTradableSizeForInstrument(instId,tdMode,ccy,px,leverage,unSpotOffset);
+        return json;
+
     }
 }

@@ -2,10 +2,7 @@ package com.OkxdemoTradingApi2.controller;
 
 import com.OkxdemoTradingApi2.service.DemoAPIService;
 import com.alibaba.fastjson.JSONObject;
-import com.okex.open.api.bean.account.param.IncreaseDecreaseMargin;
-import com.okex.open.api.bean.account.param.SetIsolatedMode;
-import com.okex.open.api.bean.account.param.SetLeverage;
-import com.okex.open.api.bean.account.param.SetPositionMode;
+import com.okex.open.api.bean.account.param.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -77,7 +74,7 @@ public class DemoAPIController {
         return json;
     }
 
-    @GetMapping("/getPositions/")
+    @GetMapping("/getPositions")
     public JSONObject getPositions()
     {
         JSONObject json=demoAPIService.getPositions();
@@ -145,6 +142,35 @@ public class DemoAPIController {
     {
         JSONObject json=demoAPIService.setIsolatedMode(setIsolatedMode);
         return json;
+    }
+
+    @GetMapping("/getFeeRates/{instType}/{instId}/{uly}/{instFamily}")
+    public JSONObject getFeeRates(@PathVariable String instType,@PathVariable String instId,@PathVariable String uly,@PathVariable String instFamily)
+    {
+        JSONObject json=demoAPIService.getFeeRates(instType,instId,uly,instFamily);
+        return json;
+    }
+
+    @PostMapping("/setAutoLoan")//--->Only cross-margin accounts that cross currencies can be set to borrow coins automatically
+    public JSONObject setAutoLoan(@RequestBody SetAutoLoan setAutoLoanObj)
+    {
+        JSONObject json=demoAPIService.setAutoLoan(setAutoLoanObj);
+        return json;
+    }
+
+    @GetMapping("/get_max_size_tradeable_instrument")
+    public ResponseEntity<Object> getMaximumTradableSizeForInstrument(@RequestBody JSONObject jsonObject) {
+        String instId = jsonObject.getString("instId");
+        String tdMode = jsonObject.getString("tdMode");
+        String ccy = jsonObject.getString("ccy");
+        String px = jsonObject.getString("px");
+        String leverage = jsonObject.getString("leverage");
+        boolean unSpotOffset = jsonObject.getBoolean("unSpotOffset") != null && jsonObject.getBoolean("unSpotOffset");
+
+        JSONObject json=demoAPIService.getMaximumTradableSizeForInstrument(instId,tdMode,ccy,px,leverage,unSpotOffset);
+        return ResponseEntity.of(Optional.of(json));
+
+
     }
 
 }
