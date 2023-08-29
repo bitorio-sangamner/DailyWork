@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class InstrumentDetailsController {
+public class PublicDataService {
     @Autowired
     private PublicDataAPIService publicDataAPIService;
 

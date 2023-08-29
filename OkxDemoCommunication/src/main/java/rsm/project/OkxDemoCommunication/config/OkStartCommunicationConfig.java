@@ -3,6 +3,8 @@ package rsm.project.OkxDemoCommunication.config;
 import com.okex.open.api.config.APIConfiguration;
 import com.okex.open.api.service.account.AccountAPIService;
 import com.okex.open.api.service.account.impl.AccountAPIServiceImpl;
+import com.okex.open.api.service.blockTrading.BlockTradingAPIService;
+import com.okex.open.api.service.blockTrading.impl.BlockTradingAPIServiceImpl;
 import com.okex.open.api.service.publicData.PublicDataAPIService;
 import com.okex.open.api.service.publicData.impl.PublicDataAPIServiceImpl;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-public class OkxStartCommunicationController {
+public class OkStartCommunicationConfig {
     @Bean
     public APIConfiguration okexApiConfig() {
         APIConfiguration config = new APIConfiguration();
@@ -31,5 +33,10 @@ public class OkxStartCommunicationController {
     @Bean
     public AccountAPIService accountAPIService(APIConfiguration config) {
         return new AccountAPIServiceImpl(config);
+    }
+
+    @Bean
+    public BlockTradingAPIService blockTradingAPIService(APIConfiguration config) {
+        return new BlockTradingAPIServiceImpl(config);
     }
 }
