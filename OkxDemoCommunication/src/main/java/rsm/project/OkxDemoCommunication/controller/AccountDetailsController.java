@@ -17,7 +17,7 @@ public class AccountDetailsController {
     private AccountAPIService accountAPIService;
 
     @GetMapping("/get_account_currency_balance/{currency}")
-    public ResponseEntity<Object> getAccountDetails(@PathVariable String currency) {
+    public ResponseEntity<Object> getAccountBalance(@PathVariable String currency) {
         JSONObject jsonData = accountAPIService.getBalance(currency);
         return new ResponseEntity<>(jsonData, HttpStatus.OK);
     }
