@@ -75,4 +75,47 @@ public class BlockTradingController {
         JSONObject jsonData = blockTradingAPIService.executeQuote(executeQuote);
         return new ResponseEntity<>(jsonData, HttpStatus.OK);
     }
+
+
+    @GetMapping("/get_rfqs")
+    public ResponseEntity<Object> getRfqs(@RequestBody JSONObject jsonObject) {
+        String rfqId = jsonObject.getString("rfqId");
+        String clRfqId = jsonObject.getString("clRfqId");
+        String state = jsonObject.getString("state");
+        String beginId = jsonObject.getString("beginId");
+        String endId = jsonObject.getString("endId");
+        String limit = jsonObject.getString("limit");
+        JSONObject jsonData = blockTradingAPIService.getRfqs(rfqId, clRfqId, state, beginId, endId, limit);
+        return new ResponseEntity<>(jsonData, HttpStatus.OK);
+    }
+
+    @GetMapping("/get_quotes")
+    public ResponseEntity<Object> getQuotes(@RequestBody JSONObject jsonObject) {
+        String rfqId = jsonObject.getString("rfqId");
+        String clRfqId = jsonObject.getString("clRfqId");
+        String quoteId = jsonObject.getString("quoteId");
+        String clQuoteId = jsonObject.getString("clQuoteId");
+        String state = jsonObject.getString("state");
+        String beginId = jsonObject.getString("beginId");
+        String endId = jsonObject.getString("endId");
+        String limit = jsonObject.getString("limit");
+        JSONObject jsonData = blockTradingAPIService.getQuotes(rfqId, clRfqId, quoteId, clQuoteId, state, beginId, endId, limit);
+        return new ResponseEntity<>(jsonData, HttpStatus.OK);
+    }
+
+    @GetMapping("/get_trades")
+    public ResponseEntity<Object> getTrades(@RequestBody JSONObject jsonObject) {
+        String rfqId = jsonObject.getString("rfqId");
+        String clRfqId = jsonObject.getString("clRfqId");
+        String quoteId = jsonObject.getString("quoteId");
+        String clQuoteId = jsonObject.getString("clQuoteId");
+        String state = jsonObject.getString("state");
+        String beginId = jsonObject.getString("beginId");
+        String endId = jsonObject.getString("endId");
+        String limit = jsonObject.getString("limit");
+        String beginTs = jsonObject.getString("beginTs");
+        String endTs = jsonObject.getString("endTs");
+        JSONObject jsonData = blockTradingAPIService.getTrades(rfqId, clRfqId, quoteId, clQuoteId, state, beginId, endId, limit, beginTs, endTs);
+        return new ResponseEntity<>(jsonData, HttpStatus.OK);
+    }
 }
