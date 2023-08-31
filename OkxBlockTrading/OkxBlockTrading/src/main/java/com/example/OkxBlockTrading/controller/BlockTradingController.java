@@ -3,6 +3,7 @@ package com.example.OkxBlockTrading.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.example.OkxBlockTrading.service.BlockTradingService;
 import com.okex.open.api.bean.blockTrading.param.CancelRfq;
+import com.okex.open.api.bean.blockTrading.param.CreateQuote;
 import com.okex.open.api.bean.blockTrading.param.CreateRfq;
 import com.okex.open.api.bean.blockTrading.param.ExecuteQuote;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,10 +57,12 @@ public class BlockTradingController
         return json;
     }
 
-    @DeleteMapping("/cancelAllQuotes")
-    public JSONObject cancelAllQuotes()
+
+
+    @GetMapping("/getQuotes")
+    public JSONObject getQuotes()
     {
-        JSONObject json=blockTradingService.cancelAllQuotes();
+        JSONObject json=blockTradingService.getQuotes();
         return json;
     }
 
@@ -67,6 +70,34 @@ public class BlockTradingController
     public JSONObject executeQuote(@RequestBody ExecuteQuote executeQuote)
     {
         JSONObject json=blockTradingService.executeQuote(executeQuote);
+        return json;
+    }
+
+    @GetMapping("/getRfqs")
+    public JSONObject getRfqs()
+    {
+        JSONObject json=blockTradingService.getRfqs();
+        return json;
+    }
+
+    @GetMapping("/getTrades")
+    public JSONObject getTrades()
+    {
+        JSONObject json=blockTradingService.getTrades();
+        return json;
+    }
+
+    @PostMapping("/createQuote")
+    public JSONObject createQuote(@RequestBody CreateQuote createQuote)
+    {
+        JSONObject json=blockTradingService.createQuote(createQuote);
+        return json;
+    }
+
+    @PostMapping("/cancelAllRfqs")
+    public JSONObject cancelAllRfqs()
+    {
+        JSONObject json=blockTradingService.cancelAllRfqs();
         return json;
     }
 

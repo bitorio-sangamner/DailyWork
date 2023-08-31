@@ -2,6 +2,7 @@ package com.example.OkxBlockTrading.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.okex.open.api.bean.blockTrading.param.CancelRfq;
+import com.okex.open.api.bean.blockTrading.param.CreateQuote;
 import com.okex.open.api.bean.blockTrading.param.CreateRfq;
 import com.okex.open.api.bean.blockTrading.param.ExecuteQuote;
 import com.okex.open.api.config.APIConfiguration;
@@ -36,6 +37,12 @@ public class BlockTradingService
         return json;
     }
 
+    public JSONObject getRfqs()
+    {
+        JSONObject json = blockTradingAPIService.getRfqs("","","","","","");
+        return json;
+    }
+
     public JSONObject cancleRFQ(CancelRfq cancleRfq)
     {
         JSONObject json=blockTradingAPIService.cancelRfq(cancleRfq);
@@ -54,15 +61,17 @@ public class BlockTradingService
         return json;
     }
 
-    public JSONObject resetMMPStatus()
+    public JSONObject resetMMPStatus() //don't have permission
     {
         JSONObject json=blockTradingAPIService.resetMMPStatus();
         return json;
     }
 
-    public JSONObject cancelAllQuotes()
+
+
+    public JSONObject getQuotes()
     {
-        JSONObject json=blockTradingAPIService.cancelAllQuotes();
+        JSONObject json=blockTradingAPIService.getQuotes("","","","","","","","");
         return json;
     }
 
@@ -71,4 +80,21 @@ public class BlockTradingService
         JSONObject json=blockTradingAPIService.executeQuote(executeQuote);
         return json;
     }
+
+    public JSONObject getTrades()
+    {
+        JSONObject json=blockTradingAPIService.getTrades("","","","","","","","","1597026383085","1597026383085");
+        return json;
+    }
+     public JSONObject createQuote(CreateQuote createQuote)
+     {
+         JSONObject json=blockTradingAPIService.createQuote(createQuote);
+         return json;
+     }
+
+     public JSONObject cancelAllRfqs()
+     {
+         JSONObject json=blockTradingAPIService.cancelAllRfqs();
+         return json;
+     }
 }
