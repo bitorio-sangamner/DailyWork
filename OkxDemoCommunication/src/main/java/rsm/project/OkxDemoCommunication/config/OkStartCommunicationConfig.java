@@ -5,6 +5,12 @@ import com.okex.open.api.service.account.AccountAPIService;
 import com.okex.open.api.service.account.impl.AccountAPIServiceImpl;
 import com.okex.open.api.service.blockTrading.BlockTradingAPIService;
 import com.okex.open.api.service.blockTrading.impl.BlockTradingAPIServiceImpl;
+import com.okex.open.api.service.broker.BrokerAPIService;
+import com.okex.open.api.service.broker.impl.BrokerAPIServiceImpl;
+import com.okex.open.api.service.convert.ConvertAPIService;
+import com.okex.open.api.service.convert.impl.ConvertAPIServiceImpl;
+import com.okex.open.api.service.copytrading.CopytradingAPIService;
+import com.okex.open.api.service.copytrading.impl.CopytradingAPIServiceImpl;
 import com.okex.open.api.service.publicData.PublicDataAPIService;
 import com.okex.open.api.service.publicData.impl.PublicDataAPIServiceImpl;
 import org.springframework.context.annotation.Bean;
@@ -36,7 +42,16 @@ public class OkStartCommunicationConfig {
     }
 
     @Bean
-    public BlockTradingAPIService blockTradingAPIService(APIConfiguration config) {
-        return new BlockTradingAPIServiceImpl(config);
+    public BlockTradingAPIService blockTradingAPIService(APIConfiguration config) { return new BlockTradingAPIServiceImpl(config);}
+
+    @Bean
+    public BrokerAPIService brokerAPIService(APIConfiguration config) {
+        return new BrokerAPIServiceImpl(config);
     }
+
+    @Bean
+    public ConvertAPIService convertAPIService(APIConfiguration config) {return new ConvertAPIServiceImpl(config);}
+
+    @Bean
+    public CopytradingAPIService copytradingAPIService(APIConfiguration config) { return new CopytradingAPIServiceImpl(config);}
 }
