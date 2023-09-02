@@ -4,6 +4,8 @@ import com.OkxConvertService.service.ConvertService;
 import com.alibaba.fastjson.JSONObject;
 import com.okex.open.api.bean.convert.param.EstimateQuote;
 import com.okex.open.api.bean.convert.param.Trade;
+import com.okex.open.api.bean.copytrading.param.CloseSubposition;
+import com.okex.open.api.bean.copytrading.param.SetInstruments;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -68,5 +70,61 @@ public class ConvertController
     {
         JSONObject json=convertService.getInstruments();
         return ResponseEntity.of(Optional.of(json));
+    }
+
+    @GetMapping("/subpositionsHistory")
+    public JSONObject subpositionsHistory()
+    {
+        JSONObject json=convertService.subpositionsHistory();
+        return json;
+    }
+
+    @GetMapping("/getTotalProfitSharing")
+    public JSONObject getTotalProfitSharing()
+    {
+        JSONObject json=convertService.getTotalProfitSharing();
+        return json;
+    }
+
+    @GetMapping("/getUnrealizedProfitSharingDetails")
+    public JSONObject getUnrealizedProfitSharingDetails()
+    {
+        JSONObject json=convertService.getUnrealizedProfitSharingDetails();
+        return json;
+    }
+
+    @GetMapping("/getProfitSharingDetails")
+    public JSONObject getProfitSharingDetails()
+    {
+        JSONObject json=convertService.getProfitSharingDetails();
+        return json;
+    }
+
+    @PostMapping("/setInstruments")
+    public JSONObject setInstruments(@RequestBody SetInstruments setInstrumentsObj)
+    {
+        JSONObject json=convertService.setInstruments(setInstrumentsObj);
+        return json;
+    }
+
+    @PostMapping("/closeSubposition")
+    public JSONObject closeSubposition(@RequestBody CloseSubposition closeSubpositionObj)
+    {
+        JSONObject json=convertService.closeSubposition(closeSubpositionObj);
+        return json;
+    }
+
+    @GetMapping("/getOffers")
+    public JSONObject getOffers()
+    {
+        JSONObject json=convertService.getOffers();
+        return json;
+    }
+
+    @GetMapping("/getCurrenciesFromFundingAccount")
+    public JSONObject getCurrenciesFromFundingAccount()
+    {
+        JSONObject json=convertService.getCurrenciesFromFundingAccount();
+        return json;
     }
 }
