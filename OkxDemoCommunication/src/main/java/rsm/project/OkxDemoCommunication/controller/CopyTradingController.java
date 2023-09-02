@@ -1,14 +1,14 @@
 package rsm.project.OkxDemoCommunication.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.okex.open.api.bean.copytrading.param.AlgoOrder;
+import com.okex.open.api.bean.copytrading.param.CloseSubposition;
+import com.okex.open.api.bean.copytrading.param.SetInstruments;
 import com.okex.open.api.service.copytrading.CopytradingAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import retrofit2.http.Query;
 
 @RestController()
@@ -38,4 +38,42 @@ public class CopyTradingController {
         return new ResponseEntity<>(jsonObject, HttpStatus.OK);
     }
 
+    @PostMapping("/copy_trading/place_leading_stop_order")
+    public ResponseEntity<JSONObject> algoOrder(AlgoOrder algoOrder) {
+        JSONObject jsonObject = copytradingAPIService.algoOrder(algoOrder);
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @PostMapping("/copy_trading/close_leading_subposition")
+    public ResponseEntity<JSONObject> closeSubposition(CloseSubposition closeSubposition) {
+        JSONObject jsonObject = copytradingAPIService.closeSubposition(closeSubposition);
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @PostMapping("/copy_trading/set_leading_instruments")
+    public ResponseEntity<JSONObject> setInstruments(SetInstruments setInstruments) {
+        JSONObject jsonObject = copytradingAPIService.setInstruments(setInstruments);
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/copy_trading/get_profit_sharing_details")
+    public ResponseEntity<JSONObject> getProfitSharingDetails(JSONObject jsonData) {
+        String after = jsonData.getString("after");
+        String before = jsonData.getString("before");
+        String limit = jsonData.getString("limit");
+        JSONObject jsonObject = copytradingAPIService.getProfitSharingDetails(after, before, limit);
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/copy_trading/get_total_profit_sharing")
+    public ResponseEntity<JSONObject> getTotalProfitSharing() {
+        JSONObject jsonObject = copytradingAPIService.getTotalProfitSharing();
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/copy_trading/get_unrealized_profit_sharing_details")
+    public ResponseEntity<JSONObject> getUnrealizedProfitSharingDetails() {
+        JSONObject jsonObject = copytradingAPIService.getUnrealizedProfitSharingDetails();
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
 }
