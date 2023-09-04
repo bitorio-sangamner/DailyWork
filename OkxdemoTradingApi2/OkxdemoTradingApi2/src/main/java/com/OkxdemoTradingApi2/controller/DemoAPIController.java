@@ -3,6 +3,7 @@ package com.OkxdemoTradingApi2.controller;
 import com.OkxdemoTradingApi2.service.DemoAPIService;
 import com.alibaba.fastjson.JSONObject;
 import com.okex.open.api.bean.account.param.*;
+import com.okex.open.api.exception.APIException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,12 +54,51 @@ public class DemoAPIController {
         return json;
     }
 
-    @GetMapping("/getBalanceOfCurrency/{currency}")
-    public JSONObject getBalance(@PathVariable String currency)
+   /* @GetMapping("/getBalanceOfCurrency/{currency}")
+    public ResponseEntity<Object> getBalance(@PathVariable String currency)
     {
-        JSONObject json=demoAPIService.getAmount(currency);
-        return json;
+        JSONObject json=new JSONObject();
+       try {
+           if (currency.equals("BTC") || currency.equals("ETH") || currency.equals("USDT") || currency.equals("LTC")  || currency.equals("OKB")) {
+                json = demoAPIService.getAmount(currency);
+               //return ResponseEntity.of(Optional.of(json));
+           }
+           else {
+               JSONObject json2 = new JSONObject();
+               json2.put("message", "invalid currency");
+               return ResponseEntity.of(Optional.of(json2));
+           }
+
+       }//try
+
+        catch(APIException e)
+        {
+
+        }
+
+        return ResponseEntity.of(Optional.of(json));
+    }*/
+
+    @GetMapping("/getBalanceOfCurrency/{currency}")
+    public ResponseEntity<Object> getBalance(@PathVariable String currency)
+    {
+        JSONObject json=new JSONObject();
+        try
+        {
+             json = demoAPIService.getAmount(currency);
+
+        }//try
+
+        catch(APIException e)
+        {
+            JSONObject  jsonObj=new JSONObject();
+            String msg=e.getMessage();
+            jsonObj.put("msg",msg);
+            return ResponseEntity.of(Optional.of(jsonObj));
+        }
+        return ResponseEntity.of(Optional.of(json));
     }
+
 
     @PostMapping("/setPositionMode")
     public JSONObject setPositionMode(@RequestBody SetPositionMode setPositionModeObj)
@@ -77,6 +117,7 @@ public class DemoAPIController {
     @GetMapping("/getPositions")
     public JSONObject getPositions()
     {
+
         JSONObject json=demoAPIService.getPositions();
         return json;
     }

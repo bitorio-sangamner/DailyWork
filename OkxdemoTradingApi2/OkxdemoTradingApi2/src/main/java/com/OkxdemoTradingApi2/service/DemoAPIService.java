@@ -27,11 +27,13 @@ public class DemoAPIService<JSON> {
 
     private final AccountAPIService accountAPIService;
 
+
     public DemoAPIService(APIConfiguration apiConfiguration, CloseableHttpClient httpClient, PublicDataAPIService publicDataAPIService, AccountAPIService accountAPIService) {
         this.apiConfiguration = apiConfiguration;
         this.httpClient = httpClient;
         this.publicDataAPIService = publicDataAPIService;
         this.accountAPIService = accountAPIService;
+
     }
 
 
@@ -83,7 +85,9 @@ public class DemoAPIService<JSON> {
 
    public JSONObject getPositions()
    {
+
        JSONObject json=accountAPIService.getPositions("SWAP","BTC-USD-SWAP","");
+
        return json;
    }
 
@@ -195,4 +199,5 @@ public class DemoAPIService<JSON> {
         return json;
 
     }
+
 }
