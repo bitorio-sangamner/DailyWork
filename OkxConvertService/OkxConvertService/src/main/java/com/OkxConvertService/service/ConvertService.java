@@ -3,9 +3,13 @@ package com.OkxConvertService.service;
 import com.alibaba.fastjson.JSONObject;
 import com.okex.open.api.bean.convert.param.EstimateQuote;
 import com.okex.open.api.bean.convert.param.Trade;
+import com.okex.open.api.bean.copytrading.param.CloseSubposition;
+import com.okex.open.api.bean.copytrading.param.SetInstruments;
 import com.okex.open.api.config.APIConfiguration;
 import com.okex.open.api.service.convert.ConvertAPIService;
 import com.okex.open.api.service.copytrading.CopytradingAPIService;
+import com.okex.open.api.service.earn.EarnAPIService;
+import com.okex.open.api.service.funding.FundingAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +25,16 @@ public class ConvertService
     @Autowired
     private final CopytradingAPIService copytradingAPIService;
 
-    public ConvertService(APIConfiguration apiConfiguration, ConvertAPIService convertAPIService, CopytradingAPIService copytradingAPIService) {
+    private final EarnAPIService earnAPIService;
+
+    private final FundingAPIService fundingAPIService;
+
+    public ConvertService(APIConfiguration apiConfiguration, ConvertAPIService convertAPIService, CopytradingAPIService copytradingAPIService, EarnAPIService earnAPIService, FundingAPIService fundingAPIService) {
         this.apiConfiguration = apiConfiguration;
         this.convertAPIService = convertAPIService;
         this.copytradingAPIService = copytradingAPIService;
+        this.earnAPIService = earnAPIService;
+        this.fundingAPIService = fundingAPIService;
     }
 
     public JSONObject getCurrencies()
@@ -68,4 +78,57 @@ public class ConvertService
         JSONObject json=copytradingAPIService.getInstruments();
         return json;
     }
+
+    public JSONObject subpositionsHistory()
+    {
+        JSONObject json=copytradingAPIService.subpositionsHistory("","","","");
+        return json;
+    }
+
+    public JSONObject getTotalProfitSharing()
+    {
+        JSONObject json=copytradingAPIService.getTotalProfitSharing();
+        return json;
+    }
+
+    public JSONObject getUnrealizedProfitSharingDetails()
+    {
+        JSONObject json=copytradingAPIService.getUnrealizedProfitSharingDetails();
+        return json;
+    }
+
+    public JSONObject getProfitSharingDetails()
+    {
+        JSONObject json=copytradingAPIService.getProfitSharingDetails("","","");
+        return json;
+    }
+
+    public JSONObject setInstruments(SetInstruments setInstruments)
+    {
+        JSONObject json=copytradingAPIService.setInstruments(setInstruments);
+        return json;
+    }
+
+    public JSONObject closeSubposition(CloseSubposition closeSubposition)
+    {
+        JSONObject json=copytradingAPIService.closeSubposition(closeSubposition);
+        return json;
+    }
+
+   // *******************************Earn API******************************************
+
+    public JSONObject getOffers()
+    {
+        JSONObject json=earnAPIService.getOffers("","","");
+        return json;
+    }
+
+    //**********************************funding account*********************************
+
+    public JSONObject getCurrenciesFromFundingAccount()
+    {
+        JSONObject json=fundingAPIService.getCurrencies();
+        return json;
+    }
+
 }

@@ -7,6 +7,10 @@ import com.okex.open.api.service.convert.ConvertAPIService;
 import com.okex.open.api.service.convert.impl.ConvertAPIServiceImpl;
 import com.okex.open.api.service.copytrading.CopytradingAPIService;
 import com.okex.open.api.service.copytrading.impl.CopytradingAPIServiceImpl;
+import com.okex.open.api.service.earn.EarnAPIService;
+import com.okex.open.api.service.earn.impl.EarnAPIServiceImpl;
+import com.okex.open.api.service.funding.FundingAPIService;
+import com.okex.open.api.service.funding.impl.FundingAPIServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -39,4 +43,19 @@ public class ConfigClass
     {
        return new CopytradingAPIServiceImpl(config);
     }
+
+    @Bean
+    public EarnAPIService earnAPIService(APIConfiguration config)
+    {
+       return new EarnAPIServiceImpl(config);
+    }
+
+    @Bean
+    public FundingAPIService fundingAPIService(APIConfiguration config)
+    {
+        return new FundingAPIServiceImpl(config);
+    }
 }
+
+
+
