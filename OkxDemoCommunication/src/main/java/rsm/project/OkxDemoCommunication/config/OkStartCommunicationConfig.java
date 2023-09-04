@@ -13,6 +13,8 @@ import com.okex.open.api.service.copytrading.CopytradingAPIService;
 import com.okex.open.api.service.copytrading.impl.CopytradingAPIServiceImpl;
 import com.okex.open.api.service.earn.EarnAPIService;
 import com.okex.open.api.service.earn.impl.EarnAPIServiceImpl;
+import com.okex.open.api.service.finance.FinanceAPIService;
+import com.okex.open.api.service.finance.impl.FinanceAPIServiceImpl;
 import com.okex.open.api.service.publicData.PublicDataAPIService;
 import com.okex.open.api.service.publicData.impl.PublicDataAPIServiceImpl;
 import org.springframework.context.annotation.Bean;
@@ -59,4 +61,7 @@ public class OkStartCommunicationConfig {
 
     @Bean
     public EarnAPIService earnAPIService(APIConfiguration config) { return new EarnAPIServiceImpl(config);}
+
+    @Bean
+    public FinanceAPIService financeAPIService(APIConfiguration config) { return new FinanceAPIServiceImpl(config);}
 }
