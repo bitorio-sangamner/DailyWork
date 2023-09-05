@@ -5,6 +5,8 @@ import com.okex.open.api.service.account.AccountAPIService;
 import com.okex.open.api.service.account.impl.AccountAPIServiceImpl;
 import com.okex.open.api.service.earn.EarnAPIService;
 import com.okex.open.api.service.earn.impl.EarnAPIServiceImpl;
+import com.okex.open.api.service.funding.FundingAPIService;
+import com.okex.open.api.service.funding.impl.FundingAPIServiceImpl;
 import com.okex.open.api.service.publicData.PublicDataAPIService;
 import com.okex.open.api.service.publicData.impl.PublicDataAPIServiceImpl;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -37,7 +39,7 @@ public class ConfigClass {
         apiConfiguration.setApiKey("3cdc01cc-9f1a-4238-8cd1-93f4f807d696");
         apiConfiguration.setSecretKey("5C8F733918E547FD6813B71A9234AAF1");
         apiConfiguration.setPassphrase("75c60758-beB16");
-        apiConfiguration.setxSimulatedTrading("0");
+        apiConfiguration.setxSimulatedTrading("1");
         apiConfiguration.setPrint(true);
         return apiConfiguration;
     }
@@ -70,6 +72,12 @@ public class ConfigClass {
     public EarnAPIService earnAPIService(APIConfiguration config)
     {
         return new EarnAPIServiceImpl(config);
+    }
+
+    @Bean
+    public FundingAPIService fundingAPIService(APIConfiguration config)
+    {
+        return new FundingAPIServiceImpl(config);
     }
 
 
