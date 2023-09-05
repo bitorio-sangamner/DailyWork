@@ -15,6 +15,10 @@ import com.okex.open.api.service.earn.EarnAPIService;
 import com.okex.open.api.service.earn.impl.EarnAPIServiceImpl;
 import com.okex.open.api.service.finance.FinanceAPIService;
 import com.okex.open.api.service.finance.impl.FinanceAPIServiceImpl;
+import com.okex.open.api.service.funding.FundingAPIService;
+import com.okex.open.api.service.funding.impl.FundingAPIServiceImpl;
+import com.okex.open.api.service.gridTrading.GridTradingAPIService;
+import com.okex.open.api.service.gridTrading.impl.GridTradingAPIServiceImpl;
 import com.okex.open.api.service.publicData.PublicDataAPIService;
 import com.okex.open.api.service.publicData.impl.PublicDataAPIServiceImpl;
 import org.springframework.context.annotation.Bean;
@@ -64,4 +68,10 @@ public class OkStartCommunicationConfig {
 
     @Bean
     public FinanceAPIService financeAPIService(APIConfiguration config) { return new FinanceAPIServiceImpl(config);}
+
+    @Bean
+    public FundingAPIService fundingAPIService(APIConfiguration config) { return new FundingAPIServiceImpl(config);}
+
+    @Bean
+    public GridTradingAPIService gridTradingAPIService(APIConfiguration config) { return new GridTradingAPIServiceImpl(config);}
 }
