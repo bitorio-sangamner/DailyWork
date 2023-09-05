@@ -3,6 +3,8 @@ package com.OkxdemoTradingApi2.config;
 import com.okex.open.api.config.APIConfiguration;
 import com.okex.open.api.service.account.AccountAPIService;
 import com.okex.open.api.service.account.impl.AccountAPIServiceImpl;
+import com.okex.open.api.service.earn.EarnAPIService;
+import com.okex.open.api.service.earn.impl.EarnAPIServiceImpl;
 import com.okex.open.api.service.publicData.PublicDataAPIService;
 import com.okex.open.api.service.publicData.impl.PublicDataAPIServiceImpl;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -23,6 +25,8 @@ public class ConfigClass {
    // @Value("${okx.pass.phrase}")
     private String baseUrl;
 
+
+
     @Bean
     public APIConfiguration okexApiConfig() {
         APIConfiguration apiConfiguration = new APIConfiguration();
@@ -33,10 +37,13 @@ public class ConfigClass {
         apiConfiguration.setApiKey("3cdc01cc-9f1a-4238-8cd1-93f4f807d696");
         apiConfiguration.setSecretKey("5C8F733918E547FD6813B71A9234AAF1");
         apiConfiguration.setPassphrase("75c60758-beB16");
-        apiConfiguration.setxSimulatedTrading("1");
+        apiConfiguration.setxSimulatedTrading("0");
         apiConfiguration.setPrint(true);
         return apiConfiguration;
     }
+
+
+
 
     @Bean
     public CloseableHttpClient httpClient() {
@@ -59,8 +66,11 @@ public class ConfigClass {
         return new AccountAPIServiceImpl(config);
     }
 
-  /*@Bean
-    public PublicDataAPIServiceImpl publicDataAPIServiceImpl(APIConfiguration config) {
-        return new PublicDataAPIServiceImpl(config);
-    }*/
+    @Bean
+    public EarnAPIService earnAPIService(APIConfiguration config)
+    {
+        return new EarnAPIServiceImpl(config);
+    }
+
+
 }
