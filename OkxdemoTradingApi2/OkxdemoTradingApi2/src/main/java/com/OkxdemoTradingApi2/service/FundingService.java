@@ -1,10 +1,7 @@
 package com.OkxdemoTradingApi2.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.okex.open.api.bean.funding.param.ConvertDustAssets;
-import com.okex.open.api.bean.funding.param.FundsTransfer;
-import com.okex.open.api.bean.funding.param.PiggyBankPurchaseRedemption;
-import com.okex.open.api.bean.funding.param.Withdrawal;
+import com.okex.open.api.bean.funding.param.*;
 import com.okex.open.api.service.funding.FundingAPIService;
 import org.springframework.stereotype.Service;
 
@@ -122,6 +119,24 @@ public class FundingService
     public JSONObject convertDustAssets(ConvertDustAssets convertDustAssetsObj)
     {
         JSONObject json=fundingAPIService.convertDustAssets(convertDustAssetsObj);
+        return json;
+    }
+
+    public JSONObject SetLendingRate(SetLendingRate setLendingRate)
+    {
+        JSONObject json=fundingAPIService.SetLendingRate(setLendingRate);
+        return json;
+    }
+
+    public JSONObject lendingHistory()
+    {
+        JSONObject json=fundingAPIService.lendingHistory("","","","");
+        return json;
+    }
+
+    public JSONObject lendingRateSummary()
+    {
+        JSONObject json=fundingAPIService.lendingRateSummary("");
         return json;
     }
 
