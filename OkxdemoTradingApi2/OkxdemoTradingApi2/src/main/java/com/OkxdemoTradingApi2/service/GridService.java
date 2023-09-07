@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.okex.open.api.bean.gridTrading.param.AmendOrderAlgo;
 import com.okex.open.api.bean.gridTrading.param.OrderAlgo;
 import com.okex.open.api.bean.gridTrading.param.StopOrderAlgo;
+import com.okex.open.api.bean.gridTrading.param.WithdrawIncome;
 import com.okex.open.api.service.gridTrading.GridTradingAPIService;
 import org.springframework.stereotype.Service;
 
@@ -64,4 +65,30 @@ public class GridService
         JSONObject json=gridTradingAPIService.getPositions(algoOrdType,algoId);
         return json;
     }
+
+    public JSONObject withdrawIncome(WithdrawIncome withdrawIncomeObj)
+    {
+        JSONObject json=gridTradingAPIService.withdrawIncome(withdrawIncomeObj);
+        return json;
+    }
+
+    public JSONObject getGridTest(String algoOrdType, String instId, String direction, String duration)
+    {
+        JSONObject json=gridTradingAPIService.getGridTest(algoOrdType,instId,direction,duration);
+        return json;
+    }
+
+    public JSONObject marginBalance(WithdrawIncome withdrawIncomeObj)
+    {
+        JSONObject json=gridTradingAPIService.marginBalance(withdrawIncomeObj);
+        return json;
+    }
+
+    public JSONObject computeMarginBalance(WithdrawIncome withdrawIncomeObj)
+    {
+        JSONObject json=gridTradingAPIService.computeMarginBalance(withdrawIncomeObj);
+        return json;
+    }
+
+
 }

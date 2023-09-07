@@ -5,15 +5,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.okex.open.api.bean.gridTrading.param.AmendOrderAlgo;
 import com.okex.open.api.bean.gridTrading.param.OrderAlgo;
 import com.okex.open.api.bean.gridTrading.param.StopOrderAlgo;
+import com.okex.open.api.bean.gridTrading.param.WithdrawIncome;
 import com.okex.open.api.exception.APIException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -231,5 +229,96 @@ public class GridController
             return new ResponseEntity(jsonobject,HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity(json,HttpStatus.OK);
+    }
+
+    @PostMapping("/withdrawIncome")
+    public ResponseEntity<Object> withdrawIncome(@RequestBody WithdrawIncome withdrawIncomeObj)
+    {
+        JSONObject json=new JSONObject();
+       try
+       {
+           json=gridService.withdrawIncome(withdrawIncomeObj);
+       }
+       catch(APIException e)
+       {
+           JSONObject jsonobject=new JSONObject();
+           String msg=e.getMessage();
+
+           jsonobject.put("message",msg);
+           return new ResponseEntity(jsonobject,HttpStatus.BAD_REQUEST);
+       }
+
+       return new ResponseEntity<>(json,HttpStatus.OK);
+    }
+
+    @GetMapping("/getGridTest")
+    public ResponseEntity<Object> getGridTest(@RequestBody JSONObject jsonObject)
+    {
+        JSONObject json=new JSONObject();
+        try {
+            String algoOrdType = jsonObject.getString("algoOrdType");
+            String instId = jsonObject.getString("instId");
+            String direction = jsonObject.getString("direction");
+            String duration = jsonObject.getString("duration");
+
+            json=gridService.getGridTest(algoOrdType,instId,direction,duration);
+        }
+
+        catch(APIException e)
+        {
+           JSONObject jsonObj=new JSONObject();
+
+           String msg=e.getMessage();
+            jsonObj.put("message",msg);
+            return new ResponseEntity(jsonObj,HttpStatus.BAD_REQUEST);
+        }
+         return new ResponseEntity(json,HttpStatus.OK);
+    }
+
+    @PostMapping("/marginBalance")
+    public ResponseEntity<Object> marginBalance(@Valid @RequestBody WithdrawIncome withdrawIncomeObj,BindingResult result)
+    {
+        JSONObject json=new JSONObject();
+        try {
+            if (result.hasErrors()) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+           json= gridService.marginBalance(withdrawIncomeObj);
+        }//try
+
+        catch(APIException e)
+        {
+           JSONObject jsonObj=new JSONObject();
+           String msg=e.getMessage();
+           jsonObj.put("message",msg);
+           return new ResponseEntity<>(jsonObj,HttpStatus.BAD_REQUEST);
+        }
+       return new ResponseEntity(json,HttpStatus.OK);
+
+    }
+
+    @PostMapping("/computeMarginBalance")
+    public ResponseEntity<Object> computeMarginBalance(@Valid @RequestBody WithdrawIncome withdrawIncomeObj,BindingResult result)
+    {
+        JSONObject json=new JSONObject();
+        try
+        {
+           if(result.hasErrors())
+           {
+               return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+           }
+
+            json=gridService.computeMarginBalance(withdrawIncomeObj);
+        }
+
+        catch(APIException e)
+        {
+            JSONObject jsonObj=new JSONObject();
+            String msg=e.getMessage();
+            jsonObj.put("message",msg);
+            return new ResponseEntity<>(jsonObj,HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(json,HttpStatus.OK);
     }
 }
