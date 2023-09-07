@@ -7,6 +7,8 @@ import com.okex.open.api.service.earn.EarnAPIService;
 import com.okex.open.api.service.earn.impl.EarnAPIServiceImpl;
 import com.okex.open.api.service.funding.FundingAPIService;
 import com.okex.open.api.service.funding.impl.FundingAPIServiceImpl;
+import com.okex.open.api.service.gridTrading.GridTradingAPIService;
+import com.okex.open.api.service.gridTrading.impl.GridTradingAPIServiceImpl;
 import com.okex.open.api.service.publicData.PublicDataAPIService;
 import com.okex.open.api.service.publicData.impl.PublicDataAPIServiceImpl;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -80,5 +82,11 @@ public class ConfigClass {
         return new FundingAPIServiceImpl(config);
     }
 
+    @Bean
+    public GridTradingAPIService gridTradingAPIService(APIConfiguration config)
+    {
+       return new GridTradingAPIServiceImpl(config);
+
+    }
 
 }

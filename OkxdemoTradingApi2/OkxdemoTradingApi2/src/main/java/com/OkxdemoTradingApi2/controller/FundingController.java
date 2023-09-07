@@ -2,10 +2,7 @@ package com.OkxdemoTradingApi2.controller;
 
 import com.OkxdemoTradingApi2.service.FundingService;
 import com.alibaba.fastjson.JSONObject;
-import com.okex.open.api.bean.funding.param.ConvertDustAssets;
-import com.okex.open.api.bean.funding.param.FundsTransfer;
-import com.okex.open.api.bean.funding.param.PiggyBankPurchaseRedemption;
-import com.okex.open.api.bean.funding.param.Withdrawal;
+import com.okex.open.api.bean.funding.param.*;
 import com.okex.open.api.exception.APIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -444,6 +441,75 @@ public class FundingController
             jsonobject.put("message",msg);
             return new ResponseEntity(jsonobject,HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity(json,HttpStatus.OK);
+    }
+
+    @PostMapping("/SetLendingRate")
+    public ResponseEntity<Object> SetLendingRate(@Valid @RequestBody SetLendingRate setLendingRateObj,BindingResult bindingResult)
+    {
+        if(bindingResult.hasErrors())
+        {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        JSONObject json=new JSONObject();
+
+        try
+        {
+           json=fundingService.SetLendingRate(setLendingRateObj);
+        }
+
+        catch(APIException e)
+        {
+            JSONObject jsonobject=new JSONObject();
+            String msg=e.getMessage();
+
+            jsonobject.put("message",msg);
+            return new ResponseEntity(jsonobject,HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(json,HttpStatus.OK);
+
+    }
+
+    @GetMapping("/lendingHistory")
+    public ResponseEntity<Object> lendingHistory()
+    {
+        JSONObject json=new JSONObject();
+
+        try
+        {
+            json=fundingService.lendingHistory();
+        }
+
+        catch(APIException e)
+        {
+            JSONObject jsonobject=new JSONObject();
+            String msg=e.getMessage();
+
+            jsonobject.put("message",msg);
+            return new ResponseEntity(jsonobject,HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(json,HttpStatus.OK);
+    }
+
+    @GetMapping("/lendingRateSummary")
+    public ResponseEntity<Object> lendingRateSummary()
+    {
+        JSONObject json=new JSONObject();
+        try
+        {
+            json=fundingService.lendingRateSummary();
+        }
+
+        catch(APIException e)
+        {
+            JSONObject jsonobject=new JSONObject();
+            String msg=e.getMessage();
+
+            jsonobject.put("message",msg);
+            return new ResponseEntity(jsonobject,HttpStatus.BAD_REQUEST);
+        }
+
         return new ResponseEntity(json,HttpStatus.OK);
     }
 }
