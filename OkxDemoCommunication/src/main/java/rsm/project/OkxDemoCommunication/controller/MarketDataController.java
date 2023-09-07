@@ -254,4 +254,126 @@ public class MarketDataController {
         }
         return new ResponseEntity<>(jsonObject, HttpStatus.OK);
     }
+
+    @GetMapping("/market_data/get_24_platform_volume")
+    public ResponseEntity<JSONObject> getTotalVolume() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getTotalVolume();
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_oracle_contract")
+    public ResponseEntity<JSONObject> getOracle() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getOracle();
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_exchange_rate")
+    public ResponseEntity<JSONObject> getExchangeRate() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getExchangeRate();
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_index_components/{index}")
+    public ResponseEntity<JSONObject> getIndexComponents(@PathVariable("index") String index) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getIndexComponents(index);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_block_tickers")
+    public ResponseEntity<JSONObject> getBlockTickers(@RequestBody JSONObject jsonData) {
+        String instType = jsonData.getString("instType");
+        String uly = jsonData.getString("uly");
+        String instFamily = jsonData.getString("instFamily");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getBlockTickers(instType, uly, instFamily);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_block_ticker/{instId}")
+    public ResponseEntity<JSONObject> getBlockTicker(@PathVariable("instId") String instId) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getBlockTicker(instId);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_block_trade/{instId}")
+    public ResponseEntity<JSONObject> getBlockTrades(@PathVariable("instId") String instId) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getBlockTrades(instId);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_instrument_family_trades/{instFamily}")
+    public ResponseEntity<JSONObject> getInstrumentFamilyTrades(@PathVariable("instFamily") String instFamily) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getInstrumentFamilyTrades(instFamily);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
 }
