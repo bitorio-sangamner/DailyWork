@@ -23,6 +23,10 @@ import com.okex.open.api.service.marketData.MarketDataAPIService;
 import com.okex.open.api.service.marketData.impl.MarketDataAPIServiceImpl;
 import com.okex.open.api.service.publicData.PublicDataAPIService;
 import com.okex.open.api.service.publicData.impl.PublicDataAPIServiceImpl;
+import com.okex.open.api.service.recurring.RecurringAPIService;
+import com.okex.open.api.service.recurring.impl.RecurringAPIServiceImpl;
+import com.okex.open.api.service.rubik.RubikAPIService;
+import com.okex.open.api.service.rubik.impl.RubikAPIServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -79,4 +83,10 @@ public class OkStartCommunicationConfig {
 
     @Bean
     public MarketDataAPIService marketDataAPIService(APIConfiguration config) { return new MarketDataAPIServiceImpl(config);}
+
+    @Bean
+    public RecurringAPIService recurringAPIService(APIConfiguration config) { return new RecurringAPIServiceImpl(config);}
+
+    @Bean
+    public RubikAPIService rubikAPIService(APIConfiguration config) { return new RubikAPIServiceImpl(config);}
 }

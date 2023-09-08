@@ -214,4 +214,167 @@ public class PublicDataController {
         }
         return new ResponseEntity<>(jsonObject, HttpStatus.OK);
     }
+
+    @GetMapping("/public_data/get_mark_price")
+    public ResponseEntity<Object> getMarkPrice(@RequestBody JSONObject jsonData) {
+        String instType = jsonData.getString("instType");
+        String uly = jsonData.getString("uly");
+        String instFamily = jsonData.getString("instFamily");
+        String instId = jsonData.getString("instId");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = publicDataAPIService.getMarkPrice(instType, uly, instFamily, instId);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/public_data/get_tier")
+    public ResponseEntity<Object> getTier(@RequestBody JSONObject jsonData) {
+        String instType = jsonData.getString("instType");
+        String uly = jsonData.getString("uly");
+        String instFamily = jsonData.getString("instFamily");
+        String instId = jsonData.getString("instId");
+        String tdMode = jsonData.getString("tdMode");
+        String tier = jsonData.getString("tier");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = publicDataAPIService.getTier(instType, uly, instFamily, instId, tdMode, tier);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/public_data/get_interest_rate_loan_quota")
+    public ResponseEntity<Object> getInterestRateLoanQuota() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = publicDataAPIService.getInterestRateLoanQuota();
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/public_data/get_underlying/{instType}")
+    public ResponseEntity<Object> getUnderlying(@PathVariable String instType) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = publicDataAPIService.getUnderlying(instType);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/public_data/get_vip_interest_rate_loan_quota")
+    public ResponseEntity<Object> getVipInterestRateLoanQuota() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = publicDataAPIService.getVipInterestRateLoanQuota();
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/public_data/get_insurance_fund")
+    public ResponseEntity<Object> getInsuranceFund(@RequestBody JSONObject jsonData) {
+        String instType = jsonData.getString("instType");
+        String type = jsonData.getString("type");
+        String uly = jsonData.getString("uly");
+        String instFamily = jsonData.getString("instFamily");
+        String ccy = jsonData.getString("ccy");
+        String before = jsonData.getString("before");
+        String after = jsonData.getString("after");
+        String limit = jsonData.getString("limit");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = publicDataAPIService.getInsuranceFund(instType, type, uly, instFamily, ccy, after, before, limit);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/public_data/get_conversion_contract_coin")
+    public ResponseEntity<Object> getConvertContractCoin(@RequestBody JSONObject jsonData) {
+        String type = jsonData.getString("type");
+        String instId = jsonData.getString("instId");
+        String sz = jsonData.getString("sz");
+        String px = jsonData.getString("px");
+        String unit = jsonData.getString("unit");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = publicDataAPIService.getConvertContractCoin(type, instId, sz, px, unit);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/public_data/get_option_trades")
+    public ResponseEntity<Object> getOptionTrades(@RequestBody JSONObject jsonData) {
+        String instId = jsonData.getString("instId");
+        String instFamily = jsonData.getString("instFamily");
+        String optType = jsonData.getString("optType");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = publicDataAPIService.getOptionTrades(instId, instFamily, optType);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/public_data/get_instrument_tick_bands")
+    public ResponseEntity<Object> getInstrumentTickBands(@RequestBody JSONObject jsonData) {
+        String instType = jsonData.getString("instType");
+        String instFamily = jsonData.getString("instFamily");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = publicDataAPIService.getInstrumentTickBands(instType, instFamily);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
 }
