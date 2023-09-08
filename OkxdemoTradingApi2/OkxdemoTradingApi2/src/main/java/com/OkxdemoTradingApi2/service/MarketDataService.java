@@ -74,4 +74,71 @@ public class MarketDataService
         return json;
     }
 
+    public JSONObject getMarkPriceCandlesticksHistory(String instId, String after, String before, String bar, String limit)
+    {
+        JSONObject json=marketDataAPIServiceObj.getMarkPriceCandlesticksHistory(instId,after,before,bar,limit);
+        return json;
+    }
+
+    public JSONObject getTrades(String instId, String limit)
+    {
+        JSONObject json=marketDataAPIServiceObj.getTrades(instId,limit);
+        return json;
+    }
+
+    public JSONObject getTradesHistory(String instId, String after, String before, String limit,String type)
+    {
+        JSONObject json=marketDataAPIServiceObj.getTradesHistory(instId,after,before,limit,type);
+        return json;
+    }
+
+    public JSONObject getTotalVolume()
+    {
+        JSONObject json=marketDataAPIServiceObj.getTotalVolume();
+        return json;
+    }
+
+    public JSONObject getOracle()
+    {
+        JSONObject json=marketDataAPIServiceObj.getOracle();
+        return json;
+    }
+
+    public JSONObject getExchangeRate()
+    {
+        JSONObject json=marketDataAPIServiceObj.getExchangeRate();
+        return json;
+    }
+
+    public JSONObject getIndexComponents(String index)
+    {
+        JSONObject json=marketDataAPIServiceObj.getIndexComponents(index);
+        return json;
+    }
+
+    public JSONObject getBlockTickers(String instType, String uly, String instFamily)
+    {
+        JSONObject json=marketDataAPIServiceObj.getBlockTickers(instType,uly,instFamily);
+        return json;
+    }
+
+    public JSONObject getBlockTicker(String instId)
+    {
+        JSONObject json=marketDataAPIServiceObj.getBlockTicker(instId);
+        return json;
+    }
+
+    public JSONObject getBlockTrades(String instId)
+    {
+        JSONObject json=marketDataAPIServiceObj.getBlockTrades(instId);
+        return json;
+    }
+
+    public JSONObject getInstrumentFamilyTrades(String instFamily)
+    {
+        JSONObject json=marketDataAPIServiceObj.getInstrumentFamilyTrades(instFamily);
+        return json;
+    }
+
+
 }

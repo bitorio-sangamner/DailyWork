@@ -97,4 +97,10 @@ public class ConfigClass {
        return new MarketDataAPIServiceImpl(config);
     }
 
+    @Bean
+    public PublicDataAPIService PublicDataAPIService(APIConfiguration config)
+    {
+        return new PublicDataAPIServiceImpl(config);
+    }
+
 }
