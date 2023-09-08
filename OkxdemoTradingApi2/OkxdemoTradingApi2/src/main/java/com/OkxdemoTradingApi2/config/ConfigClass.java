@@ -9,6 +9,8 @@ import com.okex.open.api.service.funding.FundingAPIService;
 import com.okex.open.api.service.funding.impl.FundingAPIServiceImpl;
 import com.okex.open.api.service.gridTrading.GridTradingAPIService;
 import com.okex.open.api.service.gridTrading.impl.GridTradingAPIServiceImpl;
+import com.okex.open.api.service.marketData.MarketDataAPIService;
+import com.okex.open.api.service.marketData.impl.MarketDataAPIServiceImpl;
 import com.okex.open.api.service.publicData.PublicDataAPIService;
 import com.okex.open.api.service.publicData.impl.PublicDataAPIServiceImpl;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -87,6 +89,12 @@ public class ConfigClass {
     {
        return new GridTradingAPIServiceImpl(config);
 
+    }
+
+    @Bean
+    public MarketDataAPIService MarketDataAPIService(APIConfiguration config)
+    {
+       return new MarketDataAPIServiceImpl(config);
     }
 
 }
