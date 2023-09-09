@@ -13,6 +13,8 @@ import com.okex.open.api.service.marketData.MarketDataAPIService;
 import com.okex.open.api.service.marketData.impl.MarketDataAPIServiceImpl;
 import com.okex.open.api.service.publicData.PublicDataAPIService;
 import com.okex.open.api.service.publicData.impl.PublicDataAPIServiceImpl;
+import com.okex.open.api.service.recurring.RecurringAPIService;
+import com.okex.open.api.service.recurring.impl.RecurringAPIServiceImpl;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.context.annotation.Bean;
@@ -101,6 +103,12 @@ public class ConfigClass {
     public PublicDataAPIService PublicDataAPIService(APIConfiguration config)
     {
         return new PublicDataAPIServiceImpl(config);
+    }
+
+    @Bean
+    public RecurringAPIService recurringAPIService(APIConfiguration config)
+    {
+       return new RecurringAPIServiceImpl(config);
     }
 
 }
