@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MarketDataController {
     @Autowired
-    MarketDataAPIService marketDataAPIService;
+    private MarketDataAPIService marketDataAPIService;
 
     @GetMapping("/market_data/get_tickers")
     public ResponseEntity<JSONObject> getTickers(@RequestBody JSONObject jsonData) {

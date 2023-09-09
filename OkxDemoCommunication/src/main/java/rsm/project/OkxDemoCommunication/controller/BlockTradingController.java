@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class BlockTradingController {
     @Autowired
-    BlockTradingAPIService blockTradingAPIService;
+    private BlockTradingAPIService blockTradingAPIService;
 
     @GetMapping("/get_counterparties")
     public ResponseEntity<Object> getCounterparties() {

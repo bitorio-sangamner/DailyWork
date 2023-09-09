@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class EarnController {
     @Autowired
-    EarnAPIService earnAPIService;
+    private EarnAPIService earnAPIService;
 
     @GetMapping("/earn/get_offers")
     public ResponseEntity<JSONObject> getOffers(@RequestBody JSONObject jsonData) {

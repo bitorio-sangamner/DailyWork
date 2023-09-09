@@ -14,7 +14,7 @@ import retrofit2.http.Query;
 @RestController()
 public class CopyTradingController {
     @Autowired
-    CopytradingAPIService copytradingAPIService;
+    private CopytradingAPIService copytradingAPIService;
 
     @GetMapping("/copy_trading/get_instruments")
     public ResponseEntity<JSONObject> getInstruments() {

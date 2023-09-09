@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class FinanceController {
 
     @Autowired
-    FinanceAPIService financeAPIService;
+    private FinanceAPIService financeAPIService;
 
     @GetMapping("/finance/get_balance/{ccy}")
     ResponseEntity<JSONObject> getFinanceBalance(@PathVariable ("ccy") String currency) {

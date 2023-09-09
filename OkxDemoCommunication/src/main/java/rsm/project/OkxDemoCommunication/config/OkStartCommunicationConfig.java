@@ -27,6 +27,10 @@ import com.okex.open.api.service.recurring.RecurringAPIService;
 import com.okex.open.api.service.recurring.impl.RecurringAPIServiceImpl;
 import com.okex.open.api.service.rubik.RubikAPIService;
 import com.okex.open.api.service.rubik.impl.RubikAPIServiceImpl;
+import com.okex.open.api.service.status.StatusDataAPIService;
+import com.okex.open.api.service.status.impl.StatusDataAPIServiceImpl;
+import com.okex.open.api.service.subAccount.SubAccountAPIService;
+import com.okex.open.api.service.subAccount.impl.SubAccountAPIServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -89,4 +93,10 @@ public class OkStartCommunicationConfig {
 
     @Bean
     public RubikAPIService rubikAPIService(APIConfiguration config) { return new RubikAPIServiceImpl(config);}
+
+    @Bean
+    public StatusDataAPIService statusDataAPIService(APIConfiguration config) { return new StatusDataAPIServiceImpl(config);}
+
+    @Bean
+    public SubAccountAPIService subAccountAPIService(APIConfiguration config) { return new SubAccountAPIServiceImpl(config);}
 }

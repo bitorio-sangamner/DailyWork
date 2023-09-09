@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class FundingController {
     @Autowired
-    FundingAPIService fundingAPIService;
+    private FundingAPIService fundingAPIService;
 
     @GetMapping("/funding/get_currencies")
     public ResponseEntity<JSONObject> getCurrencies() {

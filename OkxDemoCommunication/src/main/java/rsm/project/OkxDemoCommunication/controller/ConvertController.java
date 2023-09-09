@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ConvertController {
     @Autowired
-    ConvertAPIService convertAPIService;
+    private ConvertAPIService convertAPIService;
 
     @GetMapping("/get_convert_currencies")
     public ResponseEntity<JSONObject> getConvertCurrencies() {

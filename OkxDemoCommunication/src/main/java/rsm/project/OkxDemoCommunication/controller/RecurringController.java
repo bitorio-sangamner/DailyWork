@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 public class RecurringController {
     @Autowired
-    RecurringAPIService recurringAPIService;
+    private RecurringAPIService recurringAPIService;
 
     @PostMapping("/recurring/place_order_algo")
     public ResponseEntity<Object> placeOrderAlgo(@RequestBody RecurringAlgoOrder recurringAlgoOrder) {

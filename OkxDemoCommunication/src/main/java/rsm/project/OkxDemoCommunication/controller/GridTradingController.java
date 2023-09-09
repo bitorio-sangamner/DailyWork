@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class GridTradingController {
 
     @Autowired
-    GridTradingAPIService gridTradingAPIService;
+    private GridTradingAPIService gridTradingAPIService;
 
     @PostMapping("/grid_trading/order_algo")
     public ResponseEntity<JSONObject> orderAlgo(@RequestBody OrderAlgo orderAlgo) {
