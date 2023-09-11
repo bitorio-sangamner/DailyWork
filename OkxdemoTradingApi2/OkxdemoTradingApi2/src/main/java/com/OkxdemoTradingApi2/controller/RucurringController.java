@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 public class RucurringController {
 
@@ -118,7 +116,7 @@ public class RucurringController {
         return new ResponseEntity<>(json,HttpStatus.OK);
     }
 
-    @PostMapping("/stopOrderAlgo")
+   /* @PostMapping("/stopOrderAlgo")
     public ResponseEntity<Object> stopOrderAlgo(@RequestBody List<Recurring> recurring)
     {
         JSONObject json=new JSONObject();
@@ -137,7 +135,7 @@ public class RucurringController {
             return new ResponseEntity<>(jsonObject, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(json,HttpStatus.OK);
-    }
+    }*/
 
     /*@GetMapping("/getSubOrders/{algoId}")
     public ResponseEntity<Object> getSubOrders(@PathVariable String algoId)
