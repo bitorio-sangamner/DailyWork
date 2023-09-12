@@ -31,6 +31,8 @@ import com.okex.open.api.service.status.StatusDataAPIService;
 import com.okex.open.api.service.status.impl.StatusDataAPIServiceImpl;
 import com.okex.open.api.service.subAccount.SubAccountAPIService;
 import com.okex.open.api.service.subAccount.impl.SubAccountAPIServiceImpl;
+import com.okex.open.api.service.trade.TradeAPIService;
+import com.okex.open.api.service.trade.impl.TradeAPIServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -99,4 +101,7 @@ public class OkStartCommunicationConfig {
 
     @Bean
     public SubAccountAPIService subAccountAPIService(APIConfiguration config) { return new SubAccountAPIServiceImpl(config);}
+
+    @Bean
+    public TradeAPIService tradeAPIService(APIConfiguration config) { return new TradeAPIServiceImpl(config);}
 }
