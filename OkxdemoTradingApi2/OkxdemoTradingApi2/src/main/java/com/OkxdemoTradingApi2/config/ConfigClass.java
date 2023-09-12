@@ -21,6 +21,8 @@ import com.okex.open.api.service.status.StatusDataAPIService;
 import com.okex.open.api.service.status.impl.StatusDataAPIServiceImpl;
 import com.okex.open.api.service.subAccount.SubAccountAPIService;
 import com.okex.open.api.service.subAccount.impl.SubAccountAPIServiceImpl;
+import com.okex.open.api.service.trade.TradeAPIService;
+import com.okex.open.api.service.trade.impl.TradeAPIServiceImpl;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.context.annotation.Bean;
@@ -133,6 +135,12 @@ public class ConfigClass {
     public SubAccountAPIService subAccountAPIService(APIConfiguration config)
   {
       return new SubAccountAPIServiceImpl(config);
+  }
+
+  @Bean
+    public TradeAPIService TradeAPIService(APIConfiguration config)
+  {
+     return new TradeAPIServiceImpl(config);
   }
 
 }

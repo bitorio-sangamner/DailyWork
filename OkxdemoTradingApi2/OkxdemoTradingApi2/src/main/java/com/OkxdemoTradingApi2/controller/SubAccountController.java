@@ -240,4 +240,25 @@ public class SubAccountController {
 
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
+
+    @GetMapping("/getSubAccountMaxWithdrawal/{subAcc}/{ccy}")
+    public ResponseEntity<Object> getSubAccountMaxWithdrawal(@PathVariable String subAcc,@PathVariable String ccy)
+    {
+        JSONObject json=new JSONObject();
+        try
+        {
+            json=subAccountService.getSubAccountMaxWithdrawal(subAcc,ccy);
+        }
+
+        catch(APIException e)
+        {
+            JSONObject jsonObject=new JSONObject();
+            String msg=e.getMessage();
+
+            jsonObject.put("message",msg);
+            return new ResponseEntity<>(jsonObject, HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(json, HttpStatus.OK);
+    }
 }
