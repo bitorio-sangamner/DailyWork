@@ -2,7 +2,6 @@ package com.OkxdemoTradingApi2.controller;
 
 import com.OkxdemoTradingApi2.service.GridService;
 import com.alibaba.fastjson.JSONObject;
-import com.okex.open.api.bean.gridTrading.param.AmendOrderAlgo;
 import com.okex.open.api.bean.gridTrading.param.OrderAlgo;
 import com.okex.open.api.bean.gridTrading.param.StopOrderAlgo;
 import com.okex.open.api.bean.gridTrading.param.WithdrawIncome;
@@ -11,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -47,7 +49,7 @@ public class GridController
         return new ResponseEntity<>(json,HttpStatus.OK);
     }
 
-    @PostMapping("/amendOrderAlgo")
+   /* @PostMapping("/amendOrderAlgo")
     public ResponseEntity<Object> amendOrderAlgo(@Valid @RequestBody AmendOrderAlgo amendOrderAlgo,BindingResult bindingResult)
     {
         if(bindingResult.hasErrors())
@@ -71,7 +73,7 @@ public class GridController
         }
 
         return new ResponseEntity(json,HttpStatus.OK);
-    }
+    }*/
 
     @PostMapping("/stopOrderAlgo")
     public ResponseEntity stopOrderAlgo(@Valid @RequestBody StopOrderAlgo stopOrderAlgoObj,BindingResult bindingResult)

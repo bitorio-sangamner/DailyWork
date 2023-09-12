@@ -13,6 +13,14 @@ import com.okex.open.api.service.marketData.MarketDataAPIService;
 import com.okex.open.api.service.marketData.impl.MarketDataAPIServiceImpl;
 import com.okex.open.api.service.publicData.PublicDataAPIService;
 import com.okex.open.api.service.publicData.impl.PublicDataAPIServiceImpl;
+import com.okex.open.api.service.recurring.RecurringAPIService;
+import com.okex.open.api.service.recurring.impl.RecurringAPIServiceImpl;
+import com.okex.open.api.service.rubik.RubikAPIService;
+import com.okex.open.api.service.rubik.impl.RubikAPIServiceImpl;
+import com.okex.open.api.service.status.StatusDataAPIService;
+import com.okex.open.api.service.status.impl.StatusDataAPIServiceImpl;
+import com.okex.open.api.service.subAccount.SubAccountAPIService;
+import com.okex.open.api.service.subAccount.impl.SubAccountAPIServiceImpl;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.context.annotation.Bean;
@@ -102,5 +110,29 @@ public class ConfigClass {
     {
         return new PublicDataAPIServiceImpl(config);
     }
+
+    @Bean
+    public RecurringAPIService recurringAPIService(APIConfiguration config)
+    {
+       return new RecurringAPIServiceImpl(config);
+    }
+
+    @Bean
+    public RubikAPIService rubikAPIService(APIConfiguration config)
+    {
+       return new RubikAPIServiceImpl(config);
+    }
+
+  @Bean
+    public StatusDataAPIService statusDataAPIService(APIConfiguration config)
+  {
+     return new StatusDataAPIServiceImpl(config);
+  }
+
+  @Bean
+    public SubAccountAPIService subAccountAPIService(APIConfiguration config)
+  {
+      return new SubAccountAPIServiceImpl(config);
+  }
 
 }
