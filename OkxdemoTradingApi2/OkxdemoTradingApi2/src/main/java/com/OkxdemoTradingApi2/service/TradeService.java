@@ -1,10 +1,7 @@
 package com.OkxdemoTradingApi2.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.okex.open.api.bean.trade.param.AmendOrder;
-import com.okex.open.api.bean.trade.param.CancelOrder;
-import com.okex.open.api.bean.trade.param.ClosePositions;
-import com.okex.open.api.bean.trade.param.PlaceOrder;
+import com.okex.open.api.bean.trade.param.*;
 import com.okex.open.api.service.trade.TradeAPIService;
 import org.springframework.stereotype.Service;
 
@@ -114,4 +111,91 @@ public class TradeService {
        JSONObject json=tradeAPIService.getTransactionDetailsForThreeMonths(instType,"","","","","","","","","");
        return json;
    }
+
+   public JSONObject placeAlgoOrder(PlaceAlgoOrder placeAlgoOrderObj)
+   {
+       JSONObject json=tradeAPIService.placeAlgoOrder(placeAlgoOrderObj);
+       return json;
+   }
+
+   public JSONObject getAlgoOrderList(String algoId, String instType, String instId, String ordType,String algoClOrdId, String after, String before, String limit)
+   {
+       JSONObject json=tradeAPIService.getAlgoOrderList(algoId,instType,instId,ordType,algoClOrdId,after,before,limit);
+       return json;
+   }
+
+   public JSONObject cancelAlgoOrder(List<CancelAlgoOrder> cancelAlgoOrderList)
+   {
+       for(int i=0;i<cancelAlgoOrderList.size();i++)
+       {
+           System.out.println("AlgoId : "+cancelAlgoOrderList.get(i).getAlgoId());
+           System.out.println("instId : "+cancelAlgoOrderList.get(i).getInstId());
+       }
+       JSONObject json=tradeAPIService.cancelAlgoOrder(cancelAlgoOrderList);
+       return json;
+   }
+
+   public JSONObject cancelAdvanceAlgoOrders(List<CancelAlgoOrder> cancelAlgoOrderList)
+   {
+       JSONObject json=tradeAPIService.cancelAdvanceAlgoOrders(cancelAlgoOrderList);
+       return json;
+   }
+
+   public JSONObject getAlgoOrderHistory(String state, String algoId, String instType, String instId, String ordType, String clOrdId,String after, String before, String limit)
+   {
+       JSONObject json=tradeAPIService.getAlgoOrderHistory(state,algoId,instType,instId,ordType,clOrdId,after,before,limit);
+        return json;
+   }
+
+   public JSONObject getEasyConvertCurrencyList()
+   {
+       JSONObject json=tradeAPIService.getEasyConvertCurrencyList();
+       return json;
+   }
+
+   public JSONObject placeEasyConvert(EasyConvert easyConvertObj)
+   {
+       JSONObject json=tradeAPIService.placeEasyConvert(easyConvertObj);
+       return json;
+   }
+
+   public JSONObject getEasyConvertHistory()
+   {
+       JSONObject json=tradeAPIService.getEasyConvertHistory("","","");
+       return json;
+   }
+
+   public JSONObject getOneClickRepayCurrencyList()
+   {
+       JSONObject json=tradeAPIService.getOneClickRepayCurrencyList("");
+       return json;
+   }
+
+   public JSONObject oneClickRepay(OneClickRepay oneClickRepayObj)
+   {
+       JSONObject json=tradeAPIService.oneClickRepay(oneClickRepayObj);
+       return json;
+   }
+
+   public JSONObject getOneClickRepayHistory()
+   {
+       JSONObject json=tradeAPIService.getOneClickRepayHistory("","","");
+       return json;
+   }
+
+   public JSONObject getAlgoOrderDetails(String algoId, String algoClOrdId)
+   {
+       JSONObject json=tradeAPIService.getAlgoOrderDetails(algoId,algoClOrdId);
+       return json;
+   }
+
+   public JSONObject amendAlgos(AmendAlgos amendAlgosObj)
+   {
+       JSONObject json=tradeAPIService.amendAlgos(amendAlgosObj);
+       return json;
+   }
+
+
+
+
 }
