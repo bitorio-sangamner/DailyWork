@@ -11,7 +11,7 @@ spring:
         - id: USER-SERVICE
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/users/**
+            - Path=/users/**,/signUp,/auth/login
 
         - id: HOTEL-SERVICE
           uri: lb://HOTEL-SERVICE
@@ -32,9 +32,9 @@ eureka:
     service-url:
       defaultZone: http://localhost:8762/eureka
 
-logging:
-  level:
-    org.springframework: DEBUG
+#logging:
+#  level:
+#    org.springframework: DEBUG
 
 
 

@@ -25,13 +25,13 @@ public class UserController {
     private Logger logger= LoggerFactory.getLogger(UserController.class);
     //create
 
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user)
-    {
-        User userObj=userService.saveUser(user);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(userObj);
-    }
+//    @PostMapping
+//    public ResponseEntity<User> createUser(@RequestBody User user)
+//    {
+//        User userObj=userService.saveUser(user);
+//
+//        return ResponseEntity.status(HttpStatus.CREATED).body(userObj);
+//    }
 
     //get single user
     @GetMapping("/{userId}")
