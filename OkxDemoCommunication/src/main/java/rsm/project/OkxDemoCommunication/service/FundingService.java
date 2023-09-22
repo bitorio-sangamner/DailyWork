@@ -1,31 +1,24 @@
-package rsm.project.OkxDemoCommunication.controller;
+package rsm.project.OkxDemoCommunication.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.okex.open.api.bean.funding.param.*;
 import com.okex.open.api.exception.APIException;
-import com.okex.open.api.service.publicData.PublicDataAPIService;
+import com.okex.open.api.service.funding.FundingAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import retrofit2.http.Path;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class PublicDataController {
+public class FundingService {
     @Autowired
-    private PublicDataAPIService publicDataAPIService;
+    private FundingAPIService fundingAPIService;
 
-    @GetMapping("/public_data/get_instrumentation_details")
-    public ResponseEntity<Object> showInstrumentationDetails(@RequestBody JSONObject jsonData) {
-        String instType = jsonData.getString("instType");
-        String uly = jsonData.getString("uly");
-        String instFamily = jsonData.getString("instFamily");
-        String instId = jsonData.getString("instId");
+    @GetMapping("/funding/get_currencies")
+    public ResponseEntity<JSONObject> getCurrencies() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject = publicDataAPIService.getInstruments(instType, uly, instFamily, instId);
+            jsonObject = fundingAPIService.getCurrencies();
         } catch (APIException e) {
             String[] keyValuePair = e.getMessage().split(" : ");
             JSONObject jsonObject1 = new JSONObject();
@@ -36,17 +29,11 @@ public class PublicDataController {
         return new ResponseEntity<>(jsonObject, HttpStatus.OK);
     }
 
-    @GetMapping("/public_data/get_delivery_exercise_history")
-    public ResponseEntity<Object> getDeliveryExerciseHistory(@RequestBody JSONObject jsonData) {
-        String instType = jsonData.getString("instType");
-        String uly = jsonData.getString("uly");
-        String instFamily = jsonData.getString("instFamily");
-        String after = jsonData.getString("after");
-        String before = jsonData.getString("before");
-        String limit = jsonData.getString("limit");
+    @GetMapping("/funding/get_currency_balance/{ccy}")
+    public ResponseEntity<JSONObject> getBalance(@PathVariable("ccy") String currency) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject = publicDataAPIService.getDeliveryExerciseHistory(instType, uly, instFamily, after, before, limit);
+            jsonObject = fundingAPIService.getBalance(currency);
         } catch (APIException e) {
             String[] keyValuePair = e.getMessage().split(" : ");
             JSONObject jsonObject1 = new JSONObject();
@@ -57,29 +44,11 @@ public class PublicDataController {
         return new ResponseEntity<>(jsonObject, HttpStatus.OK);
     }
 
-    @GetMapping("/public_data/get_open_interest")
-    public ResponseEntity<Object> getOpenInterest(@RequestBody JSONObject jsonData) {
-        String instType = jsonData.getString("instType");
-        String uly = jsonData.getString("uly");
-        String instFamily = jsonData.getString("instFamily");
-        String instId = jsonData.getString("instId");
+    @PostMapping("/funding/funds_transfer")
+    public ResponseEntity<JSONObject> fundsTransfer(@RequestBody FundsTransfer fundsTransfer) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject = publicDataAPIService.getOpenInterest(instType, uly, instFamily, instId);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-    @GetMapping("/public_data/get_funding_rate/{instId}")
-    public ResponseEntity<Object> getFundingRate(@PathVariable("instId") String instId) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = publicDataAPIService.getFundingRate(instId);
+            jsonObject = fundingAPIService.fundsTransfer(fundsTransfer);
         } catch (APIException e) {
             String[] keyValuePair = e.getMessage().split(" : ");
             JSONObject jsonObject1 = new JSONObject();
@@ -90,80 +59,17 @@ public class PublicDataController {
         return new ResponseEntity<>(jsonObject, HttpStatus.OK);
     }
 
-    @GetMapping("/public_data/get_funding_rate_history")
-    public ResponseEntity<Object> getFundingRateHistory(@RequestBody JSONObject jsonData) {
-        String instId = jsonData.getString("instId");
-        String after = jsonData.getString("after");
-        String before = jsonData.getString("before");
-        String limit = jsonData.getString("limit");
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = publicDataAPIService.getFundingRateHistory(instId, after, before, limit);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @GetMapping("/public_data/get_limit_price/{instId}")
-    public ResponseEntity<Object> getLimitPrice(@PathVariable("instId") String instId) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = publicDataAPIService.getLimitPrice(instId);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @GetMapping("/public_data/get_option_market_data")
-    public ResponseEntity<Object> getOptionMarketData(@RequestBody JSONObject jsonData) {
-        String uly = jsonData.getString("uly");
-        String instFamily = jsonData.getString("instFamily");
-        String expTime = jsonData.getString("expTime");
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = publicDataAPIService.getOptionMarketData(uly, instFamily, expTime);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @GetMapping("/public_data/get_estimated_delivery_exercise_price/{instId}")
-    public ResponseEntity<Object> getEstimatedDeliveryExercisePrice(@PathVariable("instId") String instId) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = publicDataAPIService.getEstimatedDeliveryExcercisePrice(instId);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @GetMapping("/public_data/get_discounted_rate_and_interest_free_quote")
-    public ResponseEntity<Object> getDiscountRateAndInterestFreeQuota(@RequestBody JSONObject jsonData) {
+    @GetMapping("/funding/assets_bills_details")
+    public ResponseEntity<JSONObject> assetBillsDetails(@RequestBody JSONObject jsonData) {
         String currency = jsonData.getString("ccy");
-        String discountLv = jsonData.getString("discountLv");
+        String type = jsonData.getString("type");
+        String clientId = jsonData.getString("clientId");
+        String after = jsonData.getString("after");
+        String before = jsonData.getString("before");
+        String limit = jsonData.getString("limit");
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject = publicDataAPIService.getDiscountRateAndInterestFreeQuota(currency, discountLv);
+            jsonObject = fundingAPIService.assetBillsDetails(currency, limit, clientId, after, before, limit);
         } catch (APIException e) {
             String[] keyValuePair = e.getMessage().split(" : ");
             JSONObject jsonObject1 = new JSONObject();
@@ -174,11 +80,11 @@ public class PublicDataController {
         return new ResponseEntity<>(jsonObject, HttpStatus.OK);
     }
 
-    @GetMapping("/public_data/get_system_time")
-    public ResponseEntity<Object> getSystemTime() {
+    @GetMapping("/funding/get_deposit_address/{ccy}")
+    public ResponseEntity<JSONObject> getDepositAddress(@PathVariable("ccy") String currency) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject = publicDataAPIService.getSystemTime();
+            jsonObject = fundingAPIService.getDepositAddress(currency);
         } catch (APIException e) {
             String[] keyValuePair = e.getMessage().split(" : ");
             JSONObject jsonObject1 = new JSONObject();
@@ -189,22 +95,20 @@ public class PublicDataController {
         return new ResponseEntity<>(jsonObject, HttpStatus.OK);
     }
 
-    @GetMapping("/public_data/get_liquidation_orders")
-    public ResponseEntity<Object> getLiquidationOrders(@RequestBody JSONObject jsonData) {
-        String instType = jsonData.getString("instType");
-        String mgnMode = jsonData.getString("mgnMode");
-        String instId = jsonData.getString("instId");
-        String ccy = jsonData.getString("ccy");
-        String uly = jsonData.getString("uly");
-        String instFamily = jsonData.getString("instFamily");
-        String alias = jsonData.getString("alias");
+    @GetMapping("/funding/get_deposit_history")
+    public ResponseEntity<JSONObject> getDepositHistory(@RequestBody JSONObject jsonData) {
+        String currency = jsonData.getString("ccy");
+        String txId = jsonData.getString("txId");
+        String fromWdId = jsonData.getString("fromWdId");
+        String type = jsonData.getString("type");
         String state = jsonData.getString("state");
-        String before = jsonData.getString("before");
-        String after = jsonData.getString("after");
         String limit = jsonData.getString("limit");
+        String after = jsonData.getString("after");
+        String before = jsonData.getString("before");
+        String depId = jsonData.getString("depId");
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject = publicDataAPIService.getLiquidationOrders(instType, mgnMode, uly, instId, ccy, instFamily, alias, state, after, before, limit);
+            jsonObject = fundingAPIService.getDepositHistory(currency, txId, fromWdId, type, state, after, before, limit, depId);
         } catch (APIException e) {
             String[] keyValuePair = e.getMessage().split(" : ");
             JSONObject jsonObject1 = new JSONObject();
@@ -215,15 +119,11 @@ public class PublicDataController {
         return new ResponseEntity<>(jsonObject, HttpStatus.OK);
     }
 
-    @GetMapping("/public_data/get_mark_price")
-    public ResponseEntity<Object> getMarkPrice(@RequestBody JSONObject jsonData) {
-        String instType = jsonData.getString("instType");
-        String uly = jsonData.getString("uly");
-        String instFamily = jsonData.getString("instFamily");
-        String instId = jsonData.getString("instId");
+    @PostMapping("/funding/withdrawal")
+    public ResponseEntity<JSONObject> withdrawal(@RequestBody Withdrawal withdrawal) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject = publicDataAPIService.getMarkPrice(instType, uly, instFamily, instId);
+            jsonObject = fundingAPIService.Withdrawal(withdrawal);
         } catch (APIException e) {
             String[] keyValuePair = e.getMessage().split(" : ");
             JSONObject jsonObject1 = new JSONObject();
@@ -234,85 +134,170 @@ public class PublicDataController {
         return new ResponseEntity<>(jsonObject, HttpStatus.OK);
     }
 
-    @GetMapping("/public_data/get_tier")
-    public ResponseEntity<Object> getTier(@RequestBody JSONObject jsonData) {
-        String instType = jsonData.getString("instType");
-        String uly = jsonData.getString("uly");
-        String instFamily = jsonData.getString("instFamily");
-        String instId = jsonData.getString("instId");
-        String tdMode = jsonData.getString("tdMode");
-        String tier = jsonData.getString("tier");
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = publicDataAPIService.getTier(instType, uly, instFamily, instId, tdMode, tier);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @GetMapping("/public_data/get_interest_rate_loan_quota")
-    public ResponseEntity<Object> getInterestRateLoanQuota() {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = publicDataAPIService.getInterestRateLoanQuota();
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @GetMapping("/public_data/get_underlying/{instType}")
-    public ResponseEntity<Object> getUnderlying(@PathVariable String instType) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = publicDataAPIService.getUnderlying(instType);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @GetMapping("/public_data/get_vip_interest_rate_loan_quota")
-    public ResponseEntity<Object> getVipInterestRateLoanQuota() {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = publicDataAPIService.getVipInterestRateLoanQuota();
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @GetMapping("/public_data/get_insurance_fund")
-    public ResponseEntity<Object> getInsuranceFund(@RequestBody JSONObject jsonData) {
-        String instType = jsonData.getString("instType");
+    @GetMapping("/funding/get_withdrawal_history")
+    public ResponseEntity<JSONObject> getWithdrawalHistory(@RequestBody JSONObject jsonData) {
+        String currency = jsonData.getString("ccy");
+        String txId = jsonData.getString("txId");
+        String clientId = jsonData.getString("clientId");
         String type = jsonData.getString("type");
-        String uly = jsonData.getString("uly");
-        String instFamily = jsonData.getString("instFamily");
+        String state = jsonData.getString("state");
+        String limit = jsonData.getString("limit");
+        String after = jsonData.getString("after");
+        String before = jsonData.getString("before");
+        String wdId = jsonData.getString("wdId");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = fundingAPIService.getWithdrawalHistory(currency, clientId, txId, type, state, after, before, limit, wdId);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/funding/get_deposit_withdrawal_status")
+    public ResponseEntity<JSONObject> getDepositWithdrawalStatus(@RequestBody JSONObject jsonData) {
+        String wdId = jsonData.getString("wdId");
+        String txId = jsonData.getString("txId");
         String ccy = jsonData.getString("ccy");
-        String before = jsonData.getString("before");
+        String to = jsonData.getString("to");
+        String chain = jsonData.getString("chain");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = fundingAPIService.getDepositWithdrawalStatus(wdId, txId, ccy, to, chain);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @PostMapping("/funding/purchase_redempt")
+    public ResponseEntity<JSONObject> piggyBankPurchaseRedemption(@RequestBody PiggyBankPurchaseRedemption piggyBankPurchaseRedemption) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = fundingAPIService.piggyBankPurchaseRedemption(piggyBankPurchaseRedemption);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/funding/savings_balance/{ccy}")
+    public ResponseEntity<JSONObject> piggyBalance(@PathVariable("ccy") String currency) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = fundingAPIService.piggyBalance(currency);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/funding/deposit_lightning")
+    public ResponseEntity<JSONObject> depositLightning(@RequestBody JSONObject jsonData) {
+        String currency = jsonData.getString("ccy");
+        String amt = jsonData.getString("amt");
+        String to = jsonData.getString("to");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = fundingAPIService.depositLightning(currency, amt, to);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @PostMapping("/funding/withdrawal_lightning")
+    public ResponseEntity<JSONObject> withdrawalLightning(@RequestBody Withdrawal withdrawal) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = fundingAPIService.Withdrawal(withdrawal);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/funding/transfer_state")
+    public ResponseEntity<JSONObject> transferState(@RequestBody JSONObject jsonData) {
+        String transId = jsonData.getString("transId");
+        String clientId = jsonData.getString("clientId");
+        String type = jsonData.getString("type");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = fundingAPIService.transferState(transId, clientId, type);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/funding/get_asset_valuation/{ccy}")
+    public ResponseEntity<JSONObject> assetValuation(@PathVariable("ccy") String currency) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = fundingAPIService.assetValuation(currency);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @PostMapping("/funding/set_lending_rate")
+    public ResponseEntity<JSONObject> setLendingRate(@RequestBody SetLendingRate setLendingRate) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = fundingAPIService.SetLendingRate(setLendingRate);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/funding/get_lending_history")
+    public ResponseEntity<JSONObject> getLendingHistory(@RequestBody JSONObject jsonData) {
+        String ccy = jsonData.getString("ccy");
         String after = jsonData.getString("after");
+        String before = jsonData.getString("before");
         String limit = jsonData.getString("limit");
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject = publicDataAPIService.getInsuranceFund(instType, type, uly, instFamily, ccy, after, before, limit);
+            jsonObject = fundingAPIService.lendingHistory(ccy, after, before, limit);
         } catch (APIException e) {
             String[] keyValuePair = e.getMessage().split(" : ");
             JSONObject jsonObject1 = new JSONObject();
@@ -323,16 +308,11 @@ public class PublicDataController {
         return new ResponseEntity<>(jsonObject, HttpStatus.OK);
     }
 
-    @GetMapping("/public_data/get_conversion_contract_coin")
-    public ResponseEntity<Object> getConvertContractCoin(@RequestBody JSONObject jsonData) {
-        String type = jsonData.getString("type");
-        String instId = jsonData.getString("instId");
-        String sz = jsonData.getString("sz");
-        String px = jsonData.getString("px");
-        String unit = jsonData.getString("unit");
+    @GetMapping("/funding/get_lending_rate_summary/{ccy}")
+    public ResponseEntity<JSONObject> getLendingRateSummary(@PathVariable("ccy") String currency) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject = publicDataAPIService.getConvertContractCoin(type, instId, sz, px, unit);
+            jsonObject = fundingAPIService.lendingRateSummary(currency);
         } catch (APIException e) {
             String[] keyValuePair = e.getMessage().split(" : ");
             JSONObject jsonObject1 = new JSONObject();
@@ -343,14 +323,15 @@ public class PublicDataController {
         return new ResponseEntity<>(jsonObject, HttpStatus.OK);
     }
 
-    @GetMapping("/public_data/get_option_trades")
-    public ResponseEntity<Object> getOptionTrades(@RequestBody JSONObject jsonData) {
-        String instId = jsonData.getString("instId");
-        String instFamily = jsonData.getString("instFamily");
-        String optType = jsonData.getString("optType");
+    @GetMapping("/funding/get_lending_rate_history")
+    public ResponseEntity<JSONObject> getLendingRateHistory(@RequestBody JSONObject jsonData) {
+        String currency = jsonData.getString("ccy");
+        String after = jsonData.getString("after");
+        String before = jsonData.getString("before");
+        String limit = jsonData.getString("limit");
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject = publicDataAPIService.getOptionTrades(instId, instFamily, optType);
+            jsonObject = fundingAPIService.lendingRateHistory(currency, after, before, limit);
         } catch (APIException e) {
             String[] keyValuePair = e.getMessage().split(" : ");
             JSONObject jsonObject1 = new JSONObject();
@@ -361,13 +342,41 @@ public class PublicDataController {
         return new ResponseEntity<>(jsonObject, HttpStatus.OK);
     }
 
-    @GetMapping("/public_data/get_instrument_tick_bands")
-    public ResponseEntity<Object> getInstrumentTickBands(@RequestBody JSONObject jsonData) {
-        String instType = jsonData.getString("instType");
-        String instFamily = jsonData.getString("instFamily");
+    @PostMapping("/funding/convert_dust_assets")
+    public ResponseEntity<JSONObject> convertDustAssets(@RequestBody ConvertDustAssets convertDustAssets) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject = publicDataAPIService.getInstrumentTickBands(instType, instFamily);
+            jsonObject = fundingAPIService.convertDustAssets(convertDustAssets);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @PostMapping("/funding/cancel_withdrawal")
+    public ResponseEntity<JSONObject> cancelWithdrawal(@RequestBody Withdrawal withdrawal) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = fundingAPIService.Withdrawal(withdrawal);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/funding/get_non_tradable_assets/{ccy}")
+    public ResponseEntity<JSONObject> getNonTradableAssets(@PathVariable("ccy") String currency) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = fundingAPIService.getNonTradableAssets(currency);
         } catch (APIException e) {
             String[] keyValuePair = e.getMessage().split(" : ");
             JSONObject jsonObject1 = new JSONObject();

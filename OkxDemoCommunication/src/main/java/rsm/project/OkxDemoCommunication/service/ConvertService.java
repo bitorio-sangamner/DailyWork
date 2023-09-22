@@ -1,4 +1,4 @@
-package rsm.project.OkxDemoCommunication.controller;
+package rsm.project.OkxDemoCommunication.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.okex.open.api.bean.convert.param.EstimateQuote;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class ConvertController {
+public class ConvertService {
     @Autowired
     private ConvertAPIService convertAPIService;
 

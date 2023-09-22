@@ -1,4 +1,4 @@
-package rsm.project.OkxDemoCommunication.controller;
+package rsm.project.OkxDemoCommunication.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.okex.open.api.bean.subAccount.param.SetSubAccountLoanAllocation;
@@ -11,10 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
-
 @RestController
-public class SubAccountController {
+public class SubAccountService {
 
     @Autowired
     private SubAccountAPIService subAccountAPIService;

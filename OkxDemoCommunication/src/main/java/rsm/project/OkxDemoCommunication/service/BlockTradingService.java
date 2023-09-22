@@ -1,9 +1,8 @@
-package rsm.project.OkxDemoCommunication.controller;
+package rsm.project.OkxDemoCommunication.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.okex.open.api.bean.blockTrading.param.*;
 import com.okex.open.api.service.blockTrading.BlockTradingAPIService;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class BlockTradingController {
+public class BlockTradingService {
     @Autowired
     private BlockTradingAPIService blockTradingAPIService;
 

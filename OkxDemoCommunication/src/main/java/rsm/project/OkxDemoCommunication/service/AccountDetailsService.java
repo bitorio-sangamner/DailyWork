@@ -1,4 +1,4 @@
-package rsm.project.OkxDemoCommunication.controller;
+package rsm.project.OkxDemoCommunication.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.okex.open.api.bean.account.param.SetLeverage;
@@ -10,10 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import retrofit2.http.Path;
 
 @RestController
-public class AccountDetailsController {
+public class AccountDetailsService {
     @Autowired
     private AccountAPIService accountAPIService;
 

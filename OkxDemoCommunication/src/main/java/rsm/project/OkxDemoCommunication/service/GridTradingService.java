@@ -1,4 +1,4 @@
-package rsm.project.OkxDemoCommunication.controller;
+package rsm.project.OkxDemoCommunication.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.okex.open.api.bean.gridTrading.param.AmendOrderAlgo;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class GridTradingController {
+public class GridTradingService {
 
     @Autowired
     private GridTradingAPIService gridTradingAPIService;

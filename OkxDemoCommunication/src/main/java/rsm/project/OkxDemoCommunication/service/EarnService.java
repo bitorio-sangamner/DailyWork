@@ -1,4 +1,4 @@
-package rsm.project.OkxDemoCommunication.controller;
+package rsm.project.OkxDemoCommunication.service;
 
 import com.okex.open.api.bean.earn.param.Cancel;
 import com.okex.open.api.bean.earn.param.Purchase;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class EarnController {
+public class EarnService {
     @Autowired
     private EarnAPIService earnAPIService;
 

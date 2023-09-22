@@ -1,30 +1,29 @@
-package rsm.project.OkxDemoCommunication.controller;
+package rsm.project.OkxDemoCommunication.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.okex.open.api.bean.trade.param.*;
 import com.okex.open.api.exception.APIException;
-import com.okex.open.api.service.trade.TradeAPIService;
+import com.okex.open.api.service.marketData.MarketDataAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class TradeController {
+public class MarketDataService {
+    @Autowired
+    private MarketDataAPIService marketDataAPIService;
 
-    private final TradeAPIService tradeAPIService;
-
-    public TradeController(TradeAPIService tradeAPIService) {
-        this.tradeAPIService = tradeAPIService;
-    }
-
-    @PostMapping("/trade/place_order")
-    public ResponseEntity<JSONObject> placeOrder(@RequestBody PlaceOrder placeOrder) {
+    @GetMapping("/market_data/get_tickers")
+    public ResponseEntity<JSONObject> getTickers(@RequestBody JSONObject jsonData) {
+        String instType = jsonData.getString("instType");
+        String instFamily = jsonData.getString("instFamily");
+        String uly = jsonData.getString("uly");
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject = tradeAPIService.placeOrder(placeOrder);
+            jsonObject = marketDataAPIService.getTickers(instType, instFamily, uly);
         } catch (APIException e) {
             String[] keyValuePair = e.getMessage().split(" : ");
             JSONObject jsonObject1 = new JSONObject();
@@ -35,11 +34,11 @@ public class TradeController {
         return new ResponseEntity<>(jsonObject, HttpStatus.OK);
     }
 
-    @PostMapping("/trade/place_multiple_order")
-    public ResponseEntity<JSONObject> placeMultipleOrders(@RequestBody List<PlaceOrder> listOfPlaceOrder) {
+    @GetMapping("/market_data/get_ticker/{instId}")
+    public ResponseEntity<JSONObject> getTicker(@PathVariable("instId") String instId) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject = tradeAPIService.placeMultipleOrders(listOfPlaceOrder);
+            jsonObject = marketDataAPIService.getTicker(instId);
         } catch (APIException e) {
             String[] keyValuePair = e.getMessage().split(" : ");
             JSONObject jsonObject1 = new JSONObject();
@@ -50,89 +49,13 @@ public class TradeController {
         return new ResponseEntity<>(jsonObject, HttpStatus.OK);
     }
 
-    @PostMapping("/trade/cancel_order")
-    public ResponseEntity<JSONObject> cancelOrder(@RequestBody CancelOrder cancelOrder) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.cancelOrder(cancelOrder);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @PostMapping("/trade/cancel_multiple_order")
-    public ResponseEntity<JSONObject> cancelMultipleOrders(@RequestBody List<CancelOrder> listOfCancelOrder) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.cancelMultipleOrders(listOfCancelOrder);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @PostMapping("/trade/amend_order")
-    public ResponseEntity<JSONObject> amendOrder(@RequestBody AmendOrder amendOrder) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.amendOrder(amendOrder);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @PostMapping("/trade/amend_multiple_order")
-    public ResponseEntity<JSONObject> amendMultipleOrders(@RequestBody List<AmendOrder> listOfAmendOrder) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.amendMultipleOrders(listOfAmendOrder);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @PostMapping("/trade/close_position")
-    public ResponseEntity<JSONObject> closePositions(@RequestBody ClosePositions closePositions) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.closePositions(closePositions);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @GetMapping("/trade/get_order_details")
-    public ResponseEntity<JSONObject> getOrderDetails(@RequestBody JSONObject jsonData) {
+    @GetMapping("/market_data/get_index_ticker")
+    public ResponseEntity<JSONObject> getIndexTickers(@RequestBody JSONObject jsonData) {
+        String quoteCcy = jsonData.getString("quoteCcy");
         String instId = jsonData.getString("instId");
-        String ordId = jsonData.getString("ordId");
-        String clOrdId = jsonData.getString("clOrdId");
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject = tradeAPIService.getOrderDetails(instId, ordId, clOrdId);
+            jsonObject = marketDataAPIService.getIndexTickers(quoteCcy, instId);
         } catch (APIException e) {
             String[] keyValuePair = e.getMessage().split(" : ");
             JSONObject jsonObject1 = new JSONObject();
@@ -142,23 +65,264 @@ public class TradeController {
         }
         return new ResponseEntity<>(jsonObject, HttpStatus.OK);
     }
-    @GetMapping("/trade/get_order_history_7_days")
-    public ResponseEntity<JSONObject> getOrderHistory7days(@RequestBody JSONObject jsonData) {
+
+    @GetMapping("/market_data/get_order_book")
+    public ResponseEntity<JSONObject> getOrderBook(@RequestBody JSONObject jsonData) {
+        String instId = jsonData.getString("instId");
+        String sz = jsonData.getString("sz");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getOrderBook(instId, sz);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_order_book_lite/{instId}")
+    public ResponseEntity<JSONObject> getOrderLiteBook(@PathVariable String instId) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getOrderLiteBook(instId);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_candlesticks")
+    public ResponseEntity<JSONObject> getCandlesticks(@RequestBody JSONObject jsonData) {
+        String instId = jsonData.getString("instId");
+        String after = jsonData.getString("after");
+        String before = jsonData.getString("before");
+        String bar = jsonData.getString("bar");
+        String limit = jsonData.getString("limit");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getCandlesticks(instId, after, before, bar, limit);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_candlesticks_history")
+    public ResponseEntity<JSONObject> getCandlesticksHistory(@RequestBody JSONObject jsonData) {
+        String instId = jsonData.getString("instId");
+        String after = jsonData.getString("after");
+        String before = jsonData.getString("before");
+        String bar = jsonData.getString("bar");
+        String limit = jsonData.getString("limit");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getCandlesticksHistory(instId, after, before, bar, limit);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_index_candlesticks")
+    public ResponseEntity<JSONObject> getIndexCandlesticks(@RequestBody JSONObject jsonData) {
+        String instId = jsonData.getString("instId");
+        String after = jsonData.getString("after");
+        String before = jsonData.getString("before");
+        String bar = jsonData.getString("bar");
+        String limit = jsonData.getString("limit");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getIndexCandlesticks(instId, after, before, bar, limit);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_index_candlesticks_history")
+    public ResponseEntity<JSONObject> getIndexCandlesticksHistory(@RequestBody JSONObject jsonData) {
+        String instId = jsonData.getString("instId");
+        String after = jsonData.getString("after");
+        String before = jsonData.getString("before");
+        String bar = jsonData.getString("bar");
+        String limit = jsonData.getString("limit");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getIndexCandlesticksHistory(instId, after, before, bar, limit);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_mark_price_candlesticks")
+    public ResponseEntity<JSONObject> getMarkPriceCandlesticks(@RequestBody JSONObject jsonData) {
+        String instId = jsonData.getString("instId");
+        String after = jsonData.getString("after");
+        String before = jsonData.getString("before");
+        String bar = jsonData.getString("bar");
+        String limit = jsonData.getString("limit");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getMarkPriceCandlesticks(instId, after, before, bar, limit);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_mark_price_candlesticks_history")
+    public ResponseEntity<JSONObject> getMarkPriceCandlesticksHistory(@RequestBody JSONObject jsonData) {
+        String instId = jsonData.getString("instId");
+        String after = jsonData.getString("after");
+        String before = jsonData.getString("before");
+        String bar = jsonData.getString("bar");
+        String limit = jsonData.getString("limit");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getMarkPriceCandlesticksHistory(instId, after, before, bar, limit);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_trades")
+    public ResponseEntity<JSONObject> getTrades(@RequestBody JSONObject jsonData) {
+        String instId = jsonData.getString("instId");
+        String limit = jsonData.getString("limit");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getTrades(instId, limit);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_trades_history")
+    public ResponseEntity<JSONObject> getTradesHistory(@RequestBody JSONObject jsonData) {
+        String instId = jsonData.getString("instId");
+        String after = jsonData.getString("after");
+        String before = jsonData.getString("before");
+        String bar = jsonData.getString("bar");
+        String type = jsonData.getString("type");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getTradesHistory(instId, after, before, bar, type);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_24_platform_volume")
+    public ResponseEntity<JSONObject> getTotalVolume() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getTotalVolume();
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_oracle_contract")
+    public ResponseEntity<JSONObject> getOracle() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getOracle();
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_exchange_rate")
+    public ResponseEntity<JSONObject> getExchangeRate() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getExchangeRate();
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_index_components/{index}")
+    public ResponseEntity<JSONObject> getIndexComponents(@PathVariable("index") String index) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getIndexComponents(index);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            jsonObject1.put("Message", keyValuePair[1]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_block_tickers")
+    public ResponseEntity<JSONObject> getBlockTickers(@RequestBody JSONObject jsonData) {
         String instType = jsonData.getString("instType");
         String uly = jsonData.getString("uly");
-        String instId = jsonData.getString("instId");
-        String ordType = jsonData.getString("ordType");
         String instFamily = jsonData.getString("instFamily");
-        String state = jsonData.getString("state");
-        String category = jsonData.getString("category");
-        String after = jsonData.getString("after");
-        String before = jsonData.getString("before");
-        String limit = jsonData.getString("limit");
-        String begin = jsonData.getString("begin");
-        String end = jsonData.getString("end");
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject = tradeAPIService.getOrderHistory7days(instType, uly, instId, ordType, instFamily, state, category, after, before, limit, begin, end);
+            jsonObject = marketDataAPIService.getBlockTickers(instType, uly, instFamily);
         } catch (APIException e) {
             String[] keyValuePair = e.getMessage().split(" : ");
             JSONObject jsonObject1 = new JSONObject();
@@ -169,23 +333,25 @@ public class TradeController {
         return new ResponseEntity<>(jsonObject, HttpStatus.OK);
     }
 
-    @GetMapping("/trade/get_order_history_3_months")
-    public ResponseEntity<JSONObject> getOrderHistory3months(@RequestBody JSONObject jsonData) {
-        String instType = jsonData.getString("instType");
-        String uly = jsonData.getString("uly");
-        String instId = jsonData.getString("instId");
-        String ordType = jsonData.getString("ordType");
-        String instFamily = jsonData.getString("instFamily");
-        String state = jsonData.getString("state");
-        String category = jsonData.getString("category");
-        String after = jsonData.getString("after");
-        String before = jsonData.getString("before");
-        String limit = jsonData.getString("limit");
-        String begin = jsonData.getString("begin");
-        String end = jsonData.getString("end");
+    @GetMapping("/market_data/get_block_ticker/{instId}")
+    public ResponseEntity<JSONObject> getBlockTicker(@PathVariable("instId") String instId) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject = tradeAPIService.getOrderHistory3months(instType, uly, instId, ordType, instFamily, state, category, after, before, limit, begin, end);
+            jsonObject = marketDataAPIService.getBlockTicker(instId);
+        } catch (APIException e) {
+            String[] keyValuePair = e.getMessage().split(" : ");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("Error Code", keyValuePair[0]);
+            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/market_data/get_block_trade/{instId}")
+    public ResponseEntity<JSONObject> getBlockTrades(@PathVariable("instId") String instId) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = marketDataAPIService.getBlockTrades(instId);
         } catch (APIException e) {
             String[] keyValuePair = e.getMessage().split(" : ");
             JSONObject jsonObject1 = new JSONObject();
@@ -196,266 +362,11 @@ public class TradeController {
         return new ResponseEntity<>(jsonObject, HttpStatus.OK);
     }
 
-    @GetMapping("/trade/get_transaction_details")
-    public ResponseEntity<JSONObject> getTransactionDetails(@RequestBody JSONObject jsonData) {
-        String instType = jsonData.getString("instType");
-        String uly = jsonData.getString("uly");
-        String instId = jsonData.getString("instId");
-        String ordId = jsonData.getString("ordId");
-        String instFamily = jsonData.getString("instFamily");
-        String after = jsonData.getString("after");
-        String before = jsonData.getString("before");
-        String limit = jsonData.getString("limit");
-        String begin = jsonData.getString("begin");
-        String end = jsonData.getString("end");
+    @GetMapping("/market_data/get_instrument_family_trades/{instFamily}")
+    public ResponseEntity<JSONObject> getInstrumentFamilyTrades(@PathVariable("instFamily") String instFamily) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject = tradeAPIService.getTransactionDetails(instType, uly, instId, ordId, instFamily, after, before, limit, begin, end);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @GetMapping("/trade/get_transaction_details_for_3_months")
-    public ResponseEntity<JSONObject> getTransactionDetailsForThreeMonths(@RequestBody JSONObject jsonData) {
-        String instType = jsonData.getString("instType");
-        String uly = jsonData.getString("uly");
-        String instId = jsonData.getString("instId");
-        String ordId = jsonData.getString("ordId");
-        String instFamily = jsonData.getString("instFamily");
-        String after = jsonData.getString("after");
-        String before = jsonData.getString("before");
-        String limit = jsonData.getString("limit");
-        String begin = jsonData.getString("begin");
-        String end = jsonData.getString("end");
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.getTransactionDetails(instType, uly, instId, ordId, instFamily, after, before, limit, begin, end);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @PostMapping("/trade/place_algo_order")
-    public ResponseEntity<JSONObject> placeAlgoOrder(@RequestBody PlaceAlgoOrder placeAlgoOrder) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.placeAlgoOrder(placeAlgoOrder);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @PostMapping("/trade/cancel_algo_orders")
-    public ResponseEntity<JSONObject> cancelAlgoOrders(@RequestBody List<CancelAlgoOrder> cancelAlgoOrderList) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.cancelAlgoOrder(cancelAlgoOrderList);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @PostMapping("/trade/cancel_advance_algo_orders")
-    public ResponseEntity<JSONObject> cancelAdvanceAlgoOrders(@RequestBody List<CancelAlgoOrder> cancelAlgoOrderList) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.cancelAdvanceAlgoOrders(cancelAlgoOrderList);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @GetMapping("/trade/get_algo_order_list")
-    public ResponseEntity<JSONObject> getAlgoOrderList(@RequestBody JSONObject jsonData) {
-        String algoId = jsonData.getString("algoId");
-        String instType = jsonData.getString("instType");
-        String instId = jsonData.getString("instId");
-        String ordType = jsonData.getString("ordType");
-        String algoClOrdId = jsonData.getString("algoClOrdId");
-        String after = jsonData.getString("after");
-        String before = jsonData.getString("before");
-        String limit = jsonData.getString("limit");
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.getAlgoOrderList(algoId, instType, instId, ordType, algoClOrdId, after, before, limit);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @GetMapping("/trade/get_algo_order_history")
-    public ResponseEntity<JSONObject> getAlgoOrderHistory(@RequestBody JSONObject jsonData) {
-        String state = jsonData.getString("state");
-        String algoId = jsonData.getString("algoId");
-        String instType = jsonData.getString("instType");
-        String instId = jsonData.getString("instId");
-        String ordType = jsonData.getString("ordType");
-        String clOrdId = jsonData.getString("clOrdId");
-        String after = jsonData.getString("after");
-        String before = jsonData.getString("before");
-        String limit = jsonData.getString("limit");
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.getAlgoOrderHistory(state, algoId, instType, instId, ordType, clOrdId, after, before, limit);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @GetMapping("/trade/get_easy_convert_currency_list")
-    public ResponseEntity<JSONObject> getEasyConvertCurrencyList() {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.getEasyConvertCurrencyList();
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @PostMapping("/trade/place_easy_convert")
-    public ResponseEntity<JSONObject> placeEasyConvert(@RequestBody EasyConvert easyConvert) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.placeEasyConvert(easyConvert);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @GetMapping("/trade/get_easy_convert_history")
-    public ResponseEntity<JSONObject> getEasyConvertHistory(@RequestBody JSONObject jsonData) {
-        String after = jsonData.getString("after");
-        String before = jsonData.getString("before");
-        String limit = jsonData.getString("limit");
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.getEasyConvertHistory(after, before, limit);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @GetMapping("/trade/get_one_click_repay_currency_list/{debtType}")
-    public ResponseEntity<JSONObject> getOneClickRepayCurrencyList(@PathVariable("debtType") String debtType) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.getOneClickRepayCurrencyList(debtType);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @PostMapping("/trade/get_one_click_repay")
-    public ResponseEntity<JSONObject> oneClickRepay(@RequestBody OneClickRepay oneClickRepay) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.oneClickRepay(oneClickRepay);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @GetMapping("/trade/get_one_click_repay_history")
-    public ResponseEntity<JSONObject> getOneClickRepayHistory(@RequestBody JSONObject jsonData) {
-        String after = jsonData.getString("after");
-        String before = jsonData.getString("before");
-        String limit = jsonData.getString("limit");
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.getOneClickRepayHistory(after, before, limit);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @GetMapping("/trade/get_algo_order_details")
-    public ResponseEntity<JSONObject> getAlgoOrderDetails(@RequestBody JSONObject jsonData) {
-        String algoId = jsonData.getString("algoId");
-        String algoClOrdId = jsonData.getString("algoClOrdId");
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.getAlgoOrderDetails(algoId, algoClOrdId);
-        } catch (APIException e) {
-            String[] keyValuePair = e.getMessage().split(" : ");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Error Code", keyValuePair[0]);
-            jsonObject1.put("Message", keyValuePair[1]);
-            return new ResponseEntity<>(jsonObject1, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-    }
-
-    @PostMapping("/trade/amend_algos")
-    public ResponseEntity<JSONObject> amendAlgos(@RequestBody AmendAlgos amendAlgos) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = tradeAPIService.amendAlgos(amendAlgos);
+            jsonObject = marketDataAPIService.getInstrumentFamilyTrades(instFamily);
         } catch (APIException e) {
             String[] keyValuePair = e.getMessage().split(" : ");
             JSONObject jsonObject1 = new JSONObject();
