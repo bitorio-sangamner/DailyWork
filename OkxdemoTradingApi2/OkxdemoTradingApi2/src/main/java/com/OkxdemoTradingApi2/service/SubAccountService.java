@@ -83,5 +83,13 @@ public class SubAccountService
         return json;
     }
 
+    public JSONObject getSubAccountMaxWithdrawal(String subAcct, String ccy)
+  {
+      JSONObject json=subAccountAPIService.getSubAccountInterestLimits(subAcct,ccy);
+      return json;
+  }
+
+
+
 
 }
