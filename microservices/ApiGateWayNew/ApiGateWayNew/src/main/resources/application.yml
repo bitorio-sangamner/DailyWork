@@ -23,6 +23,11 @@ spring:
           predicates:
             - Path=/ratings/**
 
+
+
+
+
+
 eureka:
   instance:
     prefer-ip-address: true

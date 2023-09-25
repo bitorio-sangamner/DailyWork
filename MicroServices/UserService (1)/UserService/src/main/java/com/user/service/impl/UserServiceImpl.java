@@ -7,6 +7,7 @@ import com.user.service.exceptions.ResourceNotFoundException;
 import com.user.service.external.services.HotelService;
 import com.user.service.repositories.UserRepository;
 import com.user.service.services.UserService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ public class UserServiceImpl implements UserService
 
     @Autowired
     private HotelService hotelService;
+
+
 
     private Logger logger= LoggerFactory.getLogger(UserServiceImpl.class);
     @Override
@@ -86,4 +89,41 @@ public class UserServiceImpl implements UserService
         user.setRatings(ratingList);
     return user;
     }
+
+    @Override
+    public User findUserByEmail(String email) {
+        User userObj=new User();
+        try {
+             userObj = userRepository.findByEmail(email);
+        }
+
+        catch(RuntimeException e)
+        {
+            throw new RuntimeException("User not found with this email :"+email);
+        }
+
+
+        return userObj;
+    }
+
+    @Override
+    public String setPassword(String email, String newPassword) {
+        User userObj=new User();
+        try {
+            userObj = userRepository.findByEmail(email);
+            userObj.setPassword(newPassword);
+
+            userRepository.save(userObj);
+        }
+
+        catch(RuntimeException e)
+        {
+            throw new RuntimeException("User not found with this email :"+email);
+        }
+
+        return "New password set successfully login with new password";
+
+    }
+
+
 }

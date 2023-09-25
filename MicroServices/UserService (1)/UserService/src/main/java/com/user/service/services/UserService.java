@@ -18,6 +18,11 @@ public interface UserService {
 
     User getUser(String userId);
 
+    User findUserByEmail(String email);
+
+    String setPassword(String email, String newPassword);
+
+
     //TODO: delete
     //TODO: update
 }
