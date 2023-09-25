@@ -40,7 +40,7 @@ public class UserController {
     {
         User user=userService.getUser(userId);
 
-
+      System.out.println("Hii");
         return ResponseEntity.ok(user);
     }
 
@@ -66,11 +66,11 @@ public class UserController {
         return ResponseEntity.ok(allUsers);
     }
 
-    @GetMapping("/{email}")
-    public User findUserByEmail(@PathVariable String email)
-    {
-        User userObj=userService.findUserByEmail(email);
-
-        return userObj;
-    }
+//    @GetMapping("/{email}")
+//    public User findUserByEmail(@PathVariable String email)
+//    {
+//        User userObj=userService.findUserByEmail(email);
+//
+//        return userObj;
+//    }
 }
