@@ -1,0 +1,11 @@
+package dev.rsm;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class UserServicesMain {
+    public static void main(String[] args) {
+        SpringApplication.run(UserServicesMain.class, args);
+    }
+}
