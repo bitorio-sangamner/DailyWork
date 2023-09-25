@@ -23,11 +23,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(csrf -> csrf.disable())
-                .authorizeRequests().
-                requestMatchers("/users/**").authenticated()
+                .authorizeRequests()
+
+                .requestMatchers("/users/**").authenticated()
                 .requestMatchers("/auth/login","/signUp","/user/forgot/{email}","/user/forgetPasswordForm","/forget/reset","/form.html").permitAll()
-                .anyRequest()
-                .authenticated()
+//                .anyRequest()
+//                .authenticated()
                 .and().exceptionHandling(ex -> ex.authenticationEntryPoint(point))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
