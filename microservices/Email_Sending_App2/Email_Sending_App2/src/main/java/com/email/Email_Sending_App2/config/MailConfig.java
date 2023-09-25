@@ -9,7 +9,6 @@ import org.springframework.web.client.RestTemplate;
 public class MailConfig {
 
     @Bean
-    //@LoadBalanced
     public RestTemplate restTemplate()
     {
         return new RestTemplate();

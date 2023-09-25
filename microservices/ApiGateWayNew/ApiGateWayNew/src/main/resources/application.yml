@@ -23,6 +23,11 @@ spring:
           predicates:
             - Path=/ratings/**
 
+        - id: EMAIL_SERVICE
+          uri: http://localhost:9092/email/forgot/{email}
+          predicates:
+            - Path=/email/**
+
 
 
 

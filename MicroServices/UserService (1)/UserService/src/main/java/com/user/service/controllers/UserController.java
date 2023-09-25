@@ -25,7 +25,7 @@ public class UserController {
     private Logger logger= LoggerFactory.getLogger(UserController.class);
     //create
 
-//    @PostMapping
+//    @PostMapping("/create")
 //    public ResponseEntity<User> createUser(@RequestBody User user)
 //    {
 //        User userObj=userService.saveUser(user);

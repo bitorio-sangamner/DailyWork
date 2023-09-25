@@ -36,7 +36,7 @@ public class EmailService {
                   <div>
                   <a href="http://localhost:8081/user/forgetPasswordForm">Click link to reset password</a>
                   </div>
-                  """);
+                  """.formatted(email),true);
 
           javaMailSender.send(message);
           flag=true;
