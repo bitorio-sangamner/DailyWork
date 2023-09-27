@@ -7,11 +7,11 @@
 		<relativePath/>
 		<!--  lookup parent from repository  -->
 	</parent>
-	<groupId>com.user.service</groupId>
-	<artifactId>UserService</artifactId>
+	<groupId>com.identity</groupId>
+	<artifactId>identity-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>UserService</name>
-	<description>This is user service</description>
+	<name>identity-service</name>
+	<description>spring project for identity</description>
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2022.0.4</spring-cloud.version>
