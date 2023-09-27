@@ -1,6 +1,7 @@
 package dev.rsm.service;
 
 import dev.rsm.dtos.UserCredentialsSaveRequest;
+import dev.rsm.exceptions.UsernameAlreadyExistException;
 import dev.rsm.model.UserCredentials;
 import dev.rsm.repository.UserCredentialsRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,12 +23,19 @@ public class AuthService {
         this.restTemplate = restTemplate;
     }
 
-    public String saveUser(UserCredentialsSaveRequest userCredentialsSaveRequest) {
+    public String register(UserCredentialsSaveRequest userCredentialsSaveRequest) {
         String password = passwordEncoder.encode(userCredentialsSaveRequest.password());
+        String username = userCredentialsSaveRequest.username();
+        String email = userCredentialsSaveRequest.email();
+        if (userCredentialsRepository.findByUsername(username).isEmpty()) {
+            throw new UsernameAlreadyExistException("Username already exists.");
+        }
+        if (userCredentialsRepository.findByEmail(email).isEmpty()) {
+            throw new RuntimeException("Email already registered.");
+        }
         UserCredentials user = UserCredentials.builder()
-                .name(userCredentialsSaveRequest.firstName() + " " + userCredentialsSaveRequest.lastName())
-                .username(userCredentialsSaveRequest.username())
-                .email(userCredentialsSaveRequest.email())
+                .username(username)
+                .email(email)
                 .password(password)
                 .build();
 

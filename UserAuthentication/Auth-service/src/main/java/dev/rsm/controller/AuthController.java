@@ -22,7 +22,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public String addNewUser(@RequestBody UserCredentialsSaveRequest userCredentialsSaveRequest) {
-        return authService.saveUser(userCredentialsSaveRequest);
+        return authService.register(userCredentialsSaveRequest);
     }
 
     @PostMapping("/token")

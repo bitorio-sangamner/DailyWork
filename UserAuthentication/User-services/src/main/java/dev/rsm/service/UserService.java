@@ -137,6 +137,7 @@ public class UserService {
         User user = userRepository.findByResetPasswordTokenAndEmail(loginCredentials.resetPasswordToken(), loginCredentials.email());
         if (user != null) {
             user.setPassword(passwordEncoder.encode(loginCredentials.password()));
+            user.setResetPasswordToken(null);
             user.setUpdatedAt(LocalDateTime.now());
             userRepository.save(user);
         } else {

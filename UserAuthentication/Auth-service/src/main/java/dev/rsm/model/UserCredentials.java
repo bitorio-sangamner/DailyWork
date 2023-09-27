@@ -24,6 +24,4 @@ public class UserCredentials {
     String password;
 
     String email;
-
-    String name;
 }
