@@ -11,7 +11,9 @@ spring:
         - id: USER-SERVICE
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/users/**,/signUp,/auth/login
+            - Path=/users/**
+          filters:
+            - AuthenticationFilter
 
         - id: HOTEL-SERVICE
           uri: lb://HOTEL-SERVICE
@@ -28,6 +30,11 @@ spring:
           predicates:
             - Path=/email/**
 
+        - id: IDENTITY-SERVICE
+          uri: lb://IDENTITY-SERVICE
+          predicates:
+            - Path=/auth/**
+
 
 
 
@@ -40,19 +47,8 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
     service-url:
-      defaultZone: http://localhost:8762/eureka
+      defaultZone: http://localhost:8763/eureka
 
 #logging:
 #  level:
 #    org.springframework: DEBUG
-
-
-
-
-
-
-
-
-
-
-

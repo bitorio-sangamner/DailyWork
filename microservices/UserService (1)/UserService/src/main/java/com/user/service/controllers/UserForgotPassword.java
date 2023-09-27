@@ -24,6 +24,14 @@ public class UserForgotPassword {
         return userObj;
     }
 
+    @GetMapping("/{email}")
+    public User findUserByEmail(@PathVariable String email)
+    {
+        User userObj=userService.findUserByEmail(email);
+
+        return userObj;
+    }
+
 
    @PutMapping("/forgetPasswordForm")
     public ResponseEntity<String> forgetPasswordForm(@RequestParam String email, @RequestHeader String newPassword)
