@@ -74,6 +74,14 @@ public class JwtHelper {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
 
 
+//        public boolean validateToken(String token) {
+//            try {
+//                Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token);
+//                return true;
+//            } catch (JwtException | IllegalArgumentException e) {
+//                return false;
+//            }
+//        }
     }
 
 

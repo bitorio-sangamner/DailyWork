@@ -1,7 +1,6 @@
 package com.user.service.controllers;
 
 import com.user.service.entity.User;
-import com.user.service.impl.UserServiceImpl;
 import com.user.service.services.UserService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.slf4j.Logger;

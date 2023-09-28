@@ -24,7 +24,7 @@ public class UserForgotPassword {
         return userObj;
     }
 
-    @GetMapping("/{email}")
+    @GetMapping("/details/{email}")
     public User findUserByEmail(@PathVariable String email)
     {
         User userObj=userService.findUserByEmail(email);

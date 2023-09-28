@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -45,12 +43,45 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<Object> addNewUser(@RequestBody UserIdentity user)
     {
-        System.out.println("Hii");
-        String msg=authService.saveUser(user);
+        String msg = "User added successfully!!";
+        try {
 
-        //restTemplate.getForObject("http://USER-SERVICE/")
 
-        return new ResponseEntity<>(msg, HttpStatus.OK);
+            System.out.println("Hii");
+            UserIdentity userObj = new UserIdentity();
+
+            userObj.setPassword(user.getPassword());
+            userObj.setName(user.getName());
+            userObj.setEmail(user.getEmail());
+            userObj.setAbout(user.getAbout());
+
+            boolean result = authService.saveUser(user);
+
+//        System.out.println(user.getEmail());
+//        System.out.println(user.getPassword());
+//        System.out.println(user.getAbout());
+
+            ResponseEntity<Boolean> response = restTemplate.postForEntity(
+                    "http://USER-SERVICE/signUp/addUser",
+                    userObj, Boolean.class);
+
+
+            return new ResponseEntity<>(msg, HttpStatus.OK);
+
+        }//try
+
+        catch(Exception e)
+        {
+            msg="Sorry,Something went wrong";
+            return new ResponseEntity<>(msg, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+
+
+
+
+
+
     }
 
     @GetMapping("/Login")
@@ -62,9 +93,14 @@ public class AuthController {
 
       UserIdentity user=userIdentityRepository.findByEmail(request.getEmail());
 
+      UserIdentity userResponse = restTemplate.getForObject("http://USER-SERVICE/user/details/"+request.getEmail(),UserIdentity.class);
+
+      System.out.println("password from user :"+userResponse.getPassword());
+       System.out.println("password from request : "+request.getPassword());
+
       boolean isMatch=passwordEncoder.matches(request.getPassword(),user.getPassword());
 
-      if(isMatch) {
+      if(isMatch && userResponse!=null && userResponse.getPassword().equals(request.getPassword())) {
 
           UserDetails userDetails = customUserDetailsService.loadUserByUsername(request.getEmail());
           String token = authService.genarateToken(userDetails);
@@ -99,28 +135,29 @@ public class AuthController {
 //
 //    }
 
-    @GetMapping("/validate")
-    public String validToken(@RequestParam("token") String token)
-    {
-        String msg="";
-        Boolean flag=authService.validateToken(token);
+//    @GetMapping("/validate/{token}")
+//    public String validToken(@PathVariable("token") String token)
+//    {
+//        System.out.println("inside validate method");
+//        String msg="";
+//        Boolean flag=authService.validateToken(token);
+//
+//        if(flag)
+//        {
+//           msg="token validate!!";
+//            return msg;
+//        }
+//
+//            msg="token is not valid";
+//
+//
+//        return msg;
+//    }
 
-        if(flag)
-        {
-           msg="token validate!!";
-            return msg;
-        }
-
-            msg="token is not valid";
-
-
-        return msg;
-    }
-
-    @GetMapping("/getUserDatails/{userName}")
-    UserDetails getUserDetailsFromCustomeUserDetails(@PathVariable("userName") String userName)
-    {
-        UserDetails userDetails=authService.getUserDetailsFromCustomeUserDetails(userName);
-         return userDetails;
-    }
+//    @GetMapping("/getUserDatails/{userName}")
+//    UserDetails getUserDetailsFromCustomeUserDetails(@PathVariable("userName") String userName)
+//    {
+//        UserDetails userDetails=authService.getUserDetailsFromCustomeUserDetails(userName);
+//         return userDetails;
+//    }
 }

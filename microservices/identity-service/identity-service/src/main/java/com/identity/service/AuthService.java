@@ -24,15 +24,25 @@ public class AuthService {
 
     @Autowired
     private JwtHelper jwtHelper;
-    public String saveUser(UserIdentity user)
+    public boolean saveUser(UserIdentity user)
     {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        try {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        String randomUserId= UUID.randomUUID().toString();
-        user.setUserId(randomUserId);
-        userIdentityRepository.save(user);
+            String randomUserId = UUID.randomUUID().toString();
+            user.setUserId(randomUserId);
+            userIdentityRepository.save(user);
 
-        return "user added to the system";
+            return true;
+        }
+
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+
+
 
     }
 
