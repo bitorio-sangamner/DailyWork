@@ -32,7 +32,7 @@ public class AuthConfig {
                 .authorizeRequests()
 
 
-                .requestMatchers("/auth/register","/auth/Login","/auth/validate").permitAll()
+                .requestMatchers("/auth/register","/auth/Login","/authanticate/validate/{token}").permitAll()
 //                .anyRequest()
 //                .authenticated()
                 .and();

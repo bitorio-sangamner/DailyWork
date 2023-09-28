@@ -7,10 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/signUp")
@@ -20,13 +17,33 @@ public class SignUpController {
     private UserService userService;
 
     private Logger logger= LoggerFactory.getLogger(UserController.class);
-    @PostMapping()
-    public ResponseEntity<Object> signUp(@RequestBody User userObj)
-    {
-        User userObjResult=new User();
-        try {
-             userObjResult = userService.saveUser(userObj);
+    //@PostMapping()
+//    public ResponseEntity<Object> signUp(@RequestBody User userObj)
+//    {
+//        User userObjResult=new User();
+//        try {
+//             userObjResult = userService.saveUser(userObj);
+//
+//        }
+//
+//        catch(Exception e)
+//        {
+//            e.printStackTrace();
+//        }
+//
+//        return  ResponseEntity.status(HttpStatus.OK).body(userObjResult);
+//    }
 
+    @PostMapping("/addUser")
+    public boolean register(@RequestBody User userObj)
+    {
+
+        logger.info("inside save user controller");
+
+
+        try {
+             User userObjResult = userService.saveUser(userObj);
+            return true;
         }
 
         catch(Exception e)
@@ -34,6 +51,6 @@ public class SignUpController {
             e.printStackTrace();
         }
 
-        return  ResponseEntity.status(HttpStatus.OK).body(userObjResult);
+        return false;
     }
 }
