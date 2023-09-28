@@ -1,6 +1,7 @@
 package dev.rsm.exceptions.handlers;
 
 import dev.rsm.dtos.ApiErrorResponse;
+import dev.rsm.exceptions.EmailAlreadyTakenException;
 import dev.rsm.exceptions.UsernameAlreadyExistException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
@@ -21,12 +22,26 @@ import java.util.UUID;
 public class AuthExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UsernameAlreadyExistException.class)
-    public ResponseEntity<?> handleApplicationException(final UsernameAlreadyExistException exception) {
+    public ResponseEntity<?> handleUsernameAlreadyExistException(final UsernameAlreadyExistException exception) {
         log.error(String.format("Error message: %s", exception.getMessage()), exception);
+        String[] array = exception.getHttpStatusCode().toString().split(" ");
         var response = new ApiErrorResponse(exception.getErrorCode(),
                 exception.getMessage(),
-                400,
-                HttpStatusCode.valueOf(400).toString(),
+                Integer.valueOf(array[0]),
+                array[1],
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EmailAlreadyTakenException.class)
+    public ResponseEntity<?> handleEmailAlreadyTakenException(final EmailAlreadyTakenException exception) {
+        log.error(String.format("Error message: %s", exception.getMessage()), exception);
+        String[] array = exception.getHttpStatusCode().toString().split(" ");
+        var response = new ApiErrorResponse(exception.getErrorCode(),
+                exception.getMessage(),
+                Integer.valueOf(array[0]),
+                array[1],
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -34,13 +49,12 @@ public class AuthExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleUnknownException(final Exception exception) {
-        var guid = UUID.randomUUID().toString();
         log.error(
-                String.format("Error GUID=%s; error message: %s", guid, exception.getMessage()),
+                String.format("Error message: %s", exception.getMessage()),
                 exception
         );
         var response = new ApiErrorResponse(
-                "500",
+                500,
                 "Internal server error",
                 404,
                 HttpStatusCode.valueOf(404).toString(),

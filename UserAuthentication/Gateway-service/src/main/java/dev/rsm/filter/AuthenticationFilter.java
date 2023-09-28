@@ -1,15 +1,18 @@
 package dev.rsm.filter;
 
 import dev.rsm.util.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
 @Component
+@Slf4j
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
 
     @Autowired
@@ -34,6 +37,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 if (authHeader != null && authHeader.startsWith("Bearer ")) {
                     authHeader = authHeader.substring(7);
                 }
+                log.info("Incoming application context: {}", exchange.getMultipartData());
                 try {
                     jwtUtil.validateToken(authHeader);
                 } catch (Exception e) {

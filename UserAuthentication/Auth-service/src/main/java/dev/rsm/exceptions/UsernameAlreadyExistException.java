@@ -11,6 +11,6 @@ import org.springframework.http.HttpStatusCode;
 public class UsernameAlreadyExistException extends RuntimeException{
     private final String message;
     private final HttpStatusCode httpStatusCode;
-    private final String errorCode;
+    private final int errorCode;
 
 }
