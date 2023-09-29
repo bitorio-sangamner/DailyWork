@@ -4,11 +4,15 @@ import dev.rsm.dtos.LoginCredentials;
 import dev.rsm.dtos.LoginCredentialsWithToken;
 import dev.rsm.dtos.UserRegistrationRequest;
 import dev.rsm.dtos.UserUpdateRequest;
+import dev.rsm.exception.EmailException;
+import dev.rsm.exception.LoginException;
+import dev.rsm.exception.UserException;
 import dev.rsm.model.User;
 import dev.rsm.repos.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,7 +39,12 @@ public class UserService {
     }
 
     public String register(UserRegistrationRequest userRegistrationRequest) {
-        User user = User.builder()
+
+        User user = userRepository.findUserByUsernameAndPasswordAndEmail(userRegistrationRequest.username(), userRegistrationRequest.password(), userRegistrationRequest.email());
+        if (user == null) {
+            throw new UserException("Please enter correct credentials.", HttpStatus.BAD_REQUEST, 101);
+        }
+        user = User.builder()
                 .firstName(userRegistrationRequest.firstName())
                 .lastName(userRegistrationRequest.lastName())
                 .username(userRegistrationRequest.username())
@@ -88,7 +97,7 @@ public class UserService {
         if (isMatch) {
             return "Login successful";
         } else {
-            return "Please enter correct credentials";
+            throw new LoginException("Please enter correct credentials.", HttpStatus.BAD_REQUEST, 102);
         }
 
     }
@@ -100,7 +109,7 @@ public class UserService {
             user.setResetPasswordToken(token);
             userRepository.save(user);
         } else {
-            throw new RuntimeException("Could not find any user with this email " + email);
+            throw new EmailException("Please enter correct email.", HttpStatus.BAD_REQUEST, 103);
         }
         emailResetPasswordToken(token, email);
         return "Reset password token generated successfully";
@@ -141,7 +150,7 @@ public class UserService {
             user.setUpdatedAt(LocalDateTime.now());
             userRepository.save(user);
         } else {
-            throw new RuntimeException("Could not find any user with this email " + loginCredentials.email());
+            throw new EmailException("Please enter correct email.", HttpStatus.BAD_REQUEST, 103);
         }
         return "Reset password successfully";
     }
