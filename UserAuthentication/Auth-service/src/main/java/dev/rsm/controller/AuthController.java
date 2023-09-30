@@ -1,8 +1,10 @@
 package dev.rsm.controller;
 
+import dev.rsm.dtos.ApplicationResponse;
 import dev.rsm.dtos.AuthRequest;
 import dev.rsm.dtos.UserCredentialsSaveRequest;
 import dev.rsm.service.AuthService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,18 +23,17 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String addNewUser(@RequestBody UserCredentialsSaveRequest userCredentialsSaveRequest) {
+    public ResponseEntity<ApplicationResponse> addNewUser(@RequestBody UserCredentialsSaveRequest userCredentialsSaveRequest) throws Exception {
         return authService.register(userCredentialsSaveRequest);
     }
 
     @PostMapping("/token")
-    public String generateToken(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<ApplicationResponse> generateToken(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.username(), authRequest.password()));
-        if (authentication.isAuthenticated()) {
-            return authService.generateToken(authRequest.username());
-        } else {
+        if (!authentication.isAuthenticated()) {
             throw new RuntimeException("Invalid access. ");
         }
+        return authService.generateToken(authRequest.username());
     }
 
     @PostMapping("/validate/{token}")

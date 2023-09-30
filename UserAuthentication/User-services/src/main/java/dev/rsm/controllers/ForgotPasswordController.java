@@ -1,9 +1,11 @@
 package dev.rsm.controllers;
 
-import dev.rsm.dtos.LoginCredentialsWithToken;
+import dev.rsm.dtos.UserPasswordResetRequest;
+import dev.rsm.dtos.response.ApplicationResponse;
 import dev.rsm.service.UserService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
@@ -20,12 +22,12 @@ public class ForgotPasswordController {
     }
 
     @PostMapping("/get_reset_password_token/{email}")
-    public String requestResetPasswordToken(@PathVariable("email") String email) throws MessagingException, UnsupportedEncodingException {
+    public ResponseEntity<ApplicationResponse> requestResetPasswordToken(@PathVariable("email") String email) throws MessagingException, UnsupportedEncodingException {
         return userService.requestResetPasswordToken(email);
     }
 
     @PostMapping("/reset_password")
-    public String resetPassword(@RequestBody LoginCredentialsWithToken loginCredentials) {
-        return userService.resetPassword(loginCredentials);
+    public ResponseEntity<ApplicationResponse> resetPassword(@RequestBody UserPasswordResetRequest userPasswordResetRequest) {
+        return userService.resetPassword(userPasswordResetRequest);
     }
 }

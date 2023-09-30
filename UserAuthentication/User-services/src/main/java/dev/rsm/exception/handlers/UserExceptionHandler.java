@@ -1,6 +1,6 @@
 package dev.rsm.exception.handlers;
 
-import dev.rsm.dtos.ApiErrorResponse;
+import dev.rsm.dtos.response.ApiErrorResponse;
 import dev.rsm.exception.EmailException;
 import dev.rsm.exception.LoginException;
 import dev.rsm.exception.UserException;
@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -24,11 +23,8 @@ public class UserExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(LoginException.class)
     public ResponseEntity<?> handleNoUserLoginCredentialsException(final LoginException exception) {
         log.error(String.format("Error message: %s", exception.getMessage()), exception);
-        String[] array = exception.getHttpStatusCode().toString().split(" ");
         var response = new ApiErrorResponse(exception.getErrorCode(),
                 exception.getMessage(),
-                Integer.valueOf(array[0]),
-                array[1],
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -37,11 +33,8 @@ public class UserExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UserException.class)
     public ResponseEntity<?> handleUsernameAlreadyExistException(final UserException exception) {
         log.error(String.format("Error message: %s", exception.getMessage()), exception);
-        String[] array = exception.getHttpStatusCode().toString().split(" ");
         var response = new ApiErrorResponse(exception.getErrorCode(),
                 exception.getMessage(),
-                Integer.valueOf(array[0]),
-                array[1],
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -50,11 +43,8 @@ public class UserExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EmailException.class)
     public ResponseEntity<?> handleNoEmailExistException(final UserException exception) {
         log.error(String.format("Error message: %s", exception.getMessage()), exception);
-        String[] array = exception.getHttpStatusCode().toString().split(" ");
         var response = new ApiErrorResponse(exception.getErrorCode(),
                 exception.getMessage(),
-                Integer.valueOf(array[0]),
-                array[1],
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -69,8 +59,6 @@ public class UserExceptionHandler extends ResponseEntityExceptionHandler {
         var response = new ApiErrorResponse(
                 500,
                 "Internal server error",
-                404,
-                HttpStatusCode.valueOf(404).toString(),
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);

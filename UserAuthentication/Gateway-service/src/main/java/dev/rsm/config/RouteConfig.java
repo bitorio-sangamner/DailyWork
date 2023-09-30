@@ -20,7 +20,10 @@ public class RouteConfig {
         return routeLocatorBuilder.routes()
                 .route("user-route", r -> r
                         .path("/user/**")
-                        .filters(f -> f.filter(authenticationFilter.apply(new AuthenticationFilter.Config())))
+                        .filters(f -> f
+                                .filter(authenticationFilter.apply(new AuthenticationFilter.Config()))
+                                .addRequestHeader("REQUEST-FOR", "user"))
+
                         .uri("lb://USER-SERVICE"))
                 .route("forgot-password-route", r -> r
                         .path("/forgot/**")

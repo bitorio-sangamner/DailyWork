@@ -8,13 +8,14 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, Integer> {
-    User findUserByUsernameAndPasswordAndEmail(String username, String password, String email);
 
-    User getUserById(int id);
+    Optional<User> findUserById(int id);
 
-    User getUserByUsername(String username);
+    Optional<User> findUserByUsername(String username);
 
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
-    User findByResetPasswordTokenAndEmail(String resetPasswordToken, String email);
+    Optional<User> findByResetPasswordTokenAndEmail(String resetPasswordToken, String email);
+
+    Optional<User> findByUsernameAndPasswordAndEmail(String username, String password, String email);
 }

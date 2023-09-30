@@ -1,15 +1,21 @@
 package dev.rsm.service;
 
+import com.alibaba.fastjson.JSONObject;
+import dev.rsm.dtos.ApplicationResponse;
 import dev.rsm.dtos.UserCredentialsSaveRequest;
 import dev.rsm.exceptions.EmailAlreadyTakenException;
 import dev.rsm.exceptions.UsernameAlreadyExistException;
 import dev.rsm.model.UserCredentials;
 import dev.rsm.repository.UserCredentialsRepository;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDateTime;
 
 @Slf4j
 @Service
@@ -27,7 +33,7 @@ public class AuthService {
         this.restTemplate = restTemplate;
     }
 
-    public String register(UserCredentialsSaveRequest userCredentialsSaveRequest) {
+    public ResponseEntity<ApplicationResponse> register(UserCredentialsSaveRequest userCredentialsSaveRequest) throws Exception {
         String password = passwordEncoder.encode(userCredentialsSaveRequest.password());
         String username = userCredentialsSaveRequest.username();
         String email = userCredentialsSaveRequest.email();
@@ -47,16 +53,20 @@ public class AuthService {
 
         UserCredentialsSaveRequest userServiceRegistrationResponse = new UserCredentialsSaveRequest(userCredentialsSaveRequest.username(), password, userCredentialsSaveRequest.email(), userCredentialsSaveRequest.firstName(), userCredentialsSaveRequest.lastName());
         log.info("User registration information send to USER-SERVICE: {}", userServiceRegistrationResponse);
-        String response = restTemplate.postForObject("http://localhost:8081/user/register", userServiceRegistrationResponse, String.class);
-        log.info("USER-SERVICE response for User Registration: {}", response);;
+        JSONObject response = restTemplate.postForObject("http://localhost:8081/user/register", userServiceRegistrationResponse, JSONObject.class);
+        log.info("USER-SERVICE response for User Registration: {}", response);
+        if (response == null || response.containsKey("errorCode")) {
+            throw new Exception();
+        }
+
         userCredentialsRepository.save(user);
         log.info("User registered: {}", userCredentialsSaveRequest);
-        return "User registered";
+        return new ResponseEntity<>(new ApplicationResponse("User registered", LocalDateTime.now()), HttpStatus.CREATED);
     }
 
-    public String generateToken(String username) {
+    public ResponseEntity<ApplicationResponse> generateToken(String username) {
         log.info("JWT token generated for User with username: {}", username);
-        return jwtService.generateToken(username);
+        return new ResponseEntity<>(new ApplicationResponse(jwtService.generateToken(username), LocalDateTime.now()), HttpStatus.OK);
     }
 
     public void validateToken(String token) {

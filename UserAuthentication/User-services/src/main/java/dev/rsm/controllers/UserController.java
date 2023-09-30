@@ -1,16 +1,15 @@
 package dev.rsm.controllers;
 
-import dev.rsm.dtos.LoginCredentialsWithToken;
+import dev.rsm.dtos.response.ApplicationResponse;
 import dev.rsm.service.UserService;
 import dev.rsm.dtos.LoginCredentials;
 import dev.rsm.dtos.UserRegistrationRequest;
 import dev.rsm.dtos.UserUpdateRequest;
 import dev.rsm.model.User;
-import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @RestController
@@ -25,22 +24,22 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestBody UserRegistrationRequest userRegistrationRequest){
+    public ResponseEntity<ApplicationResponse> register(@RequestBody UserRegistrationRequest userRegistrationRequest){
         return userService.register(userRegistrationRequest);
     }
 
     @PostMapping("/update")
-    public String updateById(@RequestBody UserUpdateRequest userUpdateRequest) {
+    public ResponseEntity<ApplicationResponse> updateById(@RequestBody UserUpdateRequest userUpdateRequest) {
         return userService.updateUser(userUpdateRequest);
     }
 
     @GetMapping("/retrieve/{id}")
-    public User retrieveUserById(@PathVariable("id") int id) {
+    public ResponseEntity<User> retrieveUserById(@PathVariable("id") int id) {
         return userService.retrieveUserById(id);
     }
 
     @GetMapping("/retrieve")
-    public List<User> retrieveALlUser() {
+    public ResponseEntity<List<User>> retrieveALlUser() {
         return userService.retrieveAllUser();
     }
 
@@ -50,7 +49,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginCredentials loginCredentials) {
+    public ResponseEntity<ApplicationResponse> login(@RequestBody LoginCredentials loginCredentials) {
         return userService.login(loginCredentials);
     }
 
