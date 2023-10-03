@@ -6,6 +6,7 @@ import com.identity.model.JwtResponse;
 import com.identity.repository.UserIdentityRepository;
 import com.identity.service.AuthService;
 import com.identity.service.CustomUserDetailsService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class AuthController {
     private UserIdentityRepository userIdentityRepository;
 
     @PostMapping("/register")
-    public ResponseEntity<Object> addNewUser(@RequestBody UserIdentity user)
+    public ResponseEntity<Object> addNewUser(@Valid @RequestBody UserIdentity user)
     {
         String msg = "User added successfully!!";
         try {
@@ -89,7 +90,7 @@ public class AuthController {
 
         System.out.println("Hello");
         JwtResponse response=new JwtResponse();
-        //this.doAuthenticate(request.getEmail(), request.getPassword());
+
 
       UserIdentity user=userIdentityRepository.findByEmail(request.getEmail());
 
@@ -107,57 +108,46 @@ public class AuthController {
 
            response = JwtResponse.builder()
                   .jwtToken(token)
-                  .username(userDetails.getUsername()).build();
+                  .username(userDetails.getUsername()).message("Login Successfully !!").build();
+
+
           return new ResponseEntity<>(response, HttpStatus.OK);
 
       }
 
+      String message="incorrect email or password!!";
+      response.setMessage(message);
+
       return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+
     }
 
-//    private void doAuthenticate(String email, String password) {
-//
-//        System.out.println(email);
-//        System.out.println(password);
-//
-//        String newPassword=passwordEncoder.encode(password);
-//        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, newPassword);
-//        try {
-//
-//            System.out.println("inside deAuthenticate");
-//            manager.authenticate(authentication);
-//            System.out.println(password);
-//
-//
-//        } catch (BadCredentialsException e) {
-//            throw new BadCredentialsException(" Invalid Username or Password  !!");
-//        }
-//
-//    }
 
-//    @GetMapping("/validate/{token}")
-//    public String validToken(@PathVariable("token") String token)
-//    {
-//        System.out.println("inside validate method");
-//        String msg="";
-//        Boolean flag=authService.validateToken(token);
-//
-//        if(flag)
-//        {
-//           msg="token validate!!";
-//            return msg;
-//        }
-//
-//            msg="token is not valid";
-//
-//
-//        return msg;
-//    }
 
-//    @GetMapping("/getUserDatails/{userName}")
-//    UserDetails getUserDetailsFromCustomeUserDetails(@PathVariable("userName") String userName)
-//    {
-//        UserDetails userDetails=authService.getUserDetailsFromCustomeUserDetails(userName);
-//         return userDetails;
-//    }
+    @GetMapping("/findUserIdentityByEmail/{email}")
+    public UserIdentity findUserIdentityByEmail(@PathVariable("email") String email)
+    {
+        UserIdentity user=new UserIdentity();
+
+        try
+        {
+             user=authService.getUserIdentityByEmail(email);
+
+           return user;
+        }
+
+        catch(Exception e)
+        {
+          e.printStackTrace();
+          return user;
+        }
+    }
+
+    @PutMapping("/updatePassword/{email}/{password}")
+    public String updatePassword(@PathVariable("email") String email,@PathVariable("password") String password)
+    {
+        String msg=authService.updatePassword(email,password);
+
+         return msg;
+    }
 }

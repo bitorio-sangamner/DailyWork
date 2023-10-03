@@ -66,4 +66,31 @@ public class AuthService {
 
         return userDetails;
     }
+
+    public UserIdentity getUserIdentityByEmail(String email)
+    {
+        UserIdentity user=userIdentityRepository.findByEmail(email);
+        return user;
+    }
+
+    public String updatePassword(String email, String password) {
+
+        try {
+            UserIdentity user = userIdentityRepository.findByEmail(email);
+            user.setPassword(password);
+
+            userIdentityRepository.save(user);
+
+            return "password updated successfully!!";
+
+        }
+
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return "something went wrong,user not found please give correct email!!";
+
+    }
 }
