@@ -23,13 +23,18 @@ public class RouteConfig {
                         .filters(f -> f
                                 .filter(authenticationFilter.apply(new AuthenticationFilter.Config()))
                                 .addRequestHeader("REQUEST-FOR", "user"))
-
                         .uri("lb://USER-SERVICE"))
                 .route("forgot-password-route", r -> r
                         .path("/forgot/**")
+                        .filters(f -> f
+                                .filter(authenticationFilter.apply(new AuthenticationFilter.Config()))
+                                .addRequestHeader("REQUEST-FOR", "forgot"))
                         .uri("lb://USER-SERVICE"))
+
                 .route("auth-route", r -> r
                         .path("/auth/**")
+                        .filters(f -> f
+                                .addRequestHeader("REQUEST-FOR", "auth"))
                         .uri("lb://AUTH-SERVICE"))
                 .build();
     }

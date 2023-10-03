@@ -9,6 +9,8 @@ import dev.rsm.model.UserCredentials;
 import dev.rsm.repository.UserCredentialsRepository;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,7 +55,10 @@ public class AuthService {
 
         UserCredentialsSaveRequest userServiceRegistrationResponse = new UserCredentialsSaveRequest(userCredentialsSaveRequest.username(), password, userCredentialsSaveRequest.email(), userCredentialsSaveRequest.firstName(), userCredentialsSaveRequest.lastName());
         log.info("User registration information send to USER-SERVICE: {}", userServiceRegistrationResponse);
-        JSONObject response = restTemplate.postForObject("http://localhost:8081/user/register", userServiceRegistrationResponse, JSONObject.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("REQUEST-FOR", "user");
+        HttpEntity<UserCredentialsSaveRequest> entity = new HttpEntity<>(userServiceRegistrationResponse, headers);
+        JSONObject response = restTemplate.postForObject("http://localhost:8081/user/register", entity, JSONObject.class);
         log.info("USER-SERVICE response for User Registration: {}", response);
         if (response == null || response.containsKey("errorCode")) {
             throw new Exception();

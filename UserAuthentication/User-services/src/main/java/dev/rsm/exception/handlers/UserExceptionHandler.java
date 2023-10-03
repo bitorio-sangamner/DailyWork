@@ -3,6 +3,7 @@ package dev.rsm.exception.handlers;
 import dev.rsm.dtos.response.ApiErrorResponse;
 import dev.rsm.exception.EmailException;
 import dev.rsm.exception.LoginException;
+import dev.rsm.exception.UnAuthorizedAccessException;
 import dev.rsm.exception.UserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
@@ -48,6 +49,17 @@ public class UserExceptionHandler extends ResponseEntityExceptionHandler {
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UnAuthorizedAccessException.class)
+    public ResponseEntity<?> handleUnauthorizeAccessException(final UnAuthorizedAccessException exception) {
+        log.error(String.format("Error message: %s", exception.getMessage()), exception);
+        var response = new ApiErrorResponse(exception.getErrorCode(),
+                exception.getMessage(),
+                LocalDateTime.now()
+        );
+        System.out.println(response.toString());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(Exception.class)
