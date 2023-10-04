@@ -22,6 +22,12 @@ public interface UserService {
 
     String setPassword(String email, String newPassword);
 
+    User updateUser(User userObj);
+
+    User getByResetPasswordToken(String token);
+
+    String updatePassword (User user,String password);
+
 
     //TODO: delete
     //TODO: update

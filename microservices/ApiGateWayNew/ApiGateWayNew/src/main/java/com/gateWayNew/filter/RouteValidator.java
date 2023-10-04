@@ -14,7 +14,7 @@ public class RouteValidator {
 
             "auth/register",
             "auth/Login"
-//            "authanticate/validate/{token}"
+
 
 
     );

@@ -125,5 +125,42 @@ public class UserServiceImpl implements UserService
 
     }
 
+    @Override
+    public User updateUser(User userObj) {
+        return userRepository.save(userObj);
+
+
+    }
+
+    @Override
+    public User getByResetPasswordToken(String token) {
+
+        User user=userRepository.findByResetPasswordToken(token);
+        System.out.println("User name :"+user.getName());
+        System.out.println("User email :"+user.getEmail());
+        System.out.println("User about :"+user.getAbout());
+        return user;
+    }
+
+    @Override
+    public String updatePassword(User user, String password) {
+
+        System.out.println("inside updatePassword");
+        try {
+            restTemplate.put("http://IDENTITY-SERVICE/auth/updatePassword/" + user.getEmail() + "/" + password, String.class);
+            user.setPassword(password);
+            userRepository.save(user);
+
+            return "password updated successfully!!";
+        }
+
+        catch(Exception e)
+        {
+           e.printStackTrace();
+        }
+
+        return "something went wrong!!";
+    }
+
 
 }

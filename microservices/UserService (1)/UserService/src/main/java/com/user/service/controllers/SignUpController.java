@@ -2,6 +2,7 @@ package com.user.service.controllers;
 
 import com.user.service.entity.User;
 import com.user.service.services.UserService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class SignUpController {
 //    }
 
     @PostMapping("/addUser")
-    public boolean register(@RequestBody User userObj)
+    public boolean register(@Valid @RequestBody User userObj)
     {
 
         logger.info("inside save user controller");
