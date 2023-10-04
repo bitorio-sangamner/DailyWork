@@ -6,6 +6,7 @@ import com.identity.model.JwtResponse;
 import com.identity.repository.UserIdentityRepository;
 import com.identity.service.AuthService;
 import com.identity.service.CustomUserDetailsService;
+import com.identity.util.OtpUtil;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/auth")
@@ -41,14 +44,68 @@ public class AuthController {
     @Autowired
     private UserIdentityRepository userIdentityRepository;
 
+    @Autowired
+    private OtpUtil otpUtil;
+
+//    @PostMapping("/register")
+//    public ResponseEntity<Object> addNewUser(@Valid @RequestBody UserIdentity user)
+//    {
+//        String msg = "User added successfully!!";
+//        try {
+//
+//
+//            System.out.println("Hii");
+//            UserIdentity userObj = new UserIdentity();
+//
+//            userObj.setPassword(user.getPassword());
+//            userObj.setName(user.getName());
+//            userObj.setEmail(user.getEmail());
+//            userObj.setAbout(user.getAbout());
+//
+//            boolean result = authService.saveUser(user);
+//
+////        System.out.println(user.getEmail());
+////        System.out.println(user.getPassword());
+////        System.out.println(user.getAbout());
+//
+//            ResponseEntity<Boolean> response = restTemplate.postForEntity(
+//                    "http://USER-SERVICE/signUp/addUser",
+//                    userObj, Boolean.class);
+//
+//
+//            return new ResponseEntity<>(msg, HttpStatus.OK);
+//
+//        }//try
+//
+//        catch(Exception e)
+//        {
+//            msg="Sorry,Something went wrong";
+//            return new ResponseEntity<>(msg, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//
+//    }
+
     @PostMapping("/register")
     public ResponseEntity<Object> addNewUser(@Valid @RequestBody UserIdentity user)
     {
-        String msg = "User added successfully!!";
-        try {
+        String msg = "User added successfully!! Verify your account";
+        try
+        {
+            String otp= otpUtil.generateOtp();
 
+             user.setOtp(otp);
+             user.setOtpGeneratedTime(LocalDateTime.now());
+            //  restTemplate.postForEntity("http://EMAIL_SERVICE/otp/sendOtpEmail/"+user.getEmail()+"/"+otp,Boolean.class);
 
-            System.out.println("Hii");
+            System.out.println("otp :"+otp);
+            System.out.println("send otp");
+            System.out.println("Email :"+user.getEmail());
+
+            //Boolean res= restTemplate.getForObject("http://EMAIL_SERVICE/otp/sendOtpEmail/" + user.getEmail() + "/" + otp, Boolean.class);
+            Boolean res= restTemplate.getForObject("http://EMAIL-SERVICE/otp/sendOtpEmail/" + user.getEmail() + "/" + otp, Boolean.class);
+
+           System.out.println("result :"+res);
+            System.out.println("inside register");
             UserIdentity userObj = new UserIdentity();
 
             userObj.setPassword(user.getPassword());
@@ -58,30 +115,19 @@ public class AuthController {
 
             boolean result = authService.saveUser(user);
 
-//        System.out.println(user.getEmail());
-//        System.out.println(user.getPassword());
-//        System.out.println(user.getAbout());
-
             ResponseEntity<Boolean> response = restTemplate.postForEntity(
                     "http://USER-SERVICE/signUp/addUser",
                     userObj, Boolean.class);
 
-
             return new ResponseEntity<>(msg, HttpStatus.OK);
-
-        }//try
+        }
 
         catch(Exception e)
         {
+            e.printStackTrace();
             msg="Sorry,Something went wrong";
-            return new ResponseEntity<>(msg, HttpStatus.INTERNAL_SERVER_ERROR);
+           return new ResponseEntity<>(msg, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-
-
-
-
-
 
     }
 
@@ -149,5 +195,11 @@ public class AuthController {
         String msg=authService.updatePassword(email,password);
 
          return msg;
+    }
+
+    @PutMapping("/verify-account")
+    public ResponseEntity<String> verifyAccount(@RequestParam String email,@RequestParam String otp)
+    {
+        return new ResponseEntity<>(authService.verifyAccount(email,otp),HttpStatus.OK);
     }
 }
