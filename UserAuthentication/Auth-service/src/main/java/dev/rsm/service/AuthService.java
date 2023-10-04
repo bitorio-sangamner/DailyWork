@@ -58,9 +58,14 @@ public class AuthService {
         HttpHeaders headers = new HttpHeaders();
         headers.set("REQUEST-FOR", "user");
         HttpEntity<UserCredentialsSaveRequest> entity = new HttpEntity<>(userServiceRegistrationResponse, headers);
-        JSONObject response = restTemplate.postForObject("http://localhost:8081/user/register", entity, JSONObject.class);
+        JSONObject response = restTemplate.postForObject("lb://USER-SERVICE/user/register", entity, JSONObject.class);
         log.info("USER-SERVICE response for User Registration: {}", response);
-        if (response == null || response.containsKey("errorCode")) {
+        if (response == null) {
+            throw new Exception();
+        }
+
+        if (response.containsKey("errorCode")) {
+            log.error("Error");
             throw new Exception();
         }
 
