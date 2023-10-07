@@ -43,6 +43,8 @@ public class User {
     @Column(name = "reset_password_token")
     private String resetPasswordToken;
 
+    private boolean active;
+
     @Transient
     private List<Rating> ratings=new ArrayList<>();
 }

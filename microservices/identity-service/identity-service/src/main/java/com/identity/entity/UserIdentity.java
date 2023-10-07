@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -34,6 +36,10 @@ public class UserIdentity {
 
     @Column(name = "PASSWORD")
     @NotEmpty
-    @Size(min=3,max=10,message="Password must be min of 3 chars and max of 10 chars!!")
+    @Size(min=3,max=100,message="Password must be min of 3 chars and max of 10 chars!!")
     private String password;
+
+    private boolean active;
+    private String otp;
+    private LocalDateTime otpGeneratedTime;
 }

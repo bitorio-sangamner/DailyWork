@@ -7,6 +7,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -59,8 +60,6 @@ public class EmailService {
           javaMailSender.send(message);
           flag=true;
 
-
-
       }//try
 
         catch(Exception e)
@@ -71,6 +70,23 @@ public class EmailService {
         return flag;
     }
 
+    public void sendOtpEmail(String email,String otp) throws MessagingException {
+
+        System.out.println("inside sendOtpEmail service");
+        MimeMessage message =javaMailSender.createMimeMessage();
+        MimeMessageHelper helper=new MimeMessageHelper(message);
+
+        helper.setFrom("vshinde820540@gmail.com");
+        helper.setTo(email);
+        helper.setSubject("Verify OTP");
+        helper.setText("""
+                        <div>
+                         <a href="http://localhost:8081/verify-account?email=%s&otp=%s" target="_blank">click link to verify</a>
+                        </div>
+                        """.formatted(email,otp),true);
+
+
+    }
 
 
 }

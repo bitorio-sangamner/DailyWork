@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -24,9 +26,31 @@ public class AuthService {
 
     @Autowired
     private JwtHelper jwtHelper;
+//    public boolean saveUser(UserIdentity user)
+//    {
+//        try {
+//            user.setPassword(passwordEncoder.encode(user.getPassword()));
+//
+//            String randomUserId = UUID.randomUUID().toString();
+//            user.setUserId(randomUserId);
+//            userIdentityRepository.save(user);
+//
+//            return true;
+//        }
+//
+//        catch(Exception e)
+//        {
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
+
     public boolean saveUser(UserIdentity user)
     {
-        try {
+        try
+        {
+            System.out.println("inside saveUser");
+
             user.setPassword(passwordEncoder.encode(user.getPassword()));
 
             String randomUserId = UUID.randomUUID().toString();
@@ -38,12 +62,8 @@ public class AuthService {
 
         catch(Exception e)
         {
-            e.printStackTrace();
             return false;
         }
-
-
-
     }
 
     public String genarateToken(UserDetails userDetails)
@@ -92,5 +112,21 @@ public class AuthService {
 
         return "something went wrong,user not found please give correct email!!";
 
+    }
+
+    public String verifyAccount(String email, String otp)
+    {
+        UserIdentity user=userIdentityRepository.findByEmail(email);
+
+        if(user.getOtp().equals(otp) && Duration.between(user.getOtpGeneratedTime(), LocalDateTime.now()).getSeconds()<(10*60))
+        {
+           user.setActive(true);
+
+           userIdentityRepository.save(user);
+
+           return "OTP verified you can login";
+        }
+
+        return "Please regenerate otp and try again";
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+
 import java.util.Random;
 
 @RestController
@@ -44,4 +45,10 @@ public class EmailController {
         }
        return new ResponseEntity("Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+//    @PostMapping("/sendOtpEmail/{email}/{otp}")
+//    public Boolean sendOtpEmail(@PathVariable("email")String email,@PathVariable("otp")String otp) throws MessagingException {
+//        emailService.sendOtpEmail(email,otp);
+//        return true;
+    //}
 }
