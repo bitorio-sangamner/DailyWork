@@ -1,0 +1,32 @@
+# Server
+server:
+  port: 8082
+
+  # Spring
+spring:
+  application:
+    name: email-service
+
+  # Mail
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: S{MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+  # Eureka Client
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8083/eureka
+    registerWithEureka: true
+    fetchRegistry: true

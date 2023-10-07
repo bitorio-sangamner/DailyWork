@@ -5,6 +5,7 @@ import dev.rsm.dtos.UserPasswordResetRequest;
 import dev.rsm.dtos.UserRegistrationRequest;
 import dev.rsm.dtos.UserUpdateRequest;
 import dev.rsm.dtos.response.ApplicationResponse;
+import dev.rsm.dtos.response.ResetEmailResponse;
 import dev.rsm.exception.EmailException;
 import dev.rsm.exception.LoginException;
 import dev.rsm.exception.UserException;
@@ -16,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +28,7 @@ import net.bytebuddy.utility.RandomString;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j
@@ -32,14 +36,16 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    @Autowired
     private final JavaMailSender javaMailSender;
+    private final KafkaTemplate<String,Object> template;
+
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JavaMailSender javaMailSender) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JavaMailSender javaMailSender, KafkaTemplate<String, Object> template) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.javaMailSender = javaMailSender;
+        this.template = template;
     }
 
     public ResponseEntity<ApplicationResponse> register(UserRegistrationRequest userRegistrationRequest) {
@@ -120,6 +126,15 @@ public class UserService {
 
     private void emailResetPasswordToken(String token, String recipientEmail) throws MessagingException, UnsupportedEncodingException {
         try {
+            ResetEmailResponse response = new ResetEmailResponse(token, recipientEmail);
+            CompletableFuture<SendResult<String, Object>> future = template.send("reset-password-email", response);
+            future.whenComplete((result, ex) -> {
+                if (ex == null) {
+                    log.info("Sent message=[" + response + "] with offset=[" + result.getRecordMetadata().offset() + "]");
+                } else {
+                    log.error("Unable to send message=[" + response + "] due to : " + ex.getMessage());
+                }
+            });
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message);
 

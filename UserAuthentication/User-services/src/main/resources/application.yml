@@ -1,0 +1,47 @@
+  # Server
+server:
+  port: 8081
+
+  # Spring
+spring:
+  application:
+    name: user-service
+
+  # H2 Database
+  h2:
+    console:
+      enabled: true
+    datasource:
+      url: jdbc:h2:mem:test
+      driverClassName: org.h2.Driver
+      username: sa
+      password: password
+
+  # Spring JPA
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+
+  # Mail
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: S{MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+  # Eureka Client
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8083/eureka
+    registerWithEureka: true
+    fetchRegistry: true

@@ -19,6 +19,7 @@
         <module>Eureka-server</module>
 		<module>Gateway-service</module>
         <module>Auth-service</module>
+        <module>Email-service</module>
     </modules>
     <properties>
 		<java.version>19</java.version>
@@ -47,6 +48,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
 		</dependency>
 	</dependencies>
 

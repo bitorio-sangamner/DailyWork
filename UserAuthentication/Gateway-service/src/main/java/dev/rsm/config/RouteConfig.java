@@ -30,7 +30,6 @@ public class RouteConfig {
                                 .filter(authenticationFilter.apply(new AuthenticationFilter.Config()))
                                 .addRequestHeader("REQUEST-FOR", "forgot"))
                         .uri("lb://USER-SERVICE"))
-
                 .route("auth-route", r -> r
                         .path("/auth/**")
                         .filters(f -> f

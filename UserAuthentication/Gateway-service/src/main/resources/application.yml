@@ -1,0 +1,18 @@
+  # Server
+server:
+  port: 8080
+
+  # Spring
+spring:
+    application:
+      name: gateway-service
+    main:
+      web-application-type: reactive
+
+  # Eureka Client
+eureka:
+    client:
+      serviceUrl:
+        defaultZone: http://localhost:8083/eureka
+      registerWithEureka: true
+      fetchRegistry: true
