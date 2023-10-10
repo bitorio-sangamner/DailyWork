@@ -5,6 +5,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
@@ -17,8 +18,21 @@ import java.util.Map;
 public class KafkaProducerConfig {
 
     @Bean
-    public NewTopic createTopic(){
-        return new NewTopic("reset-password-email", 3, (short) 1);
+    public NewTopic createResetPasswordTopic(){
+        return TopicBuilder
+                .name("reset-password-email")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic createTestTopic(){
+        return TopicBuilder
+                .name("test")
+                .partitions(1)
+                .replicas(1)
+                .build();
     }
 
     @Bean

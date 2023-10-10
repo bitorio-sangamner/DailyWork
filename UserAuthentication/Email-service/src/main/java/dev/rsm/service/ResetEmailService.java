@@ -43,4 +43,8 @@ public class ResetEmailService {
             e.printStackTrace();
         }
     }
+
+    public void test(String message) {
+        System.out.println(message);
+    }
 }

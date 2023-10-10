@@ -12,15 +12,12 @@ import dev.rsm.exception.UserException;
 import dev.rsm.model.User;
 import dev.rsm.repos.UserRepository;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import net.bytebuddy.utility.RandomString;
@@ -36,15 +33,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JavaMailSender javaMailSender;
     private final KafkaTemplate<String,Object> template;
 
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JavaMailSender javaMailSender, KafkaTemplate<String, Object> template) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, KafkaTemplate<String, Object> template) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.javaMailSender = javaMailSender;
         this.template = template;
     }
 
@@ -120,44 +115,28 @@ public class UserService {
         String token = RandomString.make(10);
         user.setResetPasswordToken(token);
         userRepository.save(user);
-        emailResetPasswordToken(token, email);
-        return new ResponseEntity<>(new ApplicationResponse("Reset password token generated successfully.", LocalDateTime.now()), HttpStatus.OK);
+        if (emailResetPasswordToken(token, email)) {
+            return new ResponseEntity<>(new ApplicationResponse("Reset password token generated successfully.", LocalDateTime.now()), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ApplicationResponse("Please try again.", LocalDateTime.now()), HttpStatus.OK);
     }
 
-    private void emailResetPasswordToken(String token, String recipientEmail) throws MessagingException, UnsupportedEncodingException {
+    private boolean emailResetPasswordToken(String token, String recipientEmail) throws MessagingException, UnsupportedEncodingException {
         try {
             ResetEmailResponse response = new ResetEmailResponse(token, recipientEmail);
             CompletableFuture<SendResult<String, Object>> future = template.send("reset-password-email", response);
             future.whenComplete((result, ex) -> {
                 if (ex == null) {
-                    log.info("Sent message=[" + response + "] with offset=[" + result.getRecordMetadata().offset() + "]");
+                    log.info("Reset password token email generated successfully: {}", result);
                 } else {
-                    log.error("Unable to send message=[" + response + "] due to : " + ex.getMessage());
+                    log.error("Reset password token email not generated successfully: {} -> ex: {}", result, ex);
                 }
             });
-            MimeMessage message = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message);
-
-            helper.setFrom("noreply.com", "User Support");
-            helper.setTo(recipientEmail);
-
-            String subject = "Password Reset Token";
-
-            String content = "<p>Hello,</p>"
-                    + "<p>You have requested to reset your password.</p>"
-                    + "<p>Below is your reset password token:</p>"
-                    + "<p>" + token + "</p>"
-                    + "<br>"
-                    + "<p>Ignore this email if you have not requested for reset password, ";
-
-            helper.setSubject(subject);
-
-            helper.setText(content, true);
-
-            javaMailSender.send(message);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return false;
         }
+        return true;
     }
 
     public ResponseEntity<ApplicationResponse> resetPassword(UserPasswordResetRequest userPasswordResetRequest) {
@@ -168,5 +147,17 @@ public class UserService {
         userRepository.save(user);
 
         return new ResponseEntity<>(new ApplicationResponse("Reset password successfully.", LocalDateTime.now()), HttpStatus.OK);
+    }
+
+    public ResponseEntity<ApplicationResponse> test(String message) {
+        CompletableFuture<SendResult<String, Object>> future = template.send("test", message);
+        future.whenComplete((result, ex) -> {
+            if (ex == null) {
+                log.info("Sent message=[" + message + "] with offset=[" + result.getRecordMetadata().offset() + "]");
+            } else {
+                log.error("Unable to send message=[" + message + "] due to : " + ex.getMessage());
+            }
+        });
+        return new ResponseEntity<>(new ApplicationResponse("Test successfully.", LocalDateTime.now()), HttpStatus.OK);
     }
 }

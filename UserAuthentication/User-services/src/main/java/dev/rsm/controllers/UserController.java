@@ -53,4 +53,9 @@ public class UserController {
         return userService.login(loginCredentials);
     }
 
+    @PostMapping("/test/{message}")
+    public ResponseEntity<ApplicationResponse> test(@PathVariable("message") String message) {
+        return userService.test(message);
+    }
+
 }

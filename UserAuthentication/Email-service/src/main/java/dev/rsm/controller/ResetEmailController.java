@@ -20,4 +20,9 @@ public class ResetEmailController {
     public void sendResetPasswordTokenEmail(ResetEmailRequest resetEmailRequest) {
         resetEmailService.sendResetPasswordTokenEmail(resetEmailRequest);
     }
+
+    @KafkaListener(topics = "test", groupId = "test")
+    public void test(String message) {
+        resetEmailService.test(message);
+    }
 }
