@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Websocket communication</title>
+<!--    <script src="/webjars/sockjs-client/1.5.1/sockjs.min.js"></script>-->
+<!--    <script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+</head>
+<body>
+    <h3>Order book table</h3>
+    <table id="spread-book-table" border="1px solid black">
+        <tr>
+            <th colspan="3">bids</th>
+            <th colspan="3">asks</th>
+            <th>transactionId</th>
+        </tr>
+    </table>
+    <br>
+    <h3>Tickers table</h3>
+    <table id="tickers-table" border="1px solid black">
+        <tr>
+            <th>lastSz</th>
+            <th>askPx</th>
+            <th>askSz</th>
+            <th>bidPx</th>
+            <th>bidSz</th>
+            <th>last</th>
+            <th>transactionId</th>
+        </tr>
+    </table>
+    <h3>Public trades table</h3>
+    <table id="sprd-public-trades" border="1px solid black">
+        <tr>
+            <th>side</th>
+            <th>sz</th>
+            <th>px</th>
+            <th>tradeId</th>
+            <th>transactionId</th>
+        </tr>
+    </table>
+    <br>
+    <footer>
+        <h6 id="serverTime"></h6>
+    </footer>
+<script>
+     var stompClient=null;
+        let socket = new SockJS("/ws");
+        stompClient = Stomp.over(socket);
+
+        console.log('WebSocket connection initiated.');
+
+        stompClient.connect({}, function (frame) {
+            console.log('WebSocket connection established.');
+            stompClient.subscribe("/topic/spreadTrading", function (response) {
+                addDataToTableForSpreadTrading(JSON.parse(response.body));
+            });
+            stompClient.subscribe("/topic/tickers", function (response) {
+                addDataToTableForTickers(JSON.parse(response.body));
+            });
+            stompClient.subscribe("/topic/sprd-public-trades", function (response) {
+                addDataToTableForPublicTrades(JSON.parse(response.body));
+            });
+            stompClient.subscribe("/topic/server-time", function (response) {
+                addDataToServerTime(JSON.parse(response.body));
+            });
+            connectToOkx();
+        });
+
+        function connectToOkx() {
+            stompClient.send('/app/connectToOkx', {}, {});
+        }
+
+        function addDataToTableForSpreadTrading(jsonObject) {
+            const table = document.getElementById("spread-book-table");
+
+            // Create a new row
+            const row = table.insertRow(-1);
+
+            // Add 'bids' data to the row
+            jsonObject.bids[0].forEach(bid => {
+                const cell = row.insertCell(-1);
+                cell.textContent = bid;
+            });
+
+            // Add 'asks' data to the row
+            jsonObject.asks[0].forEach(ask => {
+                const cell = row.insertCell(-1);
+                cell.textContent = ask;
+            });
+
+            // Add 'transactionId' to the row
+            const transactionIdCell = row.insertCell(-1);
+            transactionIdCell.textContent = jsonObject.ts;
+        }
+        function addDataToTableForTickers(jsonObject) {
+            const table = document.getElementById("tickers-table");
+
+            // Create a new row
+            const row = table.insertRow(-1);
+
+            // Add 'lastSz' to the row
+            const lastSz = row.insertCell(-1);
+            lastSz.textContent = jsonObject.lastSz;
+
+            // Add 'askPx' to the row
+            const askPx = row.insertCell(-1);
+            askPx.textContent = jsonObject.askPx;
+
+            // Add 'askSz' to the row
+            const askSz = row.insertCell(-1);
+            askSz.textContent = jsonObject.askSz;
+
+            // Add 'bidPx' to the row
+            const bidPx = row.insertCell(-1);
+            bidPx.textContent = jsonObject.bidPx;
+
+            // Add 'bidSz' to the row
+            const bidSz = row.insertCell(-1);
+            bidSz.textContent = jsonObject.bidSz;
+
+            // Add 'last' to the row
+            const last = row.insertCell(-1);
+            last.textContent = jsonObject.last;
+
+            // Add 'ts' to the row
+            const ts = row.insertCell(-1);
+            ts.textContent = jsonObject.ts;
+        }
+
+        function addDataToTableForPublicTrades(jsonObject) {
+            const table = document.getElementById("tickers-table");
+
+            // Create a new row
+            const row = table.insertRow(-1);
+
+            // Add 'side' to the row
+            const side = row.insertCell(-1);
+            side.textContent = jsonObject.side;
+
+            // Add 'sz' to the row
+            const sz = row.insertCell(-1);
+            sz.textContent = jsonObject.sz;
+
+            // Add 'px' to the row
+            const px = row.insertCell(-1);
+            px.textContent = jsonObject.px;
+
+            // Add 'tradeId' to the row
+            const tradeId = row.insertCell(-1);
+            tradeId.textContent = jsonObject.tradeId;
+
+            // Add 'ts' to the row
+            const ts = row.insertCell(-1);
+            ts.textContent = jsonObject.ts;
+        }
+
+        function addDataToServerTime(time) {
+            document.getElementById("serverTime").innerHTML = time
+        }
+    </script>
+
+</body>
+</html>
