@@ -1,0 +1,236 @@
+package com.sample_Okx_Data.config;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import okhttp3.*;
+
+import org.joda.time.DateTime;
+import org.springframework.stereotype.Component;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+@Component
+public class WebSocketClient {
+
+    private WebSocket webSocket;
+    private  String signature;
+    public void connection (String url){
+        OkHttpClient client = new OkHttpClient();
+
+        // Replace the URL with your WebSocket server URL
+        Request request = new Request.Builder().url(url).build();
+
+        WebSocketListener webSocketListener = new WebSocketListener() {
+
+
+            @Override
+            public void onOpen(WebSocket webSocket, Response response) {
+                System.out.println("WebSocket Connection Opened");
+
+                /*
+                    This code is using the ScheduledExecutorService
+                     to schedule a task to be executed periodically at a fixed rate.
+                 */
+
+                /*
+                   ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+                  creates a new single-threaded executor
+                  that can schedule commands to run after a given delay or to execute periodically
+                 */
+                ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+                executorService.scheduleAtFixedRate(() -> {
+                    webSocket.send("ping");
+                    System.out.println("Sent ping");
+                }, 0, 5, TimeUnit.SECONDS);
+            }
+
+            @Override
+            public void onMessage(WebSocket webSocket, String text) {
+
+                if(text.contains("\"channel\":\"books\"")) {
+
+                    if(text.contains("\"action\":\"update\"")) {
+
+                        // Convert the JSON string into a JSONObject using net.sf.json.JSONObject
+                        JSONObject jsonObject= JSONObject.fromObject(text);
+
+                        // Extract the "arg" and "data" fields from the JSON object
+                        JSONObject arg=JSONObject.fromObject(jsonObject.get("arg"));
+                        JSONArray data=JSONArray.fromObject(jsonObject.get("data"));
+
+                        System.out.println("size of data array:"+data.size());
+                       //separate ask and bid from JSONArray data
+                        JSONObject dataStr=JSONObject.fromObject(data.get(0));
+
+                        String dataOfInstrument=dataStr.toString();
+
+                        //System.out.println("Received message: " + text);
+                        System.out.println("Args:"+arg);
+                        System.out.println("Data :"+dataOfInstrument);
+                        System.out.println("*****************************************************************");
+                    }
+
+                   else if(text.contains("snapshot"))
+                    {
+                        // Convert the JSON string into a JSONObject using net.sf.json.JSONObject
+                        JSONObject jsonObject=JSONObject.fromObject(text);
+
+                        // Extract the "arg" and "data" fields from the JSON object
+                        JSONObject args=JSONObject.fromObject(jsonObject.get("arg"));
+                        JSONArray data=JSONArray.fromObject(jsonObject.get("data"));
+
+                        System.out.println("size of data array:"+data.size());
+                        //separate ask and bid from JSONArray data
+                        JSONObject dataStr=JSONObject.fromObject(data.get(0));
+
+                        String dataOfInstrument=dataStr.toString();
+
+                        System.out.println("Args:"+args);
+                        System.out.println("Data :"+dataOfInstrument);
+                        System.out.println("*****************************************************************");
+                    }
+                }
+                else if(text.contains("\"channel\":\"trades\""))
+                {
+                    System.out.println("Received message: "+text);
+                    System.out.println("**********************************************************************");
+                }
+                else if(text.contains("\"channel\":\"tickers\""))
+                {
+                    System.out.println("Received message: "+text);
+                    System.out.println("**********************************************************************");
+                }
+
+                else if(text.contains("pong"))
+                {
+                    System.out.println("Received message: " + text);
+                }
+                else
+                {
+                    System.out.println("Received message: " + text);
+                }
+
+
+            }
+
+//            @Override
+//            public void onMessage(WebSocket webSocket, ByteString bytes) {
+//
+//                System.out.println("Received bytes: " + bytes.hex());
+//            }
+
+            @Override
+            public void onClosing(WebSocket webSocket, int code, String reason) {
+                System.out.println("WebSocket Closing: " + code + " " + reason);
+            }
+
+            @Override
+            public void onClosed(WebSocket webSocket, int code, String reason) {
+                System.out.println("WebSocket Closed: " + code + " " + reason);
+            }
+
+            @Override
+            public void onFailure(WebSocket webSocket, Throwable t, Response response) {
+                System.out.println("WebSocket Failure: " + t.getMessage());
+            }
+        };
+
+         webSocket = client.newWebSocket(request, webSocketListener);
+
+    }//connection method
+
+    public void subscribeBookChannel(String instrument,String channelName)
+    {
+            String str = "{\"op\": \"subscribe\", \"args\":[{\"channel\":\""+channelName+"\",\"instId\":\"" + instrument + "\"}]}";
+            sendMessage(str);
+    }
+
+    public void subscribeTradeChannel(String instrument,String channelName)
+    {
+        String str = "{\"op\": \"subscribe\", \"args\":[{\"channel\":\""+channelName+"\",\"instId\":\"" + instrument + "\"}]}";
+        sendMessage(str);
+    }
+
+    public void subscribeTickerChannel(String instrument,String channelName)
+    {
+        String str = "{\"op\": \"subscribe\", \"args\":[{\"channel\":\""+channelName+"\",\"instId\":\"" + instrument + "\"}]}";
+        sendMessage(str);
+    }
+
+    public void sendMessage(String str)
+    {
+        if(webSocket!=null)
+        {
+            System.out.println("Send a message to the server:::::" + str);
+            boolean send = webSocket.send(str);
+
+            System.out.println("Send a message to the server:::::" + send);
+        }
+        else
+        {
+            System.out.println("Please establish the connection before you operate it！");
+        }
+
+        }//sendMessage
+
+    public void loginToOkx(String apiKey, String secretKey, String passphrase)
+    {
+        /* It gets the current timestamp in milliseconds, converts it to seconds, and stores it as a string.
+
+         */
+        String timestamp = DateTime.now().getMillis() / 1000 + "";
+
+        /*
+           Constructs a message using the timestamp, HTTP method ("GET"), and the request path ("/users/self/verify").
+         */
+        String message = timestamp + "GET" + "/users/self/verify";
+
+        System.out.println("message :"+message);
+
+        /*
+           Calls the sha256_HMAC method to
+           generate an HMAC-SHA256 signature using the constructed message and
+           the provided secret key.
+         */
+        signature = sha256_HMAC(message, secretKey);
+
+        System.out.println("signature:"+signature);
+
+        String str = "{\"op\"" + ":" + "\"login\"" + "," + "\"args\"" + ":" + "[{" + "\"apiKey\"" + ":" + "\"" + apiKey + "\"" + "," + "\"passphrase\"" + ":" + "\"" + passphrase + "\"" + "," + "\"timestamp\"" + ":" + "\"" + timestamp + "\"" + "," + "\"sign\"" + ":" + "\"" + signature + "\"" + "}]}";
+        sendMessage(str);
+    }
+
+    private  String sha256_HMAC(String message, String secret) {
+        String hash = "";
+        try {
+            /*
+              Creates an instance of the HMAC-SHA256 algorithm.
+               (Hash-based Message Authentication Code with SHA-256)
+             */
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+
+            /*
+               Creates a secret key specification using the provided secret and character encoding.
+             */
+            SecretKeySpec secret_key = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+
+            //Initializes the HMAC-SHA256 instance with the secret key.
+            sha256_HMAC.init(secret_key);
+
+            //Computes the HMAC-SHA256 hash for the given message.
+            byte[] bytes = sha256_HMAC.doFinal(message.getBytes(StandardCharsets.UTF_8));
+
+            //Encodes the hash as a Base64 string.
+            hash = Base64.getEncoder().encodeToString(bytes);
+        } catch (Exception e) {
+            System.out.println("Error HmacSHA256 ===========" + e.getMessage());
+        }
+        return hash;
+    }
+}//class
