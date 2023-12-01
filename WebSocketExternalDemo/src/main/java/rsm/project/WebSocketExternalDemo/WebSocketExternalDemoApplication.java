@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class WebSocketExternalDemoApplication {
 
 	public static void main(String[] args) { SpringApplication.run(WebSocketExternalDemoApplication.class, args);
-//		OkxConnectionController okxConnectionController = new OkxConnectionController();
+//		OkxConnectionService okxConnectionController = new OkxConnectionService();
 //		okxConnectionController.okxConnect();
 	}
 }

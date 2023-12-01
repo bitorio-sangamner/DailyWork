@@ -70,6 +70,8 @@
 
         function connectToOkx() {
             stompClient.send('/app/connectToOkx', {}, {});
+            stompClient.send('/app/connectToPublicOkx', {}, {});
+
         }
 
         function addDataToTableForSpreadTrading(jsonObject) {

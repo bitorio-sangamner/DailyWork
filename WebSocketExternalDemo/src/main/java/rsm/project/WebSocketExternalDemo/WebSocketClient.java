@@ -6,30 +6,28 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
-import okio.ByteString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-import java.io.IOException;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class WebSocketClient {
     private static final int PING_DELAY_SECONDS = 25;
     private WebSocket webSocket;
     private Boolean isConnectedToOkxServer;
-    private ScheduledExecutorService  executorService;
+    private final ScheduledExecutorService executorService;
     private Boolean expectingPong = false;
     private final String url;
-    private final OkxConnectionController okxConnectionController;
+    private final String natureOfURL;
+    private final OkxConnectionService okxConnectionService;
     
-    public WebSocketClient(String url, OkxConnectionController okxConnectionController) {
+    public WebSocketClient(String url, String natureOfURL, OkxConnectionService okxConnectionService){
         this.url = url;
-        this.okxConnectionController = okxConnectionController;
+        this.natureOfURL = natureOfURL;
+        this.okxConnectionService = okxConnectionService;
         executorService = Executors.newScheduledThreadPool(1);
     }
     public void connectToOkxServer() {
@@ -37,8 +35,7 @@ public class WebSocketClient {
                                                 .readTimeout(5, TimeUnit.SECONDS)
                                                 .build();
 
-        Request request = new Request
-                                .Builder()
+        Request request = new Request.Builder()
                                 .url(url)
                                 .build();
 
@@ -47,7 +44,7 @@ public class WebSocketClient {
             public void onClosed(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
                 super.onClosed(webSocket, code, reason);
                 isConnectedToOkxServer = false;
-                log.warn("Websocket connection to OKX server closed.");
+                log.warn("Websocket connection to OKX(" + natureOfURL + ") server closed.");
             }
 
             @Override
@@ -59,7 +56,7 @@ public class WebSocketClient {
             public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
                 super.onFailure(webSocket, t, response);
                 isConnectedToOkxServer = false;
-                log.error("Websocket connection to OKX server has been closed due to an error.");
+                log.error("Websocket connection to OKX(" + natureOfURL + ") server has been closed due to an error.");
                 log.error("The error is {}", t.getMessage());
             }
 
@@ -67,7 +64,7 @@ public class WebSocketClient {
             public void onMessage(@NotNull WebSocket webSocket, @NotNull String bytes) {
                 super.onMessage(webSocket, bytes);
                 expectingPong = false;
-                log.info("Received message from OKX : {}", bytes);
+                log.info("Received message from OKX(" + natureOfURL + ") : {}", bytes);
                 if (!bytes.equalsIgnoreCase("pong")) {
                     try {
                         sendResponseDataFromOKXTOLocalWebSocketMessage(bytes);
@@ -81,7 +78,7 @@ public class WebSocketClient {
             public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
                 super.onOpen(webSocket, response);
                 isConnectedToOkxServer = true;
-                log.info("Websocket connection to OKX server opened.");
+                log.info("Websocket connection to OKX(" + natureOfURL + ") server opened.");
                 startPingTask();
             }
         });
@@ -98,32 +95,11 @@ public class WebSocketClient {
                 return;
             }
             if (jsonNode.get("event").asText().equals("error")) {
-                log.error("Received error : {}", jsonNode.asText());
+                log.error("Received error from OKX(" + natureOfURL + ") server : {}", jsonNode.asText());
                 return;
             }
         }
-        if (jsonNode.get("arg").has("channel")) {
-            if (jsonNode.get("arg").get("channel").asText().equals("sprd-books5")) {
-                jsonNode = jsonNode.get("data");
-                for (JsonNode i : jsonNode) {
-                     okxConnectionController.senMessageToLocalWebsocket("/topic/spreadTrading", i);
-                }
-                return;
-            }
-            if (jsonNode.get("arg").get("channel").asText().equals("sprd-tickers")) {
-                jsonNode = jsonNode.get("data");
-                for (JsonNode i : jsonNode) {
-                    okxConnectionController.senMessageToLocalWebsocket("/topic/tickers", i);
-                }
-                return;
-            }
-            if (jsonNode.get("arg").get("channel").asText().equals("sprd-public-trades")) {
-                jsonNode = jsonNode.get("data");
-                for (JsonNode i : jsonNode) {
-                    okxConnectionController.senMessageToLocalWebsocket("/topic/sprd-public-trades", i);
-                }
-            }
-        }
+        okxConnectionService.formatDataFromOKX(jsonNode);
     }
 
     public void startPingTask() {
@@ -131,7 +107,6 @@ public class WebSocketClient {
             if (!expectingPong) {
                 sendPing();
             } else {
-                // If 'pong' is not received within the expected time
                 handlePongNotReceived();
                 executorService.shutdown();
             }
@@ -148,15 +123,15 @@ public class WebSocketClient {
         this.connectToOkxServer();
     }
 
-    public void sendMessageToOkxServer(String str) {
+    public void sendToServer(String str) {
         if (null != webSocket) {
             if (webSocket.send(str)) {
-                log.info("{} sent to server successfully", str);
+                log.info("\n{} sent to server successfully", str);
                 return;
             }
-            log.warn("{} is not sent to server.", str);
+            log.error("\n{} not sent to server due to connection error.", str);
         } else {
-            log.warn("Please establish the connection before you operate it！");
+            log.warn("Please establish the connection before you sent to it！");
         }
     }
 }
