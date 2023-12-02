@@ -43,11 +43,20 @@ public class WebSocketClient {
                   creates a new single-threaded executor
                   that can schedule commands to run after a given delay or to execute periodically
                  */
-                ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-                executorService.scheduleAtFixedRate(() -> {
-                    webSocket.send("ping");
-                    System.out.println("Sent ping");
-                }, 0, 5, TimeUnit.SECONDS);
+                try {
+                    ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+                    executorService.scheduleAtFixedRate(() -> {
+                        webSocket.send("ping");
+                        System.out.println("Sent ping");
+                    }, 10, 20, TimeUnit.SECONDS);
+                }
+
+                catch(Exception e)
+                {
+                   e.printStackTrace();
+                }
+
+
             }
 
             @Override
@@ -145,23 +154,43 @@ public class WebSocketClient {
 
     }//connection method
 
-    public void subscribeBookChannel(String instrument,String channelName)
+
+    public void subscribePublicChannel(String instrument,String channelName)
     {
-            String str = "{\"op\": \"subscribe\", \"args\":[{\"channel\":\""+channelName+"\",\"instId\":\"" + instrument + "\"}]}";
+        String str = "{\"op\": \"subscribe\", \"args\":[{\"channel\":\""+channelName+"\",\"instId\":\"" + instrument + "\"}]}";
+        sendMessage(str);
+    }
+
+    public void subscribeToPrivateChannel(String channelName,String sprdId)
+    {
+        if(sprdId.equals("")) {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\"" + channelName + "\"}]}";
             sendMessage(str);
+        }
+        else if(sprdId!=null)
+        {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\",\"sprdId\":\""+sprdId+"\"}]}";
+            sendMessage(str);
+        }
     }
-
-    public void subscribeTradeChannel(String instrument,String channelName)
+    public void subcribeToPrivatePositionChannel(String channel,String instType,String instFamily,String instId)
     {
-        String str = "{\"op\": \"subscribe\", \"args\":[{\"channel\":\""+channelName+"\",\"instId\":\"" + instrument + "\"}]}";
+        String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channel+"\",\"instType\":\""+instType+"\",\"instFamily\":\""+instFamily+"\",\"instId\":\""+instId+"\"}]}";
+                         // "{\"op\":\"subscribe\",\"args\":[{\"channel\":\"positions\",\"instType\":\"FUTURES\",\"instFamily\":\"BTC-USD\",\"instId\":\"BTC-USD-200329\"}]}";
         sendMessage(str);
     }
 
-    public void subscribeTickerChannel(String instrument,String channelName)
+    public void subscribePrivateBalanceAndPosition(String channelName)
     {
-        String str = "{\"op\": \"subscribe\", \"args\":[{\"channel\":\""+channelName+"\",\"instId\":\"" + instrument + "\"}]}";
+        String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\"" +channelName+ "\"}]}";
         sendMessage(str);
     }
+
+//    public void subscribeToPrivateOrderChannel(String channelName,String sprdId)
+//    {
+//        String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\",\"sprdId\":\""+sprdId+"\"}]}";
+//        sendMessage(str);
+//    }
 
     public void sendMessage(String str)
     {

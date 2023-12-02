@@ -7,12 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.sample_Okx_Data.constants.MyAppConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 @SpringBootApplication
 public class SampleOkxDataApplication implements CommandLineRunner {
 
+	private static final Logger logger = LoggerFactory.getLogger(SampleOkxDataApplication.class);
 	ArrayList<String> bookChannelList =new ArrayList<>();
 	ArrayList<String> tradeChannelList=new ArrayList<>();
 
@@ -28,6 +32,7 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 	PrivateWebsocketConfig privateWebsocketConfig;
 
 
+
 	Scanner scanner=new Scanner(System.in);
 
 	public static void main(String[] args) {
@@ -40,6 +45,10 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 		System.out.println("You have two choices,select either 1 or 2");
 		System.out.println("1.okx public channels");
 		System.out.println("2.okx private channels");
+//		logger.info("\"You have two choices,select either 1 or 2\"");
+//		logger.info("\"1.okx public channels\"");
+//		logger.info("\"2.okx private channels\"");
+
 
 		String choice=scanner.next();
 
@@ -53,8 +62,8 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 		}
 		else if(choice.equals("2")) {
 			privateWebsocketConfig.loginConnect();
+			choiceBasePrivateChannelSelection();
 
-			//TO-DO
 		}
 
 	}
@@ -80,7 +89,7 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 					while(iterator.hasNext())
 					{
 						String instrument=iterator.next();
-						webSocketClient.subscribeBookChannel(instrument,"books");
+						webSocketClient.subscribePublicChannel(instrument,"books");
 					}
 
 					break;
@@ -91,7 +100,7 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 					while(iterator2.hasNext())
 					{
 						String instrument=iterator2.next();
-						webSocketClient.subscribeTradeChannel(instrument,"trades");
+						webSocketClient.subscribePublicChannel(instrument,"trades");
 					}
 
 					break;
@@ -102,7 +111,7 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 					while(iterator3.hasNext())
 					{
 						String instrument=iterator3.next();
-						webSocketClient.subscribeTickerChannel(instrument,"tickers");
+						webSocketClient.subscribePublicChannel(instrument,"tickers");
 					}
 					break;
 
@@ -119,24 +128,77 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 	}//choiceBaseChannelSelection method
 	private void bookchannel() {
 
-		bookChannelList.add("BTC-USDT");
-		bookChannelList.add("ETH-USDT");
-		bookChannelList.add("MATIC-USDT");
+		bookChannelList.add(MyAppConstants.btcUsdtPair);
+		bookChannelList.add(MyAppConstants.ethUsdtPair);
+		bookChannelList.add(MyAppConstants.maticUsdtPair);
 	}
 
 	public void tradeChannel()
 	{
-		tradeChannelList.add("BTC-USDT");
-		tradeChannelList.add("ETH-USDT");
-		tradeChannelList.add("MATIC-USDT");
+		tradeChannelList.add(MyAppConstants.btcUsdtPair);
+		tradeChannelList.add(MyAppConstants.ethUsdtPair);
+		tradeChannelList.add(MyAppConstants.maticUsdtPair);
 	}
 
 	public void tickerChannel()
 	{
-      tickerChannelList.add("BTC-USDT");
-	  tickerChannelList.add("ETH-USDT");
-	  tickerChannelList.add("MATIC-USDT");
+      tickerChannelList.add(MyAppConstants.btcUsdtPair);
+	  tickerChannelList.add(MyAppConstants.ethUsdtPair);
+	  tickerChannelList.add(MyAppConstants.maticUsdtPair);
 	}
 
+	public void choiceBasePrivateChannelSelection()
+	{
+		while(true)
+		{
+			System.out.println("Enter your choice number");
+
+			System.out.println("0.deposit info channel");
+			System.out.println("1.withdrawal info Channel");
+			System.out.println("2.position channel");
+			System.out.println("3.balance and position channel");
+			System.out.println("4.order channel");
+            System.out.println("5.trade channel");
+			System.out.println("6.LOGOUT");
+
+			int choice=scanner.nextInt();
+
+			switch(choice)
+			{
+				case 0:
+					webSocketClient.subscribeToPrivateChannel("deposit-info","");
+					break;
+
+				case 1:
+					webSocketClient.subscribeToPrivateChannel("withdrawal-info","");
+					break;
+
+				case 2:
+					webSocketClient.subcribeToPrivatePositionChannel("positions","FUTURES","BTC-USD","BTC-USD-200329");
+					break;
+
+				case 3:
+					webSocketClient.subscribePrivateBalanceAndPosition("balance_and_position");
+					break;
+
+				case 4:
+					webSocketClient.subscribeToPrivateChannel("sprd-orders","BTC-USDT_BTC-USDT-SWAP");
+					break;
+
+				case 5:
+					webSocketClient.subscribeToPrivateChannel("sprd-trades","BTC-USDT_BTC-USDT-SWAP");
+					break;
+
+
+				case 6:
+					return;
+
+				default:
+					System.out.println("Your choice is wrong!!");
+					break;
+
+			}
+		}
+	}
 
 }
