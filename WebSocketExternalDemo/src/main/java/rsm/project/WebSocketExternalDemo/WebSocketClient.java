@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rsm.project.WebSocketExternalDemo.service.OkxConnectionService;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

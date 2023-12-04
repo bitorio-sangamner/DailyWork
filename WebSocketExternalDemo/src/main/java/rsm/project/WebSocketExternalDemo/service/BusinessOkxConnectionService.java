@@ -1,4 +1,4 @@
-package rsm.project.WebSocketExternalDemo;
+package rsm.project.WebSocketExternalDemo.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import rsm.project.WebSocketExternalDemo.WebSocketClient;
 
 
 @Controller
@@ -22,12 +23,12 @@ public class BusinessOkxConnectionService implements OkxConnectionService {
     public void connect() {
         webSocketClient = new WebSocketClient("wss://ws.okx.com:8443/ws/v5/business","business", this);
         webSocketClient.connectToOkxServer();
-        send();
+        send("Hello");
     }
 
     @Override
-    public void send() {
-        String subscriptionMessage = """
+    public void send(String subscriptionMessage) {
+        subscriptionMessage = """
                 {
                    "op": "subscribe",
                    "args": [

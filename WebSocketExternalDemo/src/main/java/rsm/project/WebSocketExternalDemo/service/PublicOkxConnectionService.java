@@ -1,4 +1,4 @@
-package rsm.project.WebSocketExternalDemo;
+package rsm.project.WebSocketExternalDemo.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -7,10 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import rsm.project.WebSocketExternalDemo.WebSocketClient;
+
+import java.util.List;
 
 @Controller
 @Slf4j
-public class PublicOkxConnectionService implements OkxConnectionService{
+public class PublicOkxConnectionService implements OkxConnectionService {
 
     private WebSocketClient webSocketClient = null;
     @Autowired
@@ -20,23 +23,45 @@ public class PublicOkxConnectionService implements OkxConnectionService{
     public void connect() {
         webSocketClient = new WebSocketClient("wss://ws.okx.com:8443/ws/v5/public", "public", this);
         webSocketClient.connectToOkxServer();
-        send();
+        subscribeToBooksChannel(List.of("BTC-USDT"));
     }
 
     @Override
-    public void send() {
-        String subscriptionMessage = """
+    public void send(String subscriptionMessage) {
+        webSocketClient.sendToServer(subscriptionMessage);
+    }
+
+    public void subscribeToBooksChannel(List<String> swapCurrencies) {
+        if (swapCurrencies.isEmpty()) {
+            return;
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        String message = """
                 {
                    "op": "subscribe",
                    "args": [
-                      {
-                         "channel": "books",
-                         "instId": "BTC-USDT"
-                      }
+                      new
                    ]
                 }
                 """;
-        webSocketClient.sendToServer(subscriptionMessage);
+        String args = """
+                      {
+                         "channel": "books",
+                         "instId": "swap"
+                      }
+                """;
+        for (String i : swapCurrencies) {
+            args = """
+                      {
+                         "channel": "books",
+                         "instId": "swap"
+                      }
+                """;
+            args = args.replace("swap", i);
+        }
+        message = message.replace("new", args);
+        send(message);
     }
 
     @Override
