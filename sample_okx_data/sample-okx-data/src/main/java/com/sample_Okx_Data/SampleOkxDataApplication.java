@@ -1,5 +1,7 @@
 package com.sample_Okx_Data;
 
+import com.sample_Okx_Data.channelSelection.ChoiceBaseChannelSelection;
+import com.sample_Okx_Data.config.DemoTradingWebsocketConfig;
 import com.sample_Okx_Data.config.PrivateWebsocketConfig;
 import com.sample_Okx_Data.config.WebSocketClient;
 import com.sample_Okx_Data.config.WebSocketConfig;
@@ -21,6 +23,7 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 	ArrayList<String> tradeChannelList=new ArrayList<>();
 
 	ArrayList<String> tickerChannelList=new ArrayList<>();
+	ArrayList<String> currencyList=new ArrayList<>();
 
 	@Autowired
 	WebSocketConfig webSocketConfig;
@@ -30,6 +33,12 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 
 	@Autowired
 	PrivateWebsocketConfig privateWebsocketConfig;
+
+	@Autowired
+	DemoTradingWebsocketConfig demoTradingWebsocketConfig;
+
+	@Autowired
+	ChoiceBaseChannelSelection choiceBaseChannelSelection;
 
 
 
@@ -42,12 +51,10 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
         System.out.println("******************************************************************");
-		System.out.println("You have two choices,select either 1 or 2");
+		System.out.println("You have 3 choices,select either 1 or 2");
 		System.out.println("1.okx public channels");
 		System.out.println("2.okx private channels");
-//		logger.info("\"You have two choices,select either 1 or 2\"");
-//		logger.info("\"1.okx public channels\"");
-//		logger.info("\"2.okx private channels\"");
+		System.out.println("3.okx private demo trading channels");
 
 
 		String choice=scanner.next();
@@ -58,74 +65,23 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 			bookchannel();
 			tradeChannel();
 			tickerChannel();
-			choiceBaseChannelSelection();
+
+			choiceBaseChannelSelection.choiceBasePublicChannelSelection(bookChannelList,tradeChannelList,tickerChannelList);
 		}
 		else if(choice.equals("2")) {
 			privateWebsocketConfig.loginConnect();
-			choiceBasePrivateChannelSelection();
+			choiceBaseChannelSelection.choiceBasePrivateChannelSelection();
+		}
+		else if(choice.equals("3"))
+		{
+			demoTradingWebsocketConfig.loginConnect();
+			makeCuttencyList();
+			choiceBaseChannelSelection.demoPrivateChannelSelection(currencyList);
 
 		}
 
 	}
 
-	private void choiceBaseChannelSelection() {
-
-		while(true)
-		{
-			System.out.println("Enter your choice number");
-
-			System.out.println("0.Order Book Channel");
-			System.out.println("1.Trade Channel");
-			System.out.println("2.Ticker Channel");
-			System.out.println("3.LOGOUT");
-
-			int choice=scanner.nextInt();
-
-			switch(choice)
-			{
-				case 0:
-					Iterator<String> iterator= bookChannelList.iterator();
-
-					while(iterator.hasNext())
-					{
-						String instrument=iterator.next();
-						webSocketClient.subscribePublicChannel(instrument,"books");
-					}
-
-					break;
-
-				case 1:
-					Iterator<String> iterator2= tradeChannelList.iterator();
-
-					while(iterator2.hasNext())
-					{
-						String instrument=iterator2.next();
-						webSocketClient.subscribePublicChannel(instrument,"trades");
-					}
-
-					break;
-
-				case 2:
-					Iterator<String> iterator3=tickerChannelList.iterator();
-
-					while(iterator3.hasNext())
-					{
-						String instrument=iterator3.next();
-						webSocketClient.subscribePublicChannel(instrument,"tickers");
-					}
-					break;
-
-				case 3:
-					return;
-
-				default:
-					System.out.println("Your choice is wrong!!");
-
-
-
-			}
-		}
-	}//choiceBaseChannelSelection method
 	private void bookchannel() {
 
 		bookChannelList.add(MyAppConstants.btcUsdtPair);
@@ -147,58 +103,11 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 	  tickerChannelList.add(MyAppConstants.maticUsdtPair);
 	}
 
-	public void choiceBasePrivateChannelSelection()
+	public void makeCuttencyList()
 	{
-		while(true)
-		{
-			System.out.println("Enter your choice number");
-
-			System.out.println("0.deposit info channel");
-			System.out.println("1.withdrawal info Channel");
-			System.out.println("2.position channel");
-			System.out.println("3.balance and position channel");
-			System.out.println("4.order channel");
-            System.out.println("5.trade channel");
-			System.out.println("6.LOGOUT");
-
-			int choice=scanner.nextInt();
-
-			switch(choice)
-			{
-				case 0:
-					webSocketClient.subscribeToPrivateChannel("deposit-info","");
-					break;
-
-				case 1:
-					webSocketClient.subscribeToPrivateChannel("withdrawal-info","");
-					break;
-
-				case 2:
-					webSocketClient.subcribeToPrivatePositionChannel("positions","FUTURES","BTC-USD","BTC-USD-200329");
-					break;
-
-				case 3:
-					webSocketClient.subscribePrivateBalanceAndPosition("balance_and_position");
-					break;
-
-				case 4:
-					webSocketClient.subscribeToPrivateChannel("sprd-orders","BTC-USDT_BTC-USDT-SWAP");
-					break;
-
-				case 5:
-					webSocketClient.subscribeToPrivateChannel("sprd-trades","BTC-USDT_BTC-USDT-SWAP");
-					break;
-
-
-				case 6:
-					return;
-
-				default:
-					System.out.println("Your choice is wrong!!");
-					break;
-
-			}
-		}
+		currencyList.add(MyAppConstants.btcCurrency);
+		currencyList.add(MyAppConstants.ethCurrency);
+		currencyList.add(MyAppConstants.maticCurrency);
 	}
 
-}
+}//SampleOkxDataApplication

@@ -116,13 +116,21 @@ public class WebSocketClient {
                     System.out.println("**********************************************************************");
                 }
 
+                else if(text.contains("\"channel\":\"account\""))
+                {
+                   System.out.println("Received message:"+text);
+                    System.out.println("***********************************************************************");
+                }
+
                 else if(text.contains("pong"))
                 {
                     System.out.println("Received message: " + text);
+                    System.out.println("***********************************************************************");
                 }
                 else
                 {
                     System.out.println("Received message: " + text);
+                    System.out.println("************************************************************************");
                 }
 
 
@@ -186,11 +194,27 @@ public class WebSocketClient {
         sendMessage(str);
     }
 
-//    public void subscribeToPrivateOrderChannel(String channelName,String sprdId)
-//    {
-//        String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\",\"sprdId\":\""+sprdId+"\"}]}";
-//        sendMessage(str);
-//    }
+    public void subscribePrivateDemoTradingChannel(String channelName,String currency,String instType,String instFamily,String instId)
+    {
+        if(channelName.equals("account") && currency!=null && (instType==null ||instType=="") &&(instFamily==null ||instFamily=="")&&(instId==null ||instId=="")) {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\"" + channelName + "\",\"ccy\":\"" + currency + "\"}]}";
+            sendMessage(str);
+        }
+
+        else if((channelName.equals("positions")) &&(currency==null ||currency.equals("")))
+        {
+            if((instType.equals("FUTURES") ||instType.equals("OPTION") || instType.equals("SWAP") ||instType.equals("MARGIN")) && (instFamily!=null || !instFamily.equals("")) &&(instId!=null || !instId.equals("")))
+            {
+                String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\",\"instType\":\""+instType+"\",\"instFamily\":\""+instFamily+"\",\"instId\":\""+instId+"\"}]}";
+                sendMessage(str);
+            }
+        }
+        else if(channelName.equals("balance_and_position"))
+        {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\"}]}";
+            sendMessage(str);
+        }
+    }
 
     public void sendMessage(String str)
     {
