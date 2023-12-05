@@ -122,11 +122,18 @@ public class WebSocketClient {
                     System.out.println("***********************************************************************");
                 }
 
+                else if(text.contains("\"channel\":\"account-greeks\""))
+                {
+                    System.out.println("Received message: " + text);
+                    System.out.println("***********************************************************************");
+                }
+
                 else if(text.contains("pong"))
                 {
                     System.out.println("Received message: " + text);
                     System.out.println("***********************************************************************");
                 }
+
                 else
                 {
                     System.out.println("Received message: " + text);
@@ -194,7 +201,7 @@ public class WebSocketClient {
         sendMessage(str);
     }
 
-    public void subscribePrivateDemoTradingChannel(String channelName,String currency,String instType,String instFamily,String instId)
+    public void subscribePrivateDemoTradingChannel(String channelName,String currency,String instType,String instFamily,String instId,String sprdId)
     {
         if(channelName.equals("account") && currency!=null && (instType==null ||instType=="") &&(instFamily==null ||instFamily=="")&&(instId==null ||instId=="")) {
             String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\"" + channelName + "\",\"ccy\":\"" + currency + "\"}]}";
@@ -212,6 +219,48 @@ public class WebSocketClient {
         else if(channelName.equals("balance_and_position"))
         {
             String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\"}]}";
+            sendMessage(str);
+        }
+
+        else if(channelName.equals("liquidation-warning") && (instType.equals("SWAP") ||instType.equals("OPTION") || instType.equals("FUTURES") || instType.equals("MARGIN") || instType.equals("ANY")))
+        {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\",\"instType\":\""+instType+"\"}]}";
+            sendMessage(str);
+        }
+
+        else if(channelName.equals("account-greeks") &&(currency.equals("BTC") || currency.equals("ETH") || currency.equals("MATIC") || currency.equals("BNB") || currency.equals("OKB")))
+        {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\",\"ccy\":\""+currency+"\"}]}";
+            sendMessage(str);
+        }
+
+        else if(channelName.equals("rfqs") && (currency==null || currency.equals("")) &&(instType==null || instType.equals("")) && (instFamily==null || instFamily.equals("")) && (instId==null || instId.equals("")))
+        {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\"}]}";
+            sendMessage(str);
+        }
+
+        else if(channelName.equals("quotes") && (currency==null || currency.equals("")) &&(instType==null || instType.equals("")) && (instFamily==null || instFamily.equals("")) && (instId==null || instId.equals("")))
+        {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\"}]}";
+            sendMessage(str);
+        }
+
+        else if(channelName.equals("struc-block-trades")&& (currency==null || currency.equals("")) &&(instType==null || instType.equals("")) && (instFamily==null || instFamily.equals("")) && (instId==null || instId.equals("")))
+        {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\"}]}";
+            sendMessage(str);
+        }
+
+        else if(channelName.equals("sprd-orders") && (sprdId!=null || !sprdId.equals("") || sprdId!=null))
+        {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\",\"sprdId\":\""+sprdId+"\"}]}";
+            sendMessage(str);
+        }
+
+        else if(channelName.equals("sprd-trades") && (sprdId!=null || !sprdId.equals("") || sprdId!=null))
+        {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\",\"sprdId\":\""+sprdId+"\"}]}";
             sendMessage(str);
         }
     }

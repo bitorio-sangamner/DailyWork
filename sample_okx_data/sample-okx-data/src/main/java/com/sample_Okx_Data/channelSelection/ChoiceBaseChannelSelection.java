@@ -15,7 +15,9 @@ public class ChoiceBaseChannelSelection {
 
     @Autowired
     WebSocketClient webSocketClient;
-    public void demoPrivateChannelSelection(ArrayList<String> currencyList)
+
+    Iterator<String> itr;
+    public void demoPrivateChannelSelection(ArrayList<String> currencyList,ArrayList<String> instrumentTypeList)
     {
         while(true)
         {
@@ -24,6 +26,8 @@ public class ChoiceBaseChannelSelection {
             System.out.println("1.Account channel");
             System.out.println("2.Position channel");
             System.out.println("3.Balance and position channel");
+            System.out.println("4.Position risk warning channel");
+            System.out.println("5.Account greeks channel");
 
 
             System.out.println("6.LOGOUT");
@@ -33,19 +37,38 @@ public class ChoiceBaseChannelSelection {
             switch(choice)
             {
                 case 1:
-                    Iterator<String> itr=currencyList.iterator();
+                     itr=currencyList.iterator();
                     while(itr.hasNext()) {
-                        webSocketClient.subscribePrivateDemoTradingChannel("account",itr.next(),"","","");
+                        webSocketClient.subscribePrivateDemoTradingChannel("account",itr.next(),"","","","");
                     }
                     break;
 
                 case 2:
-                    webSocketClient.subscribePrivateDemoTradingChannel("positions","","FUTURES","BTC-USD","BTC-USD-200329");
+                    webSocketClient.subscribePrivateDemoTradingChannel("positions","","FUTURES","BTC-USD","BTC-USD-200329","");
                     break;
 
                 case 3:
-                    webSocketClient.subscribePrivateDemoTradingChannel("balance_and_position","","","","");
+                    webSocketClient.subscribePrivateDemoTradingChannel("balance_and_position","","","","","");
                     break;
+
+                case 4:
+                     itr=instrumentTypeList.iterator();
+                     while(itr.hasNext()) {
+
+                         webSocketClient.subscribePrivateDemoTradingChannel("liquidation-warning", "", itr.next(), "", "","");
+                     }
+                    break;
+
+                case 5:
+                    itr=currencyList.iterator();
+
+                    while(itr.hasNext()) {
+                        webSocketClient.subscribePrivateDemoTradingChannel("account-greeks", itr.next(), "", "", "","");
+                    }
+                    break;
+
+                case 6:
+                    return;
 
 
                 default:
@@ -54,6 +77,60 @@ public class ChoiceBaseChannelSelection {
             }
         }
     }//demoPrivateChannelSelection
+
+    public void demoPrivateChannelSelection2(ArrayList<String> spreadIdList)
+    {
+       while(true)
+       {
+           System.out.println("Enter your choice number");
+
+           System.out.println("1.Rfqs channel");
+           System.out.println("2.Quotes channel");
+           System.out.println("3.Structure block trades channel");
+           System.out.println("4.Order channel");
+           System.out.println("5.Trades channel");
+
+
+           System.out.println("7.LOGOUT");
+
+           int choice=sc.nextInt();
+
+           switch(choice)
+           {
+               case 1:
+                   webSocketClient.subscribePrivateDemoTradingChannel("rfqs","","","","","");
+                   break;
+
+               case 2:
+                   webSocketClient.subscribePrivateDemoTradingChannel("quotes","","","","","");
+                   break;
+
+               case 3:
+                   webSocketClient.subscribePrivateDemoTradingChannel("struc-block-trades","","","","","");
+                   break;
+
+               case 4:
+                   itr=spreadIdList.iterator();
+                   while(itr.hasNext()) {
+                       webSocketClient.subscribePrivateDemoTradingChannel("sprd-orders", "", "", "", "", itr.next());
+                   }
+                   break;
+
+               case 5:
+                   itr=spreadIdList.iterator();
+                   while(itr.hasNext()) {
+                       webSocketClient.subscribePrivateDemoTradingChannel("sprd-trades", "", "", "", "",itr.next());
+                   }
+                   break;
+
+
+
+               default:
+                   System.out.println("Your choice is wrong!!");
+
+           }
+       }
+    }
 
     public void choiceBasePublicChannelSelection(ArrayList<String> bookChannelList,ArrayList<String>tradeChannelList,ArrayList<String> tickerChannelList) {
 
