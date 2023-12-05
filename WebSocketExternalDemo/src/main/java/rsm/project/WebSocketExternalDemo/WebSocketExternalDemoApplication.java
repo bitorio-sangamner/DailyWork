@@ -8,10 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 public class WebSocketExternalDemoApplication {
 
-	public static void main(String[] args) { SpringApplication.run(WebSocketExternalDemoApplication.class, args);
-//		OkxConnectionService okxConnectionController = new OkxConnectionService();
-//		okxConnectionController.okxConnect();
-	}
+	public static void main(String[] args) { SpringApplication.run(WebSocketExternalDemoApplication.class, args); }
 }
 
 

@@ -23,11 +23,11 @@ public class BusinessOkxConnectionService implements OkxConnectionService {
     public void connect() {
         webSocketClient = new WebSocketClient("wss://ws.okx.com:8443/ws/v5/business","business", this);
         webSocketClient.connectToOkxServer();
-        send("Hello");
+        sendToServer("Hello");
     }
 
     @Override
-    public void send(String subscriptionMessage) {
+    public void sendToServer(String subscriptionMessage) {
         subscriptionMessage = """
                 {
                    "op": "subscribe",

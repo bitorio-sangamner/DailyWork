@@ -27,7 +27,7 @@ public class PublicOkxConnectionService implements OkxConnectionService {
     }
 
     @Override
-    public void send(String subscriptionMessage) {
+    public void sendToServer(String subscriptionMessage) {
         webSocketClient.sendToServer(subscriptionMessage);
     }
 
@@ -61,7 +61,7 @@ public class PublicOkxConnectionService implements OkxConnectionService {
             args = args.replace("swap", i);
         }
         message = message.replace("new", args);
-        send(message);
+        sendToServer(message);
     }
 
     @Override

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 public interface OkxConnectionService {
     void connect();
 
-    void send(String subscriptionMessage);
+    void sendToServer(String subscriptionMessage);
 
     void pushDataToLocalWebsocket(String topic, JsonNode jsonNode);
 

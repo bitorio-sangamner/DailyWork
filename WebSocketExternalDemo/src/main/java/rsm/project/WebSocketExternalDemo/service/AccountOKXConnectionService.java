@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.concurrent.CompletableFuture;
 
 @Controller
 @Slf4j
@@ -27,12 +28,47 @@ public class AccountOKXConnectionService implements OkxConnectionService{
     @MessageMapping("/connectToAccountOkx")
     public void connect() {
         webSocketClient = new WebSocketClient("wss://wspap.okx.com:8443/ws/v5/private?brokerId=9999", "account", this);
-        webSocketClient.connectToOkxServer();
-        send(null);
+//        webSocketClient.connectToOkxServer();
+        CompletableFuture<String> completableFuture = CompletableFuture.runAsync(() -> {
+            webSocketClient.connectToOkxServer();
+        }).thenApply(result -> {
+            log.info("inside thenApply");
+            loginToOKX(null);
+            return "null";
+        });
+        if (completableFuture.isDone()) {
+            subsribeToOrderChannel();
+        }
+//                .thenRunAsync(this::subsribeToOrderChannel);
     }
 
     @Override
-    public void send(String subscriptionMessage) {
+    public void sendToServer(String message) {
+        webSocketClient.sendToServer(message);
+    }
+
+    @Override
+    public void pushDataToLocalWebsocket(String topic, JsonNode jsonNode) {
+
+    }
+
+    @Override
+    public void formatDataFromOKX(JsonNode jsonNode) throws JsonProcessingException {
+        String subscriptionMessage = """
+                {
+                  "op": "subscribe",
+                  "args": [
+                    {
+                      "channel": "orders",
+                      "instType": "SPOT"
+                    }
+                  ]
+                }
+                """;
+        sendToServer(subscriptionMessage);
+    }
+
+    public void loginToOKX(String subscriptionMessage) {
         long time = System.currentTimeMillis() / 1000L;
         String loginMessage = """
                 {
@@ -59,28 +95,17 @@ public class AccountOKXConnectionService implements OkxConnectionService{
                 .replace("PASSPHRASE", PASSPHRASE)
                 .replace("TIME",String.valueOf(time))
                 .replace("SIGN", SIGN);
+        sendToServer(loginMessage);
 
-        webSocketClient.sendToServer(loginMessage);
-
-        String balanceMessage = """
-                {
-                    "op": "subscribe",
-                    "args": [{
-                        "channel": "balance_and_position"
-                    }]
-                }
-                """;
-        webSocketClient.sendToServer(balanceMessage);
-    }
-
-    @Override
-    public void pushDataToLocalWebsocket(String topic, JsonNode jsonNode) {
-
-    }
-
-    @Override
-    public void formatDataFromOKX(JsonNode jsonNode) throws JsonProcessingException {
-
+//        String balanceMessage = """
+//                {
+//                    "op": "subscribe",
+//                    "args": [{
+//                        "channel": "balance_and_position"
+//                    }]
+//                }
+//                """;
+//        sendToServer(balanceMessage);
     }
 
     private String calculateHMAC(String data) throws NoSuchAlgorithmException, InvalidKeyException {
@@ -90,5 +115,9 @@ public class AccountOKXConnectionService implements OkxConnectionService{
 
         byte[] hmacBytes = sha256Hmac.doFinal(data.getBytes(StandardCharsets.UTF_8));
         return Base64.getEncoder().encodeToString(hmacBytes);
+    }
+
+    private void subsribeToOrderChannel() {
+
     }
 }
