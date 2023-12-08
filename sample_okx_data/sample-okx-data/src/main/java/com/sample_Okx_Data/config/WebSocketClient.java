@@ -176,7 +176,7 @@ public class WebSocketClient {
         sendMessage(str);
     }
 
-    public void subscribeToPrivateChannel(String channelName,String sprdId)
+    public void subscribeToPrivateChannel(String channelName,String sprdId,String currency,String instType)
     {
         if(sprdId.equals("")) {
             String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\"" + channelName + "\"}]}";
@@ -185,6 +185,24 @@ public class WebSocketClient {
         else if(sprdId!=null)
         {
             String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\",\"sprdId\":\""+sprdId+"\"}]}";
+            sendMessage(str);
+        }
+
+        else if(channelName.equals("account") &&(currency!=null && !currency.equals("")))
+        {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\"" + channelName + "\",\"ccy\":\"" + currency + "\"}]}";
+            sendMessage(str);
+        }
+
+        else if(channelName.equals("liquidation-warning")&&(instType!=null && !instType.equals("")))
+        {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\",\"instType\":\""+instType+"\"}]}";
+            sendMessage(str);
+        }
+
+        else if(channelName.equals("account-greeks") && (currency!=null && !currency.equals("")))
+        {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\",\"ccy\":\""+currency+"\"}]}";
             sendMessage(str);
         }
     }
@@ -263,6 +281,52 @@ public class WebSocketClient {
             String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\",\"sprdId\":\""+sprdId+"\"}]}";
             sendMessage(str);
         }
+    }
+
+    //***************************************************************************************************
+
+    public void subscribedemoTradeApiChannel(String id,String operation,String sprdId,String clOrdId,String side,String orderType,String order_price,String size)
+    {
+        String str = "{\"id\":\""+id+"\",\"op\":\""+operation+"\",\"args\":[{\"sprdId\":\""+sprdId+"\",\"clOrdId\":\""+clOrdId+"\",\"side\":\""+side+"\",\"ordType\":\""+orderType+"\",\"px\":\""+order_price+"\",\"sz\":\""+size+"\"}]}";
+        sendMessage(str);
+
+    }
+
+    public void subscribePrivateDemoTradChannel(String id,String operation,String side,String instId,String tdMode,String ordType,String size,String Channel,String instType,String instFamily,String orderId,String Order_Price,String newSz)
+    {
+        if(Channel.equals("orders"))
+        {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+Channel+"\",\"instType\":\""+instType+"\",\"instFamily\":\""+instFamily+"\",\"instId\":\""+instId+"\"}]}";
+           // String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+Channel+"\",\"instType\":\""+instType+"\"}]}";
+
+            sendMessage(str);
+        }
+        else if(operation.equals("order") && (Order_Price==null ||Order_Price.equals(""))){
+            String str = "{\"id\":\""+id+"\",\"op\":\""+operation+"\",\"args\":[{\"side\":\""+side+"\",\"instId\":\""+instId+"\",\"tdMode\":\""+tdMode+"\",\"ordType\":\""+ordType+"\",\"sz\":\""+size+"\"}]}";
+            sendMessage(str);
+        }
+
+        else if(operation.equals("order") && (Order_Price!=null && !Order_Price.equals("")))
+        {
+            String str = "{\"id\":\""+id+"\",\"op\":\""+operation+"\",\"args\":[{\"side\":\""+side+"\",\"instId\":\""+instId+"\",\"tdMode\":\""+tdMode+"\",\"ordType\":\""+ordType+"\",\"sz\":\""+size+"\",\"px\":\""+Order_Price+"\"}]}";
+            sendMessage(str);
+        }
+
+        else if(operation.equals("cancel-order"))
+        {
+            String str = "{\"id\":\""+id+"\",\"op\":\""+operation+"\",\"args\":[{\"instId\":\""+instId+"\",\"ordId\":\""+orderId+"\"}]}";
+            sendMessage(str);
+        }
+        else if(operation.equals("amend-order"))
+        {
+            String str = "{\"id\":\""+id+"\",\"op\":\""+operation+"\",\"args\":[{\"instId\":\""+instId+"\",\"ordId\":\""+orderId+"\",\"newSz\":\""+newSz+"\"}]}";
+            sendMessage(str);
+
+        }
+
+
+
+
     }
 
     public void sendMessage(String str)

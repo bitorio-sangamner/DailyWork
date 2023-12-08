@@ -48,10 +48,15 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+
+		makeCuttencyList();
+		makeInstrumentTypeList();
+		makeSpreadIdList();
+
         System.out.println("******************************************************************");
-		System.out.println("You have 3 choices,select either 1 or 2");
+		System.out.println("You have 4 choices,select any one");
 		System.out.println("1.okx public channels");
-		System.out.println("2.okx private channels");
+		System.out.println("2.okx private channels(production side)");
 		System.out.println("3.okx private demo trading channels");
 		System.out.println("4.okx private demo trading channels(using other URL)");
 
@@ -69,20 +74,20 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 		}
 		else if(choice.equals("2")) {
 			privateWebsocketConfig.loginConnect();
-			choiceBaseChannelSelection.choiceBasePrivateChannelSelection();
+			choiceBaseChannelSelection.choiceBasePrivateChannelSelection(currencyList,instrumentTypeList);
 		}
 		else if(choice.equals("3"))
 		{
 			demoTradingWebsocketConfig.loginConnect();
-			makeCuttencyList();
-			makeInstrumentTypeList();
+//			makeCuttencyList();
+//			makeInstrumentTypeList();
 			choiceBaseChannelSelection.demoPrivateChannelSelection(currencyList,instrumentTypeList);
 
 		}
 		else if(choice.equals("4"))
 		{
 			demoTradingWebsocketConfig2.loginConnect();
-			makeSpreadIdList();
+//			makeSpreadIdList();
 			choiceBaseChannelSelection.demoPrivateChannelSelection2(spreadIdList);
 		}
 
