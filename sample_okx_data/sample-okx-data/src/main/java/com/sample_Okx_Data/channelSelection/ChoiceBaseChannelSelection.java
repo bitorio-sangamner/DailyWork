@@ -79,7 +79,7 @@ public class ChoiceBaseChannelSelection {
 
 
                 case 7:
-                    webSocketClient.subscribePrivateDemoTradChannel("1512","order","buy","OKB-USDT","isolated","market","1","","","","","","");
+                    webSocketClient.subscribePrivateDemoTradChannel("1512","order","buy","OKB-USDT","spot_isolated","market","1","","","","","","");
                     break;
 
                 case 8:
@@ -119,10 +119,12 @@ public class ChoiceBaseChannelSelection {
            System.out.println("4.Order channel(spread-order channel)");
            System.out.println("5.Trades channel");
            System.out.println("6.Place order"); //------>"msg":"You don't have permission to use this API endpoint"
+           System.out.println("7.Algo orders channel");//----->Wrong URL or channel:orders-algo,instType:FUTURES,instFamily:,instId: doesn't exist
+           System.out.println("8.Advance algo orders channel");//---->Wrong URL or channel:orders-algo,instType:FUTURES,instFamily:,instId: doesn't exist
+           System.out.println("9.Spot grid algo orders channel");
 
 
-
-           System.out.println("7.LOGOUT");
+           System.out.println("10.LOGOUT");
 
            int choice=sc.nextInt();
 
@@ -158,15 +160,21 @@ public class ChoiceBaseChannelSelection {
                    webSocketClient.subscribedemoTradeApiChannel("1412","sprd-order","OKB-USDT_OKB-USDT-SPOT","","buy","limit","10.15","1");
                    break;
 
-
-
-
-
                case 7:
+                   webSocketClient.subscribePrivateDemoAlgoTradChannel("orders-algo","FUTURES","","");
+                   break;
+
+               case 8:
+                   webSocketClient.subscribePrivateDemoAlgoTradChannel("algo-advance","SPOT","","");
+                   break;
+
+               case 9:
+                   webSocketClient.subscribePrivateDemoGridTradChannel("grid-orders-spot","SPOT");
+                   break;
+
+
+               case 10:
                    return;
-
-
-
 
                default:
                    System.out.println("Your choice is wrong!!");
@@ -175,64 +183,6 @@ public class ChoiceBaseChannelSelection {
        }
     }
 
-    public void choiceBasePublicChannelSelection(ArrayList<String> bookChannelList,ArrayList<String>tradeChannelList,ArrayList<String> tickerChannelList) {
-
-        while(true)
-        {
-            System.out.println("Enter your choice number");
-
-            System.out.println("0.Order Book Channel");
-            System.out.println("1.Trade Channel");
-            System.out.println("2.Ticker Channel");
-            System.out.println("3.LOGOUT");
-
-            int choice=sc.nextInt();
-
-            switch(choice)
-            {
-                case 0:
-                    Iterator<String> iterator= bookChannelList.iterator();
-
-                    while(iterator.hasNext())
-                    {
-                        String instrument=iterator.next();
-                        webSocketClient.subscribePublicChannel(instrument,"books");
-                    }
-
-                    break;
-
-                case 1:
-                    Iterator<String> iterator2= tradeChannelList.iterator();
-
-                    while(iterator2.hasNext())
-                    {
-                        String instrument=iterator2.next();
-                        webSocketClient.subscribePublicChannel(instrument,"trades");
-                    }
-
-                    break;
-
-                case 2:
-                    Iterator<String> iterator3=tickerChannelList.iterator();
-
-                    while(iterator3.hasNext())
-                    {
-                        String instrument=iterator3.next();
-                        webSocketClient.subscribePublicChannel(instrument,"tickers");
-                    }
-                    break;
-
-                case 3:
-                    return;
-
-                default:
-                    System.out.println("Your choice is wrong!!");
-
-
-
-            }
-        }
-    }//choiceBaseChannelSelection method
 
     public void choiceBasePrivateChannelSelection(ArrayList<String> currencyList,ArrayList<String> instrumentTypeList)
     {
@@ -251,27 +201,32 @@ public class ChoiceBaseChannelSelection {
 
             System.out.println("Enter your choice number");
 
-            System.out.println("0.deposit info channel");
-            System.out.println("1.withdrawal info Channel");
-            System.out.println("2.position channel");
-            System.out.println("3.balance and position channel");
-            System.out.println("4.order channel");
-            System.out.println("5.trade channel");
-            System.out.println("6.Account channel");
-            System.out.println("7.Position risk warning");
-            System.out.println("8.Account greeks channel");
-            System.out.println("9.LOGOUT");
+            System.out.println("0.deposit info channel");//--->Received message: {"event":"subscribe"
+            System.out.println("1.withdrawal info Channel");//--->Received message: {"event":"subscribe"
+            System.out.println("2.position channel");//----->"msg":"Wrong URL
+            System.out.println("3.balance and position channel");//---->"msg":"Wrong URL
+            System.out.println("4.order channel");//---->Received message: {"event":"subscribe"
+            System.out.println("5.trade channel");//--->Received message: {"event":"subscribe"
+            System.out.println("6.Account channel");//----->"msg":"Wrong URL
+            System.out.println("7.Position risk warning");//---->"msg":"Wrong URL
+            System.out.println("8.Account greeks channel");//---->"msg":"Wrong URL
+            System.out.println("9.Place order");//---->"msg":"Wrong URL
+
+            System.out.println("10.Rfqs channel");//--->Received message: {"event":"subscribe"
+            System.out.println("11.Quotes channel");//--->Received message: {"event":"subscribe"
+            System.out.println("12.Structure block trades channel");//--->Received message: {"event":"subscribe"
+            System.out.println("13.LOGOUT");
 
             int choice=sc.nextInt();
 
             switch(choice)
             {
                 case 0:
-                    webSocketClient.subscribeToPrivateChannel("deposit-info","","","");
+                    webSocketClient.subscribeToPrivateChannel("deposit-info","","","","","","","","","","");
                     break;
 
                 case 1:
-                    webSocketClient.subscribeToPrivateChannel("withdrawal-info","","","");
+                    webSocketClient.subscribeToPrivateChannel("withdrawal-info","","","","","","","","","","");
                     break;
 
                 case 2:
@@ -283,18 +238,18 @@ public class ChoiceBaseChannelSelection {
                     break;
 
                 case 4:
-                    webSocketClient.subscribeToPrivateChannel("sprd-orders","BTC-USDT_BTC-USDT-SWAP","","");
+                    webSocketClient.subscribeToPrivateChannel("sprd-orders","BTC-USDT_BTC-USDT-SWAP","","","","","","","","","");
                     break;
 
                 case 5:
-                    webSocketClient.subscribeToPrivateChannel("sprd-trades","BTC-USDT_BTC-USDT-SWAP","","");
+                    webSocketClient.subscribeToPrivateChannel("sprd-trades","BTC-USDT_BTC-USDT-SWAP","","","","","","","","","");
                     break;
 
                 case 6:
                     itr=currencyList.iterator();
                     while(itr.hasNext()) {
                         //System.out.println("Element:"+itr.next());
-                        webSocketClient.subscribeToPrivateChannel("account",itr.next(),"","");
+                        webSocketClient.subscribeToPrivateChannel("account",itr.next(),"","","","","","","","","");
                     }
                     break;
 
@@ -302,7 +257,7 @@ public class ChoiceBaseChannelSelection {
                     itr=instrumentTypeList.iterator();
                     while(itr.hasNext())
                     {
-                        webSocketClient.subscribeToPrivateChannel("liquidation-warning","","",itr.next());
+                        webSocketClient.subscribeToPrivateChannel("liquidation-warning","","",itr.next(),"","","","","","","");
                     }
                     break;
 
@@ -310,11 +265,28 @@ public class ChoiceBaseChannelSelection {
                     itr=currencyList.iterator();
                     while(itr.hasNext())
                     {
-                        webSocketClient.subscribeToPrivateChannel("account-greeks","",itr.next(),"");
+                        webSocketClient.subscribeToPrivateChannel("account-greeks","",itr.next(),"","","","","","","","");
                     }
                     break;
 
                 case 9:
+                    webSocketClient.subscribeToPrivateChannel("","","","","1213","order","buy","OKB-USDT","isolated","market","1");
+                    break;
+
+                case 10:
+                    webSocketClient.subscribeToPrivateChannel("rfqs","","","","","","","","","","");
+                    break;
+
+                case 11:
+                    webSocketClient.subscribeToPrivateChannel("quotes","","","","","","","","","","");
+                    break;
+
+                case 12:
+                    webSocketClient.subscribeToPrivateChannel("struc-block-trades","","","","","","","","","","");
+                    break;
+
+
+                case 13:
                     return;
 
                 default:
@@ -324,4 +296,107 @@ public class ChoiceBaseChannelSelection {
             }
         }
     }
+
+    public void productionBusinessWebsocketChannle(ArrayList<String> currencyList,ArrayList<String> instrumentTypeList)
+    {
+        while(true)
+        {
+
+            System.out.println("Enter your choice number");
+
+            System.out.println("0.deposit info channel");//--->Received message: {"event":"subscribe"
+            System.out.println("1.withdrawal info Channel");//--->Received message: {"event":"subscribe"
+            System.out.println("2.position channel");//----->"msg":"Wrong URL
+            System.out.println("3.balance and position channel");//---->"msg":"Wrong URL
+            System.out.println("4.order channel");//---->Received message: {"event":"subscribe"
+            System.out.println("5.trade channel");//--->Received message: {"event":"subscribe"
+            System.out.println("6.Account channel");//----->"msg":"Wrong URL
+            System.out.println("7.Position risk warning");//---->"msg":"Wrong URL
+            System.out.println("8.Account greeks channel");//---->"msg":"Wrong URL
+            System.out.println("9.Place order");//---->"msg":"Wrong URL
+
+            System.out.println("10.Rfqs channel");//--->Received message: {"event":"subscribe"
+            System.out.println("11.Quotes channel");//--->Received message: {"event":"subscribe"
+            System.out.println("12.Structure block trades channel");//--->Received message: {"event":"subscribe"
+            System.out.println("13.LOGOUT");
+
+            int choice=sc.nextInt();
+
+            switch(choice)
+            {
+                case 0:
+                    webSocketClient.subscribeToPrivateChannel("deposit-info","","","","","","","","","","");
+                    break;
+
+                case 1:
+                    webSocketClient.subscribeToPrivateChannel("withdrawal-info","","","","","","","","","","");
+                    break;
+
+                case 2:
+                    webSocketClient.subcribeToPrivatePositionChannel("positions","FUTURES","BTC-USD","BTC-USD-200329");
+                    break;
+
+                case 3:
+                    webSocketClient.subscribePrivateBalanceAndPosition("balance_and_position");
+                    break;
+
+                case 4:
+                    webSocketClient.subscribeToPrivateChannel("sprd-orders","BTC-USDT_BTC-USDT-SWAP","","","","","","","","","");
+                    break;
+
+                case 5:
+                    webSocketClient.subscribeToPrivateChannel("sprd-trades","BTC-USDT_BTC-USDT-SWAP","","","","","","","","","");
+                    break;
+
+                case 6:
+                    itr=currencyList.iterator();
+                    while(itr.hasNext()) {
+                        //System.out.println("Element:"+itr.next());
+                        webSocketClient.subscribeToPrivateChannel("account",itr.next(),"","","","","","","","","");
+                    }
+                    break;
+
+                case 7:
+                    itr=instrumentTypeList.iterator();
+                    while(itr.hasNext())
+                    {
+                        webSocketClient.subscribeToPrivateChannel("liquidation-warning","","",itr.next(),"","","","","","","");
+                    }
+                    break;
+
+                case 8:
+                    itr=currencyList.iterator();
+                    while(itr.hasNext())
+                    {
+                        webSocketClient.subscribeToPrivateChannel("account-greeks","",itr.next(),"","","","","","","","");
+                    }
+                    break;
+
+                case 9:
+                    webSocketClient.subscribeToPrivateChannel("","","","","1213","order","buy","OKB-USDT","isolated","market","1");
+                    break;
+
+                case 10:
+                    webSocketClient.subscribeToPrivateChannel("rfqs","","","","","","","","","","");
+                    break;
+
+                case 11:
+                    webSocketClient.subscribeToPrivateChannel("quotes","","","","","","","","","","");
+                    break;
+
+                case 12:
+                    webSocketClient.subscribeToPrivateChannel("struc-block-trades","","","","","","","","","","");
+                    break;
+
+
+                case 13:
+                    return;
+
+                default:
+                    System.out.println("Your choice is wrong!!");
+                    break;
+
+            }
+        }
+    }//method
 }

@@ -176,7 +176,7 @@ public class WebSocketClient {
         sendMessage(str);
     }
 
-    public void subscribeToPrivateChannel(String channelName,String sprdId,String currency,String instType)
+    public void subscribeToPrivateChannel(String channelName,String sprdId,String currency,String instType,String id,String operation,String side,String instId,String tdMode,String ordType,String size)
     {
         if(sprdId.equals("")) {
             String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\"" + channelName + "\"}]}";
@@ -204,6 +204,43 @@ public class WebSocketClient {
         {
             String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\",\"ccy\":\""+currency+"\"}]}";
             sendMessage(str);
+        }
+
+        else if(operation.equals("order"))
+        {
+            String str = "{" +
+                    "  \"id\": \""+id+"\"," +
+                    "  \"op\": \""+operation+"\"," +
+                    "  \"args\": [" +
+                    "    {" +
+                    "      \"side\": \""+side+"\"," +
+                    "      \"instId\": \""+instId+"\"," +
+                    "      \"tdMode\": \""+tdMode+"\"," +
+                    "      \"ordType\": \""+ordType+"\"," +
+                    "      \"sz\": \""+size+"\"" +
+                    "    }" +
+                    "  ]" +
+                    "}";
+
+            sendMessage(str);
+
+        }
+        else if(channelName.equals("rfqs"))
+        {
+            String str = "{\"op\": \"subscribe\", \"args\": [{\"channel\": \""+channelName+"\"}]}";
+            sendMessage(str);
+        }
+        else if(channelName.equals("quotes"))
+        {
+            String str= "{ \"op\": \"subscribe\", \"args\": [ { \"channel\": \""+channelName+"\" } ] }";
+            sendMessage(str);
+
+        }
+        else if(channelName.equals("struc-block-trades"))
+        {
+            String str = "{ \"op\": \"subscribe\", \"args\": [ { \"channel\": \""+channelName+"\" } ] }";
+            sendMessage(str);
+
         }
     }
     public void subcribeToPrivatePositionChannel(String channel,String instType,String instFamily,String instId)
@@ -323,10 +360,32 @@ public class WebSocketClient {
             sendMessage(str);
 
         }
+    }
 
+    //*******************************************************************************
 
+    public void subscribePrivateDemoAlgoTradChannel(String channelName,String instType,String instFamily,String instId)
+    {
+        if(channelName.equals("orders-algo")) {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\",\"instType\":\""+instType+"\",\"instFamily\":\""+instFamily+"\",\"instId\":\""+instId+"\"}]}";
+            sendMessage(str);
+        }
 
+        else if(channelName.equals("algo-advance"))
+        {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\",\"instType\":\""+instType+"\",\"instFamily\":\""+instFamily+"\",\"instId\":\""+instId+"\"}]}";
+            sendMessage(str);
+        }
+    }
 
+    //*******************************************************************************************************
+
+    public void subscribePrivateDemoGridTradChannel(String channelName,String instType)
+    {
+        if(channelName.equals("grid-orders-spot")) {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\",\"instType\":\""+instType+"\"}]}";
+            sendMessage(str);
+        }
     }
 
     public void sendMessage(String str)
