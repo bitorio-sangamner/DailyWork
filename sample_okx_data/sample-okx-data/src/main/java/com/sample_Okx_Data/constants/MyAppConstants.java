@@ -9,6 +9,7 @@ public class MyAppConstants {
     public static final String btcUsdtPair = "BTC-USDT";
     public static final String ethUsdtPair = "ETH-USDT";
     public static final String maticUsdtPair = "MATIC-USDT";
+    public static final String okbUsdtPair="OKB-USDT";
 
     //************************************************************
      //currencies

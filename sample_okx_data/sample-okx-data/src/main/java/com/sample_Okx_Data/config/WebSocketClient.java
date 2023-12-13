@@ -23,7 +23,6 @@ public class WebSocketClient {
     public void connection (String url){
         OkHttpClient client = new OkHttpClient();
 
-        // Replace the URL with your WebSocket server URL
         Request request = new Request.Builder().url(url).build();
 
         WebSocketListener webSocketListener = new WebSocketListener() {

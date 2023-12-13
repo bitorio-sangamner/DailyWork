@@ -1,7 +1,6 @@
 package com.sample_Okx_Data;
 
-import com.sample_Okx_Data.channelSelection.ChoiceBaseChannelSelection;
-import com.sample_Okx_Data.channelSelection.ChoiceBasePublicChannelSelection;
+import com.sample_Okx_Data.channelSelection.*;
 import com.sample_Okx_Data.config.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -28,18 +27,34 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 	WebSocketConfig webSocketConfig;
 
 	@Autowired
-	PrivateAwsWebsocketConfig privateWebsocketConfig;
+	BusinessAwsWebsocketConfig privateWebsocketConfig;
 
 	@Autowired
 	DemoTradingWebsocketConfig demoTradingWebsocketConfig;
 
 	@Autowired
 	DemoTradingWebsocketConfig2 demoTradingWebsocketConfig2;
+	@Autowired
+	PrivateProductionWebsocketConfig privateProductionWebsocketConfig;
+	@Autowired
+	PrivateAwsWebsocketConfig privateAwsWebsocketConfig;
 
 	@Autowired
 	ChoiceBaseChannelSelection choiceBaseChannelSelection;
 	@Autowired
 	ChoiceBasePublicChannelSelection choiceBasePublicChannelSelectionObj;
+
+	@Autowired
+	ChoiceBaseAwsBusinessWebsocketChannel choiceBaseAwsBusinessWebsocketChannelObj;
+
+	@Autowired
+	ChoiceBaseProductionBusinessWebsocketChannel choiceBaseProductionBusinessWebsocketChannelObj;
+
+	@Autowired
+	ChoiceBaseProductionPrivateWebsocketChannel choiceBaseProductionPrivateWebsocketChannelObj;
+
+	@Autowired
+	ChoiceBaseAwsPrivateWebsocketChannel choiceBaseAwsPrivateWebsocketChannelObj;
 
 	@Autowired
 	BusinessProductionTradingWebsocketConfig businessProductionTradingWebsocketConfig;
@@ -60,12 +75,14 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 		makeSpreadIdList();
 
         System.out.println("******************************************************************");
-		System.out.println("You have 5 choices,select any one");
+		System.out.println("You have 7 choices,select any one");
 		System.out.println("1.okx public channels(production side)");
 		System.out.println("2.okx private channels(AWS business websocket side)");
 		System.out.println("3.okx private channel(Production business websocket side)");
-		System.out.println("4.okx private demo trading channels");
-		System.out.println("5.okx private demo trading channels(using other URL)");
+		System.out.println("4.okx private channel(Production private websocket side)");
+		System.out.println("5.okx private channel(AWS private websocket side)");
+		System.out.println("6.okx private demo trading channels");
+		System.out.println("7.okx private demo trading channels(using other URL)");
 
 
 		String choice=scanner.next();
@@ -77,21 +94,31 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 			tradeChannel();
 			tickerChannel();
 
-			//choiceBaseChannelSelection.choiceBasePublicChannelSelection(bookChannelList,tradeChannelList,tickerChannelList);
 			choiceBasePublicChannelSelectionObj.choiceBasePublicChannelSelection(bookChannelList,tradeChannelList,tickerChannelList);
 
 		}
 		else if(choice.equals("2")) {
 			privateWebsocketConfig.loginConnect();
-			choiceBaseChannelSelection.choiceBasePrivateChannelSelection(currencyList,instrumentTypeList);
+			choiceBaseAwsBusinessWebsocketChannelObj.choiceBaseAwsBusinessWebsocketChannelSelection(currencyList,instrumentTypeList);
 		}
 
 		else if(choice.equals("3"))
 		{
 			businessProductionTradingWebsocketConfig.loginConnect();
-			choiceBaseChannelSelection.productionBusinessWebsocketChannle(currencyList,instrumentTypeList);
+			choiceBaseProductionBusinessWebsocketChannelObj.productionBusinessWebsocketChannle(currencyList,instrumentTypeList);
 		}
 		else if(choice.equals("4"))
+		{
+			privateProductionWebsocketConfig.loginConnect();
+			choiceBaseProductionPrivateWebsocketChannelObj.choiceBaseProductionPrivateWebsocketChannel(currencyList,instrumentTypeList);
+		}
+
+		else if(choice.equals("5"))
+		{
+			privateAwsWebsocketConfig.loginConnect();
+			choiceBaseAwsPrivateWebsocketChannelObj.choiceBaseAwsPrivateWebsocketChannel(currencyList,instrumentTypeList);
+		}
+		else if(choice.equals("6"))
 		{
 			demoTradingWebsocketConfig.loginConnect();
 //			makeCuttencyList();
@@ -99,7 +126,7 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 			choiceBaseChannelSelection.demoPrivateChannelSelection(currencyList,instrumentTypeList);
 
 		}
-		else if(choice.equals("5"))
+		else if(choice.equals("7"))
 		{
 			demoTradingWebsocketConfig2.loginConnect();
 //			makeSpreadIdList();
@@ -113,6 +140,7 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 		bookChannelList.add(MyAppConstants.btcUsdtPair);
 		bookChannelList.add(MyAppConstants.ethUsdtPair);
 		bookChannelList.add(MyAppConstants.maticUsdtPair);
+		bookChannelList.add(MyAppConstants.okbUsdtPair);
 	}
 
 	public void tradeChannel()
@@ -120,6 +148,7 @@ public class SampleOkxDataApplication implements CommandLineRunner {
 		tradeChannelList.add(MyAppConstants.btcUsdtPair);
 		tradeChannelList.add(MyAppConstants.ethUsdtPair);
 		tradeChannelList.add(MyAppConstants.maticUsdtPair);
+		tradeChannelList.add(MyAppConstants.okbUsdtPair);
 	}
 
 	public void tickerChannel()
@@ -127,6 +156,7 @@ public class SampleOkxDataApplication implements CommandLineRunner {
       tickerChannelList.add(MyAppConstants.btcUsdtPair);
 	  tickerChannelList.add(MyAppConstants.ethUsdtPair);
 	  tickerChannelList.add(MyAppConstants.maticUsdtPair);
+	  tickerChannelList.add(MyAppConstants.okbUsdtPair);
 	}
 
 	public void makeCuttencyList()
