@@ -38,4 +38,16 @@ public class TradeService {
         jsonObject=tradeAPIService.cancelOrder(cancelOrderObj);
         return jsonObject;
     }
+
+    public JSONObject getOrderList()
+    {
+        jsonObject=tradeAPIService.getOrderList("","","","","","","","","");
+        return jsonObject;
+    }
+
+    public JSONObject getSpotOrderHistoryOfLast7Days()
+    {
+        jsonObject=tradeAPIService.getOrderHistory7days("SPOT","","","","","","","","","","","");
+        return jsonObject;
+    }
 }

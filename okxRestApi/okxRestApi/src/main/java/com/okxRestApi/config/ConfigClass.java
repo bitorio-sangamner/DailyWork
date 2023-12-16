@@ -1,6 +1,8 @@
 package com.okxRestApi.config;
 
 import com.okex.open.api.config.APIConfiguration;
+import com.okex.open.api.service.publicData.PublicDataAPIService;
+import com.okex.open.api.service.publicData.impl.PublicDataAPIServiceImpl;
 import com.okex.open.api.service.trade.TradeAPIService;
 import com.okex.open.api.service.trade.impl.TradeAPIServiceImpl;
 import org.springframework.context.annotation.Bean;
@@ -29,5 +31,11 @@ public class ConfigClass {
     public TradeAPIService TradeApiService(APIConfiguration config)
     {
        return new TradeAPIServiceImpl(config);
+    }
+
+    @Bean
+    public PublicDataAPIService PublicDataAPIService(APIConfiguration config)
+    {
+        return new PublicDataAPIServiceImpl(config);
     }
 }
