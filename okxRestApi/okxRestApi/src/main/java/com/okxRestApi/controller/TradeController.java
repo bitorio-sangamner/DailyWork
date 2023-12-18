@@ -3,6 +3,7 @@ package com.okxRestApi.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.okex.open.api.bean.trade.param.AmendOrder;
 import com.okex.open.api.bean.trade.param.CancelOrder;
+import com.okex.open.api.bean.trade.param.ClosePositions;
 import com.okex.open.api.bean.trade.param.PlaceOrder;
 import com.okex.open.api.exception.APIException;
 import com.okxRestApi.service.PublicDataService;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class TradeController {
 
@@ -23,14 +26,10 @@ public class TradeController {
 
     @Autowired
     PublicDataService publicDataService;
-    JSONObject jsonObject=new JSONObject();
 
-    @GetMapping("/getInstruments")
-    public ResponseEntity<Object> getInstruments()
-    {
-        jsonObject=publicDataService.getInstrumentData();
-        return new ResponseEntity<>(jsonObject,HttpStatus.OK);
-    }
+    @Autowired
+    JSONObject jsonObject;
+
 
     @PostMapping("/placeOrderOnOkx")
     public ResponseEntity<Object> placeOrderOnOkx(@RequestBody PlaceOrder orderObj)
@@ -109,11 +108,11 @@ public class TradeController {
         }
     }
 
-    @GetMapping("/getSpotOrderHistoryLast7Days")
-    public ResponseEntity<Object> getSpotOrderHistoryOfLast7Day()
+    @PostMapping("/closePosition")
+    public ResponseEntity<Object> closePositionFromOkx(@RequestBody ClosePositions closePositionsObj)
     {
         try {
-            jsonObject = tradeService.getSpotOrderHistoryOfLast7Days();
+            jsonObject = tradeService.closePositionFromOkx(closePositionsObj);
             return new ResponseEntity<>(jsonObject, HttpStatus.OK);
         }
         catch(APIException e)
@@ -121,6 +120,39 @@ public class TradeController {
             jsonObject.put("message",e.getMessage());
             return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+
+    @GetMapping("/getSpotOrderHistoryLast7Days")
+    public ResponseEntity<Object> getSpotOrderHistoryOfLast7Day(@RequestBody JSONObject json)
+    {
+        try {
+            String instrumentType = json.getString("instType");
+
+            jsonObject = tradeService.getSpotOrderHistoryOfLast7Days(instrumentType);
+            return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+        }
+        catch(APIException e)
+        {
+            jsonObject.put("message",e.getMessage());
+            return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/placeMultipleOrdersOnOkx")
+    public ResponseEntity<Object> placeMultipleOrders(@RequestBody List<PlaceOrder> ordersList)
+    {
+       try
+       {
+          jsonObject=tradeService.placeMultipleOrders(ordersList);
+          return new ResponseEntity<>(jsonObject,HttpStatus.OK);
+       }
+       catch(APIException e)
+       {
+          jsonObject.put("message",e.getMessage());
+          return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
+       }
+
     }
 
 

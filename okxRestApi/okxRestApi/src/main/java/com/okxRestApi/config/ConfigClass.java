@@ -1,10 +1,14 @@
 package com.okxRestApi.config;
 
+import com.alibaba.fastjson.JSONObject;
 import com.okex.open.api.config.APIConfiguration;
+import com.okex.open.api.service.account.AccountAPIService;
+import com.okex.open.api.service.account.impl.AccountAPIServiceImpl;
 import com.okex.open.api.service.publicData.PublicDataAPIService;
 import com.okex.open.api.service.publicData.impl.PublicDataAPIServiceImpl;
 import com.okex.open.api.service.trade.TradeAPIService;
 import com.okex.open.api.service.trade.impl.TradeAPIServiceImpl;
+import com.okxRestApi.service.AccountDataService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -37,5 +41,16 @@ public class ConfigClass {
     public PublicDataAPIService PublicDataAPIService(APIConfiguration config)
     {
         return new PublicDataAPIServiceImpl(config);
+    }
+
+    @Bean
+    public AccountAPIService accountAPIService(APIConfiguration config)
+    {
+        return new AccountAPIServiceImpl(config);
+    }
+
+    @Bean
+    public JSONObject jsonObject() {
+        return new JSONObject();
     }
 }
