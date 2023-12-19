@@ -61,6 +61,12 @@ public class TradeService {
         return jsonObject;
     }
 
+    public JSONObject getFutureOrderHistoryOfLast7Days(String instrumentType)
+    {
+        jsonObject=tradeAPIService.getOrderHistory7days(instrumentType,"","","","","","","","","","","");
+        return jsonObject;
+    }
+
     public JSONObject placeMultipleOrders(List<PlaceOrder> orderList)
     {
         jsonObject=tradeAPIService.placeMultipleOrders(orderList);

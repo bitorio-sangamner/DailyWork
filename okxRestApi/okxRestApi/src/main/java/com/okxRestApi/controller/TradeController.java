@@ -139,6 +139,21 @@ public class TradeController {
         }
     }
 
+    @GetMapping("/getFutureOrderHistoryLast7Days")
+    public ResponseEntity<Object> getFutureOrderHistoryOfLast7Day(@RequestBody JSONObject json)
+    {
+        try {
+            String instrumentType = json.getString("instType");
+            jsonObject = tradeService.getFutureOrderHistoryOfLast7Days(instrumentType);
+            return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+        }
+        catch(APIException e)
+        {
+            jsonObject.put("message",e.getMessage());
+            return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("/placeMultipleOrdersOnOkx")
     public ResponseEntity<Object> placeMultipleOrders(@RequestBody List<PlaceOrder> ordersList)
     {

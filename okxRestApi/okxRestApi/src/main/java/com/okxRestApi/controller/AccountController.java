@@ -41,5 +41,24 @@ public class AccountController {
           return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
        }
    }
+
+   @GetMapping("/getLeverage")
+    public ResponseEntity<Object> getLeverage(@RequestBody JSONObject json)
+   {
+       try
+       {
+          String instrumentID=json.getString("instId");
+          String marginmode=json.getString("mgnMode");
+
+           jsonObject=accountDataService.getLeverage(instrumentID,marginmode);
+           return new ResponseEntity<>(jsonObject,HttpStatus.OK);
+
+       }
+       catch(APIException e)
+       {
+          jsonObject.put("message",e.getMessage());
+          return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
+       }
+   }
 }
 

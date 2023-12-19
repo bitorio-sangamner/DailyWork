@@ -27,4 +27,10 @@ public class AccountDataService {
         jsonObject=accountDataService.getPositions("","","");
         return jsonObject;
     }
+
+    public JSONObject getLeverage(String instId,String marginMode)
+    {
+        jsonObject=accountDataService.getLeverage(instId,marginMode);
+        return jsonObject;
+    }
 }
