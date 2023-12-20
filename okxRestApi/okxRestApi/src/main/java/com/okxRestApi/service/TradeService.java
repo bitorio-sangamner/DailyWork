@@ -67,6 +67,17 @@ public class TradeService {
         return jsonObject;
     }
 
+    public JSONObject getSpotOrderHistoryOfLast3Months(String instrumentType)
+    {
+        jsonObject=tradeAPIService.getOrderHistory3months(instrumentType,"","","","","","","","","","","");
+        return jsonObject;
+    }
+
+    public JSONObject getFutureOrderHistoryOfLast3Months(String instrumentType)
+    {
+        jsonObject=tradeAPIService.getOrderHistory3months(instrumentType,"","","","","","","","","","","");
+        return jsonObject;
+    }
     public JSONObject placeMultipleOrders(List<PlaceOrder> orderList)
     {
         jsonObject=tradeAPIService.placeMultipleOrders(orderList);

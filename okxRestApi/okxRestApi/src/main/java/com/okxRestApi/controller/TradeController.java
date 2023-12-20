@@ -36,7 +36,6 @@ public class TradeController {
     {
         try {
             jsonObject = tradeService.placeOrderOnOkx(orderObj);
-
             return new ResponseEntity<>(jsonObject, HttpStatus.OK);
         }
         catch(APIException e)
@@ -152,6 +151,40 @@ public class TradeController {
             jsonObject.put("message",e.getMessage());
             return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/getSpotOrderHistoryLast3Months")
+    public ResponseEntity<Object> getSpotOrderHistoryLast3Days(@RequestBody JSONObject json)
+    {
+       try
+       {
+          String instrumentType=json.getString("instType");
+          jsonObject=tradeService.getSpotOrderHistoryOfLast3Months(instrumentType);
+          return new ResponseEntity<>(jsonObject,HttpStatus.OK);
+       }
+       catch(APIException e)
+       {
+          jsonObject.put("message",e.getMessage());
+          return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
+       }
+    }
+
+    @GetMapping("/getFutureOrderHistoryLast3Months")
+    public ResponseEntity<Object> getFutureOrderHistoryLast3Months(@RequestBody JSONObject json)
+    {
+       try
+       {
+          String instrumentType=json.getString("instType");
+           jsonObject=tradeService.getFutureOrderHistoryOfLast3Months(instrumentType);
+
+           return new ResponseEntity<>(jsonObject,HttpStatus.OK);
+
+       }
+       catch(APIException e)
+       {
+          jsonObject.put("message",e.getMessage());
+          return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
+       }
     }
 
     @PostMapping("/placeMultipleOrdersOnOkx")
