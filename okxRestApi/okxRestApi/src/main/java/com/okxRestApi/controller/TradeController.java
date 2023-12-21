@@ -1,5 +1,6 @@
 package com.okxRestApi.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.okex.open.api.bean.trade.param.AmendOrder;
 import com.okex.open.api.bean.trade.param.CancelOrder;
@@ -36,7 +37,23 @@ public class TradeController {
     {
         try {
             jsonObject = tradeService.placeOrderOnOkx(orderObj);
-            return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+            // Get the "data" array
+            JSONArray dataArray = jsonObject.getJSONArray("data");
+
+            // Get the first object in the array
+            JSONObject dataObject = dataArray.getJSONObject(0);
+            // Get the value of "sMsg"
+            String sMsgValue = dataObject.getString("sMsg");
+
+            System.out.println("message:"+sMsgValue);
+
+            if(!sMsgValue.equals("Order placed"))
+            {
+                dataObject.put("status",HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(jsonObject,HttpStatus.BAD_REQUEST);
+            }
+            dataObject.put("status",HttpStatus.CREATED);
+            return new ResponseEntity<>(jsonObject, HttpStatus.CREATED);
         }
         catch(APIException e)
         {
@@ -44,7 +61,7 @@ public class TradeController {
             jsonObject.put("message",e.getMessage());
             return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
+    }//placeOrderOnOkx
 
     @GetMapping("/orderDetails")
     public ResponseEntity<Object> getOrderDetailsFromOkx(@RequestBody JSONObject json)
@@ -55,7 +72,17 @@ public class TradeController {
             String clientOrderId = json.getString("clOrdId");
 
             jsonObject = tradeService.getOrderDetails(instrumentId, orderId, clientOrderId);
-            return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+
+            String msg=jsonObject.getString("msg");
+            System.out.println("message:"+msg);
+
+            if(jsonObject.get("msg").equals(""))
+            {
+                jsonObject.put("status",HttpStatus.FOUND);
+                return new ResponseEntity<>(jsonObject,HttpStatus.FOUND);
+            }
+            jsonObject.put("status",HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(jsonObject, HttpStatus.NOT_ACCEPTABLE);
         }
         catch(APIException e)
         {
@@ -70,7 +97,14 @@ public class TradeController {
     {
         try {
             jsonObject = tradeService.amendOrder(amendOrderObj);
-            return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+
+            if(jsonObject.get("msg").equals(""))
+            {
+                jsonObject.put("status",HttpStatus.OK);
+                return new ResponseEntity<>(jsonObject,HttpStatus.OK);
+            }
+            jsonObject.put("status",HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(jsonObject, HttpStatus.NOT_ACCEPTABLE);
         }
         catch(APIException e)
         {
@@ -84,7 +118,14 @@ public class TradeController {
     {
         try {
             jsonObject = tradeService.cancelOrderFromOkx(cancelOrderObj);
-            return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+            if(jsonObject.get("msg").equals(""))
+            {
+                jsonObject.put("status",HttpStatus.OK);
+                return new ResponseEntity<>(jsonObject,HttpStatus.OK);
+            }
+
+            jsonObject.put("status",HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(jsonObject, HttpStatus.NOT_ACCEPTABLE);
         }
         catch(APIException e)
         {
