@@ -31,6 +31,10 @@ public class TradeController {
     @Autowired
     JSONObject jsonObject;
 
+    // Constant for the "status" key
+    private static final String STATUS_KEY = "status";
+    private static final String MESSAGE_KEY="message";
+
 
     @PostMapping("/placeOrderOnOkx")
     public ResponseEntity<Object> placeOrderOnOkx(@RequestBody PlaceOrder orderObj)
@@ -49,16 +53,16 @@ public class TradeController {
 
             if(!sMsgValue.equals("Order placed"))
             {
-                dataObject.put("status",HttpStatus.BAD_REQUEST);
+                dataObject.put(STATUS_KEY,HttpStatus.BAD_REQUEST);
                 return new ResponseEntity<>(jsonObject,HttpStatus.BAD_REQUEST);
             }
-            dataObject.put("status",HttpStatus.CREATED);
+            dataObject.put(STATUS_KEY,HttpStatus.CREATED);
             return new ResponseEntity<>(jsonObject, HttpStatus.CREATED);
         }
         catch(APIException e)
         {
 
-            jsonObject.put("message",e.getMessage());
+            jsonObject.put(MESSAGE_KEY,e.getMessage());
             return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }//placeOrderOnOkx
@@ -78,16 +82,16 @@ public class TradeController {
 
             if(jsonObject.get("msg").equals(""))
             {
-                jsonObject.put("status",HttpStatus.FOUND);
+                jsonObject.put(STATUS_KEY,HttpStatus.FOUND);
                 return new ResponseEntity<>(jsonObject,HttpStatus.FOUND);
             }
-            jsonObject.put("status",HttpStatus.NOT_ACCEPTABLE);
+            jsonObject.put(STATUS_KEY,HttpStatus.NOT_ACCEPTABLE);
             return new ResponseEntity<>(jsonObject, HttpStatus.NOT_ACCEPTABLE);
         }
         catch(APIException e)
         {
 
-            jsonObject.put("message",e.getMessage());
+            jsonObject.put(MESSAGE_KEY,e.getMessage());
             return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -100,15 +104,15 @@ public class TradeController {
 
             if(jsonObject.get("msg").equals(""))
             {
-                jsonObject.put("status",HttpStatus.OK);
+                jsonObject.put(STATUS_KEY,HttpStatus.OK);
                 return new ResponseEntity<>(jsonObject,HttpStatus.OK);
             }
-            jsonObject.put("status",HttpStatus.NOT_ACCEPTABLE);
+            jsonObject.put(STATUS_KEY,HttpStatus.NOT_ACCEPTABLE);
             return new ResponseEntity<>(jsonObject, HttpStatus.NOT_ACCEPTABLE);
         }
         catch(APIException e)
         {
-            jsonObject.put("message",e.getMessage());
+            jsonObject.put(MESSAGE_KEY,e.getMessage());
             return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -120,16 +124,16 @@ public class TradeController {
             jsonObject = tradeService.cancelOrderFromOkx(cancelOrderObj);
             if(jsonObject.get("msg").equals(""))
             {
-                jsonObject.put("status",HttpStatus.OK);
+                jsonObject.put(STATUS_KEY,HttpStatus.OK);
                 return new ResponseEntity<>(jsonObject,HttpStatus.OK);
             }
 
-            jsonObject.put("status",HttpStatus.NOT_ACCEPTABLE);
+            jsonObject.put(STATUS_KEY,HttpStatus.NOT_ACCEPTABLE);
             return new ResponseEntity<>(jsonObject, HttpStatus.NOT_ACCEPTABLE);
         }
         catch(APIException e)
         {
-            jsonObject.put("message",e.getMessage());
+            jsonObject.put(MESSAGE_KEY,e.getMessage());
             return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -143,7 +147,7 @@ public class TradeController {
         }
         catch(APIException e)
         {
-            jsonObject.put("message",e.getMessage());
+            jsonObject.put(MESSAGE_KEY,e.getMessage());
             return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -157,7 +161,7 @@ public class TradeController {
         }
         catch(APIException e)
         {
-            jsonObject.put("message",e.getMessage());
+            jsonObject.put(MESSAGE_KEY,e.getMessage());
             return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -174,7 +178,7 @@ public class TradeController {
         }
         catch(APIException e)
         {
-            jsonObject.put("message",e.getMessage());
+            jsonObject.put(MESSAGE_KEY,e.getMessage());
             return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -189,7 +193,7 @@ public class TradeController {
         }
         catch(APIException e)
         {
-            jsonObject.put("message",e.getMessage());
+            jsonObject.put(MESSAGE_KEY,e.getMessage());
             return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -205,7 +209,7 @@ public class TradeController {
        }
        catch(APIException e)
        {
-          jsonObject.put("message",e.getMessage());
+          jsonObject.put(MESSAGE_KEY,e.getMessage());
           return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
        }
     }
@@ -223,7 +227,7 @@ public class TradeController {
        }
        catch(APIException e)
        {
-          jsonObject.put("message",e.getMessage());
+          jsonObject.put(MESSAGE_KEY,e.getMessage());
           return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
        }
     }
@@ -238,7 +242,7 @@ public class TradeController {
        }
        catch(APIException e)
        {
-          jsonObject.put("message",e.getMessage());
+          jsonObject.put(MESSAGE_KEY,e.getMessage());
           return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
        }
 

@@ -15,9 +15,6 @@ public class PublicDataService {
     PublicDataAPIService publicDataAPIService;
 
     @Autowired
-    AccountAPIService  accountAPIService;
-
-    @Autowired
     JSONObject jsonObject;
 
     public JSONObject getInstrumentData(String instrumentType)

@@ -17,6 +17,8 @@ public class PublicDataController {
     JSONObject jsonObject;
     @Autowired
     PublicDataService publicDataService;
+
+    private static final String MESSAGE_KEY="message";
     @GetMapping("/getInstrumentData")
     public ResponseEntity<Object> getFutureInstrumentData(@RequestBody JSONObject json)
     {
@@ -27,7 +29,7 @@ public class PublicDataController {
         }
         catch(APIException e)
         {
-            jsonObject.put("message",e.getMessage());
+            jsonObject.put(MESSAGE_KEY,e.getMessage());
             return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -35,7 +37,14 @@ public class PublicDataController {
     @GetMapping("/getSpotInstrumentData")
     public ResponseEntity<Object> getSpotInstrumentData()
     {
-        jsonObject=publicDataService.getSpotInstrumentData();
-        return new ResponseEntity<>(jsonObject,HttpStatus.OK);
+        try {
+            jsonObject = publicDataService.getSpotInstrumentData();
+            return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+        }
+        catch(APIException e)
+        {
+            jsonObject.put(MESSAGE_KEY,e.getMessage());
+            return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

@@ -1,11 +1,13 @@
 package com.okxRestApi.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.okex.open.api.bean.trade.param.AmendAlgos;
 import com.okex.open.api.bean.trade.param.CancelAlgoOrder;
 import com.okex.open.api.bean.trade.param.PlaceAlgoOrder;
 import com.okex.open.api.service.trade.TradeAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -34,5 +36,11 @@ public class AlgoOrderService {
     {
         jsonObject=tradeAPIService.cancelAlgoOrder(cancelAlgoOrderObj);
         return jsonObject;
+    }
+
+    public JSONObject amendAlgoOrder(AmendAlgos amendAlgosObj)
+    {
+       jsonObject=tradeAPIService.amendAlgos(amendAlgosObj);
+       return jsonObject;
     }
 }
