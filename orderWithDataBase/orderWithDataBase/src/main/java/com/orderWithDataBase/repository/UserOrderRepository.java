@@ -6,4 +6,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public interface UserOrderRepository extends CrudRepository<UserOrder,Integer> {
+
+    public UserOrder findByOrderId(String orderId);
 }

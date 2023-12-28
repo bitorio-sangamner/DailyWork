@@ -4,10 +4,6 @@ package com.orderWithDataBase.config;
 
 import com.alibaba.fastjson.JSONObject;
 import com.okex.open.api.config.APIConfiguration;
-import com.okex.open.api.service.account.AccountAPIService;
-import com.okex.open.api.service.account.impl.AccountAPIServiceImpl;
-import com.okex.open.api.service.publicData.PublicDataAPIService;
-import com.okex.open.api.service.publicData.impl.PublicDataAPIServiceImpl;
 import com.okex.open.api.service.trade.TradeAPIService;
 import com.okex.open.api.service.trade.impl.TradeAPIServiceImpl;
 import org.springframework.context.annotation.Bean;

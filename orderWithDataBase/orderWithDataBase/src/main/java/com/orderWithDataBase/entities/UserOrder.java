@@ -24,21 +24,15 @@ public class UserOrder {
     private String tpOrdPx;
     private String slTriggerPx;
     private String slOrdPx;
+    private String orderId;
 
-//    public UserOrder(int id, String instrumentId, String tradeMode, String orderSide, String positionSide, String orderType, String quantity, String orderPrice, String tpTriggerPx, String tpOrdPx, String slTriggerPx, String slOrdPx) {
-//        this.id = id;
-//        this.instrumentId = instrumentId;
-//        this.tradeMode = tradeMode;
-//        this.orderSide = orderSide;
-//        this.positionSide = positionSide;
-//        this.orderType = orderType;
-//        this.quantity = quantity;
-//        this.orderPrice = orderPrice;
-//        this.tpTriggerPx = tpTriggerPx;
-//        this.tpOrdPx = tpOrdPx;
-//        this.slTriggerPx = slTriggerPx;
-//        this.slOrdPx = slOrdPx;
-//    }
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
 
     public int getId() {
         return id;
