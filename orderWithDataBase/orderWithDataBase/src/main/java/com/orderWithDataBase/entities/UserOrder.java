@@ -25,6 +25,17 @@ public class UserOrder {
     private String slTriggerPx;
     private String slOrdPx;
     private String orderId;
+    private String takeProfitTriggerPriceType="last";
+
+    public String getTakeProfitTriggerPriceType() {
+        return takeProfitTriggerPriceType;
+    }
+
+    public void setTakeProfitTriggerPriceType(String takeProfitTriggerPriceType) {
+        this.takeProfitTriggerPriceType = takeProfitTriggerPriceType;
+    }
+
+
 
     public String getOrderId() {
         return orderId;

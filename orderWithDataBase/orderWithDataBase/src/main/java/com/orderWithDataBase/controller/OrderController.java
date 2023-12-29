@@ -11,6 +11,7 @@ import com.orderWithDataBase.service.UserOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -98,5 +99,21 @@ public class OrderController {
             return new ResponseEntity<>(jsonObject, HttpStatus.OK);
         }
         return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping("/orderDetails")
+    public ResponseEntity<Object> getOrderDetails(@RequestBody JSONObject json)
+    {
+        String instrumentId=json.getString("instId");
+        String orderId=json.getString("ordId");
+
+        jsonObject=tradeService.getOrderDetails(instrumentId,orderId);
+        if(jsonObject.get("msg").equals(""))
+        {
+            jsonObject.put(STATUS_KEY,HttpStatus.OK);
+            return new ResponseEntity<>(jsonObject,HttpStatus.OK);
+        }
+        jsonObject.put(STATUS_KEY,HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(jsonObject, HttpStatus.NOT_ACCEPTABLE);
     }
 }
