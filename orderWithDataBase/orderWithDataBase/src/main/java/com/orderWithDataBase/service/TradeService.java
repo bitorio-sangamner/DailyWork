@@ -2,13 +2,12 @@ package com.orderWithDataBase.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.okex.open.api.bean.copytrading.param.AlgoOrder;
-import com.okex.open.api.bean.trade.param.AmendOrder;
-import com.okex.open.api.bean.trade.param.CancelOrder;
-import com.okex.open.api.bean.trade.param.PlaceAlgoOrder;
-import com.okex.open.api.bean.trade.param.PlaceOrder;
+import com.okex.open.api.bean.trade.param.*;
 import com.okex.open.api.service.trade.TradeAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TradeService {
@@ -46,6 +45,18 @@ public class TradeService {
     public JSONObject placeAlgoOrder(PlaceAlgoOrder algoOrderObj)
     {
         jsonObject=tradeAPIService.placeAlgoOrder(algoOrderObj);
+        return jsonObject;
+    }
+
+    public JSONObject cancelAlgoOrder(List<CancelAlgoOrder> cancelAlgoOrderList)
+    {
+        jsonObject=tradeAPIService.cancelAlgoOrder(cancelAlgoOrderList);
+        return jsonObject;
+    }
+
+    public JSONObject amendAlgoOrder(AmendAlgos amendAlgosObj)
+    {
+        jsonObject=tradeAPIService.amendAlgos(amendAlgosObj);
         return jsonObject;
     }
 }

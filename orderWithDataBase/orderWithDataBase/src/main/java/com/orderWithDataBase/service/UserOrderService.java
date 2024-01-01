@@ -1,9 +1,6 @@
 package com.orderWithDataBase.service;
 
-import com.alibaba.fastjson.JSONObject;
-import com.okex.open.api.bean.copytrading.param.AlgoOrder;
 import com.okex.open.api.bean.trade.param.AmendOrder;
-import com.okex.open.api.bean.trade.param.PlaceAlgoOrder;
 import com.orderWithDataBase.entities.UserOrder;
 import com.orderWithDataBase.repository.UserOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;

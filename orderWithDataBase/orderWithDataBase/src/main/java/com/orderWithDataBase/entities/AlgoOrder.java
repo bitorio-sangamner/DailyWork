@@ -33,4 +33,10 @@ public class AlgoOrder {
     private String closeFraction;
 
     private String algoOrderId;
+    private String tpTriggerPx;
+    private String tpTriggerPxType;
+    private String tpOrdPx;
+    private String slTriggerPx;
+    private String slTriggerPxType;
+    private String slOrdPx;
 }
