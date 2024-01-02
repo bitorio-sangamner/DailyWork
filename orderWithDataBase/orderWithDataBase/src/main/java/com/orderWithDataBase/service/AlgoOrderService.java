@@ -106,4 +106,16 @@ public class AlgoOrderService {
           AlgoOrder order=algoOrderRepository.save(algoOrder);
         return "order updated";
     }
+
+    public AlgoOrder getAlgoOrderDetails(String algoOrderId)
+    {
+        AlgoOrder algoOrderObj=algoOrderRepository.findByAlgoOrderId(algoOrderId);
+        return algoOrderObj;
+    }
+
+    public List<AlgoOrder> getAlgoOrderList(String orderType)
+    {
+       List<AlgoOrder> algoOrderList=algoOrderRepository.findByOrderType(orderType);
+       return algoOrderList;
+    }
 }

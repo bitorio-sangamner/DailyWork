@@ -3,8 +3,9 @@ package com.orderWithDataBase.repository;
 import com.orderWithDataBase.entities.AlgoOrder;
 import org.springframework.data.repository.CrudRepository;
 
-public interface AlgoOrderRepository extends CrudRepository<AlgoOrder,Integer> {
+import java.util.List;
 
-    //void deleteByAlgoOrderId(String algoOrderId);
+public interface AlgoOrderRepository extends CrudRepository<AlgoOrder,Integer> {
     public AlgoOrder findByAlgoOrderId(String algoOrderId);
+    public List<AlgoOrder> findByOrderType(String orderType);
 }
