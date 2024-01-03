@@ -165,4 +165,48 @@ public class AlgoOrderController {
         List<AlgoOrder> algoOrderList=algoOrderService.getAlgoOrderList(orderType);
         return new ResponseEntity<>(jsonObject,HttpStatus.OK);
     }
+
+    @PostMapping("/placeAlgoTriggerOrder")
+    public ResponseEntity<Object> placeAlgoTriggerOrder(@RequestBody PlaceAlgoOrder algoOrderObj)
+    {
+        algoOrder=new AlgoOrder();
+
+        algoOrder.setInstrumentId(algoOrderObj.getInstId());
+        algoOrder.setTradeMode(algoOrderObj.getTdMode());
+        algoOrder.setMarginCurrency(algoOrderObj.getCcy());
+        algoOrder.setOrderSide(algoOrderObj.getSide());
+        algoOrder.setPositionSide(algoOrderObj.getPosSide());
+        algoOrder.setOrderType(algoOrderObj.getOrdType());
+        algoOrder.setQuantity(algoOrderObj.getSz());
+        algoOrder.setOrderTag(algoOrderObj.getTag());
+        algoOrder.setOrderQuantityUnitSetting(algoOrderObj.getTgtCcy());
+        algoOrder.setClientSuppliedAlgoID(algoOrderObj.getAlgoClOrdId());
+        algoOrder.setCloseFraction(algoOrderObj.getCloseFraction());
+        algoOrder.setTpTriggerPx(algoOrderObj.getTpTriggerPx());
+        algoOrder.setTpOrdPx(algoOrderObj.getTpOrdPx());
+        algoOrder.setTpTriggerPxType(algoOrderObj.getTpTriggerPxType());
+        algoOrder.setSlTriggerPx(algoOrderObj.getSlTriggerPx());
+        algoOrder.setSlOrdPx(algoOrderObj.getSlOrdPx());
+        algoOrder.setSlTriggerPxType(algoOrderObj.getSlTriggerPxType());
+        algoOrder.setTriggerPx(algoOrderObj.getTriggerPx());
+        algoOrder.setOrderPx(algoOrderObj.getOrderPx());
+        algoOrder.setTriggerPxType(algoOrderObj.getTriggerPxType());
+
+        jsonObject=tradeService.placeAlgoTriggerOrder(algoOrderObj);
+
+        // Get the "data" array
+        JSONArray dataArray = jsonObject.getJSONArray("data");
+        // Get the first object in the array
+        JSONObject dataObject = dataArray.getJSONObject(0);
+        // Get the value of "sMsg"
+        String sMsgValue = dataObject.getString("sMsg");
+        //get the value of "ordId"
+        String algoOrdId=dataObject.getString("algoId");
+
+        algoOrder.setAlgoOrderId(algoOrdId);
+        algoOrderService.placeAlgoTriggerOrder(algoOrder);
+
+        jsonObject.put("status",HttpStatus.CREATED);
+        return new ResponseEntity<>(jsonObject,HttpStatus.CREATED);
+    }
 }

@@ -118,4 +118,10 @@ public class AlgoOrderService {
        List<AlgoOrder> algoOrderList=algoOrderRepository.findByOrderType(orderType);
        return algoOrderList;
     }
+
+    public AlgoOrder placeAlgoTriggerOrder(AlgoOrder algoOrder)
+    {
+        AlgoOrder order=algoOrderRepository.save(algoOrder);
+        return order;
+    }
 }

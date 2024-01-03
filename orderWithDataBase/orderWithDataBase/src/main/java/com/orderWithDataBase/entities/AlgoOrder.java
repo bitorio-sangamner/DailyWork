@@ -39,4 +39,9 @@ public class AlgoOrder {
     private String slTriggerPx;
     private String slTriggerPxType;
     private String slOrdPx;
+
+    private String triggerPx;
+    private String orderPx;
+
+    private String triggerPxType;
 }

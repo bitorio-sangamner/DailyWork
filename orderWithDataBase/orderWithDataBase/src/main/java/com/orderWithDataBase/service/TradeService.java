@@ -71,4 +71,10 @@ public class TradeService {
         jsonObject=tradeAPIService.getAlgoOrderList(orderType,"","","","","","","");
         return jsonObject;
     }
+
+    public JSONObject placeAlgoTriggerOrder(PlaceAlgoOrder algoTriggerOrder)
+    {
+        jsonObject=tradeAPIService.placeAlgoOrder(algoTriggerOrder);
+        return jsonObject;
+    }
 }
