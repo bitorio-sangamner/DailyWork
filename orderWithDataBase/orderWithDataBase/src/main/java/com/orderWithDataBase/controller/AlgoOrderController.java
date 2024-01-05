@@ -157,12 +157,30 @@ public class AlgoOrderController {
        return new ResponseEntity<>(jsonObject,HttpStatus.NOT_FOUND);
     }
 
+    
     @GetMapping("/getAlgoOrderList")
     public ResponseEntity<Object> getAlgoOrderList(@RequestBody JSONObject json)
     {
         String orderType=json.getString("ordType");
-        jsonObject=tradeService.getAlgoOrderList(orderType);
+        String algoOrderId=json.getString("algoOrderId");
+        jsonObject=tradeService.getAlgoOrderList(orderType,algoOrderId);
         List<AlgoOrder> algoOrderList=algoOrderService.getAlgoOrderList(orderType);
+        return new ResponseEntity<>(jsonObject,HttpStatus.OK);
+    }
+
+
+    @GetMapping("/getAlgoOrderHistory")
+    public ResponseEntity<Object> getAlgoOrderHistory(@RequestBody JSONObject json)
+    {
+        String orderType=json.getString("ordType");
+        String state=json.getString("state");
+        //String algoOrderId=json.getString("algoOrderId");
+
+        System.out.println("order type :"+orderType);
+        System.out.println("state :"+state);
+        //System.out.println("algo order id :"+algoOrderId);
+
+        jsonObject=tradeService.getAlgoOrderHistory(orderType,state);
         return new ResponseEntity<>(jsonObject,HttpStatus.OK);
     }
 

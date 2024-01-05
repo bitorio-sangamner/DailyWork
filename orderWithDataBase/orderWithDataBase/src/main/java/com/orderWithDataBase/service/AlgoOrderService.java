@@ -1,6 +1,5 @@
 package com.orderWithDataBase.service;
 
-
 import com.okex.open.api.bean.trade.param.AmendAlgos;
 import com.okex.open.api.bean.trade.param.CancelAlgoOrder;
 import com.orderWithDataBase.entities.AlgoOrder;

@@ -66,9 +66,15 @@ public class TradeService {
         return jsonObject;
     }
 
-    public JSONObject getAlgoOrderList(String orderType)
+    public JSONObject getAlgoOrderList(String orderType,String algoOrderId)
     {
-        jsonObject=tradeAPIService.getAlgoOrderList(orderType,"","","","","","","");
+        jsonObject=tradeAPIService.getAlgoOrderList(algoOrderId,"FUTURES","",orderType,"","","","");
+        return jsonObject;
+    }
+
+    public JSONObject getAlgoOrderHistory(String orderType,String state)
+    {
+        jsonObject=tradeAPIService.getAlgoOrderHistory(state,"","FUTURES","",orderType,"","","","");
         return jsonObject;
     }
 
