@@ -38,6 +38,9 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.8.8'
 	implementation 'com.squareup.retrofit2:adapter-rxjava:2.9.0'
 	implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
+	implementation 'joda-time:joda-time:2.12.5'
+	implementation 'net.sf.json-lib:json-lib:2.4:jdk15'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
 
 

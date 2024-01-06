@@ -39,6 +39,9 @@ public class AlgoOrderController {
     @Autowired
     JSONObject jsonObject;
 
+    @Autowired
+    JSONObject jsonObjectNew;
+
     @PostMapping("/placeAlgoOrder")
     public ResponseEntity<Object> placeAlgoOrder(@RequestBody PlaceAlgoOrder algoOrderObj)
     {
@@ -153,19 +156,30 @@ public class AlgoOrderController {
             jsonObject.put("message",e.getMessage());
             return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
         }
-       jsonObject.put("status",HttpStatus.NOT_FOUND);
-       return new ResponseEntity<>(jsonObject,HttpStatus.NOT_FOUND);
+        jsonObjectNew.put("message :","order not found either on okx or in local database or not found at both side");
+        jsonObjectNew.put("status",HttpStatus.NOT_FOUND);
+       return new ResponseEntity<>(jsonObjectNew,HttpStatus.NOT_FOUND);
     }
 
-    
+
     @GetMapping("/getAlgoOrderList")
     public ResponseEntity<Object> getAlgoOrderList(@RequestBody JSONObject json)
     {
         String orderType=json.getString("ordType");
         String algoOrderId=json.getString("algoOrderId");
         jsonObject=tradeService.getAlgoOrderList(orderType,algoOrderId);
+
+        // Get the "data" array
+        JSONArray dataArray = jsonObject.getJSONArray("data");
+
         List<AlgoOrder> algoOrderList=algoOrderService.getAlgoOrderList(orderType);
-        return new ResponseEntity<>(jsonObject,HttpStatus.OK);
+        System.out.println("List :"+algoOrderList);
+        if(!algoOrderList.isEmpty() && dataArray!=null) {
+            return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+        }
+        jsonObjectNew.put("message","order not found either on okx or in local database or not found at both side");
+        jsonObjectNew.put("status",HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(jsonObjectNew,HttpStatus.NOT_FOUND);
     }
 
 
