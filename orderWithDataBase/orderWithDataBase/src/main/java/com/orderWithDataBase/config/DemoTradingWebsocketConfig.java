@@ -10,8 +10,9 @@ public class DemoTradingWebsocketConfig {
     WebsocketClient webSocketClient;
 
     private String SERVICE_URL = "wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999";
+                               //wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999
 
-    //wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999
+
 
 
     private String API_KEY = "455577ff-5177-4177-9e27-9485836b0b14";
@@ -27,5 +28,13 @@ public class DemoTradingWebsocketConfig {
             webSocketClient.loginToOkx(API_KEY,SECRET_KEY,PASSPHRASE);
         }
 
+        orderChannel();
+
+    }
+
+    public void orderChannel()
+    {
+        webSocketClient.subscribeAlgoOrderChannel("orders-algo","SPOT","OKB-USDT","OKB-USDT");
+        //webSocketClient.subscribeOrderChannel("orders","FUTURES","LTC-USDT","LTC-USDT-240628");
     }
 }

@@ -60,6 +60,9 @@ public class WebsocketClient {
             @Override
             public void onMessage(WebSocket webSocket, String text) {
 
+                System.out.println("Received message:"+text);
+                System.out.println("*********************************************************");
+
             }
 
             @Override
@@ -153,5 +156,19 @@ public class WebsocketClient {
         }
 
     }//sendMessage
+
+    public void subscribeAlgoOrderChannel(String channelName,String instrumentType,String instFamily,String instId)
+    {
+        if(channelName.equals("orders-algo")) {
+            String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\""+channelName+"\",\"instType\":\""+instrumentType+"\",\"instFamily\":\""+instFamily+"\",\"instId\":\""+instId+"\"}]}";
+            sendMessage(str);
+        }
+    }
+
+//    public void subscribeOrderChannel(String channelName,String instrumentType,String instFamily,String instId)
+//    {
+//        String str = "{ \"op\": \"subscribe\", \"args\": [ { \"channel\": \""+channelName+"\", \"instType\": \""+instrumentType+"\", \"instFamily\": \""+instFamily+"\", \"instId\": \""+instId+"\" } ] }";
+//        sendMessage(str);
+//    }
 
 }
