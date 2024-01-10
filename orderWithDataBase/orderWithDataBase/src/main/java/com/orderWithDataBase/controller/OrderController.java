@@ -11,10 +11,7 @@ import com.orderWithDataBase.service.UserOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class OrderController {
@@ -31,6 +28,9 @@ public class OrderController {
 
     @Autowired
     JSONObject jsonObject;
+
+    @Autowired
+    JSONObject jsonObjectNew;
 
     @PostMapping("/placeOrder")
     public ResponseEntity<Object> placeOrder(@RequestBody PlaceOrder order)
@@ -81,7 +81,19 @@ public class OrderController {
 
         jsonObject=tradeService.cancelOrderFromOkx(cancelOrderObj);
         String msg=userOrderService.cancelOrder(orderId);
-        if(jsonObject.get("msg").equals("") && msg.equals("order deleted")) {
+
+        // Get the "data" array
+        JSONArray dataArray = jsonObject.getJSONArray("data");
+
+        // Get the first object in the array
+        JSONObject dataObject = dataArray.getJSONObject(0);
+
+        // Get the value of "sMsg"
+        String sMsgValue = dataObject.getString("sMsg");
+
+        if(jsonObject.get("msg").equals("") && msg.equals("order deleted") && !sMsgValue.equals("Order cancellation failed as the order has been filled, canceled or does not exist"))
+        {
+            dataObject.put("sMsg","order deleted");
             return new ResponseEntity<>(jsonObject, HttpStatus.OK);
         }
 
@@ -95,6 +107,8 @@ public class OrderController {
     {
         jsonObject=tradeService.amendOrderFromOkx(amendOrderObj);
         String msg=userOrderService.amendOrder(amendOrderObj);
+
+        System.out.println("message :"+msg);
         if(msg.equals("order amended")) {
             return new ResponseEntity<>(jsonObject, HttpStatus.OK);
         }
@@ -115,5 +129,34 @@ public class OrderController {
         }
         jsonObject.put(STATUS_KEY,HttpStatus.NOT_ACCEPTABLE);
         return new ResponseEntity<>(jsonObject, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @PutMapping("/updateStatusOfOrder")
+    public ResponseEntity<Object> updateStatusOfOrder(@RequestBody JSONObject json)
+    {
+        String instrumentId=json.getString("instId");
+        String orderId=json.getString("ordId");
+        jsonObject=tradeService.getOrderDetails(instrumentId,orderId);
+
+        JSONArray jsonArray=jsonObject.getJSONArray("data");
+        JSONObject dataObject=jsonArray.getJSONObject(0);
+
+        String status = dataObject.getString("state");
+
+        String message=userOrderService.updatedStatus(orderId,status);
+
+        if(message.equals("Status updated"))
+        {
+            jsonObjectNew.put("message",message);
+            jsonObjectNew.put("status",HttpStatus.OK);
+            return new ResponseEntity<>(jsonObjectNew,HttpStatus.OK);
+        }
+        else {
+            jsonObjectNew.put("message",message);
+            jsonObjectNew.put("status",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(jsonObjectNew,HttpStatus.NOT_FOUND);
+        }
+
+
     }
 }

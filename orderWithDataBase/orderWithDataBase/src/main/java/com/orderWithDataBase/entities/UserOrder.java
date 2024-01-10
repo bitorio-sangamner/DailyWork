@@ -18,7 +18,7 @@ public class UserOrder {
     private String positionSide;
 
     private String orderType;
-    private String quantity;
+//    private String quantity;
     private String orderPrice;
     private String tpTriggerPx;
     private String tpOrdPx;
@@ -26,6 +26,127 @@ public class UserOrder {
     private String slOrdPx;
     private String orderId;
     private String takeProfitTriggerPriceType="last";
+    private String status;
+    private String marginCurrency;//ccy
+
+    public String getQuantity() {
+        return Quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        Quantity = quantity;
+    }
+
+    private String Quantity;
+    private String orderTag;
+    private String orderQuantityUnitSetting;
+    private String clientSuppliedAlgoID;
+    private String closeFraction;
+    private String algoOrderId;
+    private String tpTriggerPxType;
+    private String slTriggerPxType;
+    private String triggerPx;
+    private String orderPx;
+    private String triggerPxType;
+
+    public String getOrderTag() {
+        return orderTag;
+    }
+
+    public void setOrderTag(String orderTag) {
+        this.orderTag = orderTag;
+    }
+
+    public String getOrderQuantityUnitSetting() {
+        return orderQuantityUnitSetting;
+    }
+
+    public void setOrderQuantityUnitSetting(String orderQuantityUnitSetting) {
+        this.orderQuantityUnitSetting = orderQuantityUnitSetting;
+    }
+
+    public String getClientSuppliedAlgoID() {
+        return clientSuppliedAlgoID;
+    }
+
+    public void setClientSuppliedAlgoID(String clientSuppliedAlgoID) {
+        this.clientSuppliedAlgoID = clientSuppliedAlgoID;
+    }
+
+    public String getCloseFraction() {
+        return closeFraction;
+    }
+
+    public void setCloseFraction(String closeFraction) {
+        this.closeFraction = closeFraction;
+    }
+
+    public String getAlgoOrderId() {
+        return algoOrderId;
+    }
+
+    public void setAlgoOrderId(String algoOrderId) {
+        this.algoOrderId = algoOrderId;
+    }
+
+    public String getTpTriggerPxType() {
+        return tpTriggerPxType;
+    }
+
+    public void setTpTriggerPxType(String tpTriggerPxType) {
+        this.tpTriggerPxType = tpTriggerPxType;
+    }
+
+    public String getSlTriggerPxType() {
+        return slTriggerPxType;
+    }
+
+    public void setSlTriggerPxType(String slTriggerPxType) {
+        this.slTriggerPxType = slTriggerPxType;
+    }
+
+    public String getTriggerPx() {
+        return triggerPx;
+    }
+
+    public void setTriggerPx(String triggerPx) {
+        this.triggerPx = triggerPx;
+    }
+
+    public String getOrderPx() {
+        return orderPx;
+    }
+
+    public void setOrderPx(String orderPx) {
+        this.orderPx = orderPx;
+    }
+
+    public String getTriggerPxType() {
+        return triggerPxType;
+    }
+
+    public void setTriggerPxType(String triggerPxType) {
+        this.triggerPxType = triggerPxType;
+    }
+
+    public String getMarginCurrency() {
+        return marginCurrency;
+    }
+
+    public void setMarginCurrency(String marginCurrency) {
+        this.marginCurrency = marginCurrency;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+
 
     public String getTakeProfitTriggerPriceType() {
         return takeProfitTriggerPriceType;
@@ -69,9 +190,9 @@ public class UserOrder {
         return orderType;
     }
 
-    public String getQuantity() {
-        return quantity;
-    }
+//    public String getQuantity() {
+//        return quantity;
+//    }
 
     public String getOrderPrice() {
         return orderPrice;
@@ -117,9 +238,9 @@ public class UserOrder {
         this.orderType = orderType;
     }
 
-    public void setQuantity(String quantity) {
-        this.quantity = quantity;
-    }
+//    public void setQuantity(String quantity) {
+//        this.quantity = quantity;
+//    }
 
     public void setOrderPrice(String orderPrice) {
         this.orderPrice = orderPrice;
@@ -140,6 +261,7 @@ public class UserOrder {
     public void setSlOrdPx(String slOrdPx) {
         this.slOrdPx = slOrdPx;
     }
+
 
 
 }

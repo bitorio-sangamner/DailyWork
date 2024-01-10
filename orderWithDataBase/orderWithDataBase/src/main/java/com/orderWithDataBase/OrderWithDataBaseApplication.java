@@ -1,5 +1,6 @@
 package com.orderWithDataBase;
 
+import com.orderWithDataBase.config.BusinessProductionTradingWebsocketConfig;
 import com.orderWithDataBase.config.DemoTradingWebsocketConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -14,6 +15,9 @@ public class OrderWithDataBaseApplication implements CommandLineRunner {
 	@Autowired
 	 DemoTradingWebsocketConfig demoTradingWebsocketConfig;
 
+	@Autowired
+	BusinessProductionTradingWebsocketConfig businessProductionTradingWebsocketConfig;
+
 	public static void main(String[] args) {
 		SpringApplication.run(OrderWithDataBaseApplication.class, args);
 
@@ -22,7 +26,8 @@ public class OrderWithDataBaseApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		demoTradingWebsocketConfig.loginConnect();
+		  // demoTradingWebsocketConfig.loginConnect();
+		//businessProductionTradingWebsocketConfig.loginConnect();
 
 	}
 }

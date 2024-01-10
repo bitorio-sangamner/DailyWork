@@ -165,6 +165,12 @@ public class WebsocketClient {
         }
     }
 
+    public void subscribeAlgoOrderChannel()
+    {
+        String str = "{\"op\":\"subscribe\",\"args\":[{\"channel\":\"orders-algo\",\"instType\":\"FUTURES\",\"instFamily\":\"null\",\"instId\":\"null\"}]}";
+        sendMessage(str);
+    }
+
 //    public void subscribeOrderChannel(String channelName,String instrumentType,String instFamily,String instId)
 //    {
 //        String str = "{ \"op\": \"subscribe\", \"args\": [ { \"channel\": \""+channelName+"\", \"instType\": \""+instrumentType+"\", \"instFamily\": \""+instFamily+"\", \"instId\": \""+instId+"\" } ] }";

@@ -6,17 +6,15 @@ import com.okex.open.api.bean.trade.param.AmendAlgos;
 import com.okex.open.api.bean.trade.param.CancelAlgoOrder;
 import com.okex.open.api.bean.trade.param.PlaceAlgoOrder;
 import com.okex.open.api.exception.APIException;
-import com.orderWithDataBase.entities.AlgoOrder;
+//import com.orderWithDataBase.entities.AlgoOrder;
+import com.orderWithDataBase.entities.UserOrder;
 import com.orderWithDataBase.service.AlgoOrderService;
 import com.orderWithDataBase.service.TradeService;
 import com.orderWithDataBase.service.UserOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,7 +26,7 @@ public class AlgoOrderController {
     @Autowired
     UserOrderService userOrderService;
 
-    AlgoOrder algoOrder;
+    UserOrder userAlgoOrder;
 
     @Autowired
     TradeService tradeService;
@@ -46,25 +44,25 @@ public class AlgoOrderController {
     public ResponseEntity<Object> placeAlgoOrder(@RequestBody PlaceAlgoOrder algoOrderObj)
     {
         try {
-              algoOrder=new AlgoOrder();
+              userAlgoOrder =new UserOrder();
 
-              algoOrder.setInstrumentId(algoOrderObj.getInstId());
-              algoOrder.setTradeMode(algoOrderObj.getTdMode());
-              algoOrder.setMarginCurrency(algoOrderObj.getCcy());
-              algoOrder.setOrderSide(algoOrderObj.getSide());
-              algoOrder.setPositionSide(algoOrderObj.getPosSide());
-              algoOrder.setOrderType(algoOrderObj.getOrdType());
-              algoOrder.setQuantity(algoOrderObj.getSz());
-              algoOrder.setOrderTag(algoOrderObj.getTag());
-              algoOrder.setOrderQuantityUnitSetting(algoOrderObj.getTgtCcy());
-              algoOrder.setClientSuppliedAlgoID(algoOrderObj.getAlgoClOrdId());
-              algoOrder.setCloseFraction(algoOrderObj.getCloseFraction());
-              algoOrder.setTpTriggerPx(algoOrderObj.getTpTriggerPx());
-              algoOrder.setTpOrdPx(algoOrderObj.getTpOrdPx());
-              algoOrder.setTpTriggerPxType(algoOrderObj.getTpTriggerPxType());
-              algoOrder.setSlTriggerPx(algoOrderObj.getSlTriggerPx());
-              algoOrder.setSlOrdPx(algoOrderObj.getSlOrdPx());
-              algoOrder.setSlTriggerPxType(algoOrderObj.getSlTriggerPxType());
+              userAlgoOrder.setInstrumentId(algoOrderObj.getInstId());
+              userAlgoOrder.setTradeMode(algoOrderObj.getTdMode());
+              userAlgoOrder.setMarginCurrency(algoOrderObj.getCcy());
+              userAlgoOrder.setOrderSide(algoOrderObj.getSide());
+              userAlgoOrder.setPositionSide(algoOrderObj.getPosSide());
+              userAlgoOrder.setOrderType(algoOrderObj.getOrdType());
+              userAlgoOrder.setQuantity(algoOrderObj.getSz());
+              userAlgoOrder.setOrderTag(algoOrderObj.getTag());
+              userAlgoOrder.setOrderQuantityUnitSetting(algoOrderObj.getTgtCcy());
+              userAlgoOrder.setClientSuppliedAlgoID(algoOrderObj.getAlgoClOrdId());
+              userAlgoOrder.setCloseFraction(algoOrderObj.getCloseFraction());
+              userAlgoOrder.setTpTriggerPx(algoOrderObj.getTpTriggerPx());
+              userAlgoOrder.setTpOrdPx(algoOrderObj.getTpOrdPx());
+              userAlgoOrder.setTpTriggerPxType(algoOrderObj.getTpTriggerPxType());
+              userAlgoOrder.setSlTriggerPx(algoOrderObj.getSlTriggerPx());
+              userAlgoOrder.setSlOrdPx(algoOrderObj.getSlOrdPx());
+              userAlgoOrder.setSlTriggerPxType(algoOrderObj.getSlTriggerPxType());
 
 
             jsonObject=tradeService.placeAlgoOrder(algoOrderObj);
@@ -77,8 +75,8 @@ public class AlgoOrderController {
             //get the value of "ordId"
             String algoOrdId=dataObject.getString("algoId");
 
-            algoOrder.setAlgoOrderId(algoOrdId);
-            algoOrderService.placeAlgoOrder(algoOrder);
+            userAlgoOrder.setAlgoOrderId(algoOrdId);
+            algoOrderService.placeAlgoOrder(userAlgoOrder);
 
             jsonObject.put("status",HttpStatus.CREATED);
             return new ResponseEntity<>(jsonObject,HttpStatus.CREATED);
@@ -109,6 +107,7 @@ public class AlgoOrderController {
 
             if(msg.equals("order deleted") && !sMsgValue.equals("Order cancellation failed as the order has been filled, canceled or does not exist"))
             {
+                dataObject.put("sMsg","order deleted");
                 return new ResponseEntity<>(jsonObject, HttpStatus.OK);
             }
         }
@@ -144,7 +143,7 @@ public class AlgoOrderController {
         try {
             String algoOrderId = json.getString("algoId");
             jsonObject = tradeService.getAlgoOrderDetails(algoOrderId);
-            AlgoOrder algoOrderObj = algoOrderService.getAlgoOrderDetails(algoOrderId);
+            UserOrder algoOrderObj = algoOrderService.getAlgoOrderDetails(algoOrderId);
 
             if (algoOrderObj != null && (jsonObject.getString("msg") != "Order does not exist"))
             {
@@ -172,7 +171,7 @@ public class AlgoOrderController {
         // Get the "data" array
         JSONArray dataArray = jsonObject.getJSONArray("data");
 
-        List<AlgoOrder> algoOrderList=algoOrderService.getAlgoOrderList(orderType);
+        List<UserOrder> algoOrderList=algoOrderService.getAlgoOrderList(orderType);
         System.out.println("List :"+algoOrderList);
         if(!algoOrderList.isEmpty() && dataArray!=null) {
             return new ResponseEntity<>(jsonObject, HttpStatus.OK);
@@ -201,28 +200,28 @@ public class AlgoOrderController {
     @PostMapping("/placeAlgoTriggerOrder")
     public ResponseEntity<Object> placeAlgoTriggerOrder(@RequestBody PlaceAlgoOrder algoOrderObj)
     {
-        algoOrder=new AlgoOrder();
+        userAlgoOrder =new UserOrder();
 
-        algoOrder.setInstrumentId(algoOrderObj.getInstId());
-        algoOrder.setTradeMode(algoOrderObj.getTdMode());
-        algoOrder.setMarginCurrency(algoOrderObj.getCcy());
-        algoOrder.setOrderSide(algoOrderObj.getSide());
-        algoOrder.setPositionSide(algoOrderObj.getPosSide());
-        algoOrder.setOrderType(algoOrderObj.getOrdType());
-        algoOrder.setQuantity(algoOrderObj.getSz());
-        algoOrder.setOrderTag(algoOrderObj.getTag());
-        algoOrder.setOrderQuantityUnitSetting(algoOrderObj.getTgtCcy());
-        algoOrder.setClientSuppliedAlgoID(algoOrderObj.getAlgoClOrdId());
-        algoOrder.setCloseFraction(algoOrderObj.getCloseFraction());
-        algoOrder.setTpTriggerPx(algoOrderObj.getTpTriggerPx());
-        algoOrder.setTpOrdPx(algoOrderObj.getTpOrdPx());
-        algoOrder.setTpTriggerPxType(algoOrderObj.getTpTriggerPxType());
-        algoOrder.setSlTriggerPx(algoOrderObj.getSlTriggerPx());
-        algoOrder.setSlOrdPx(algoOrderObj.getSlOrdPx());
-        algoOrder.setSlTriggerPxType(algoOrderObj.getSlTriggerPxType());
-        algoOrder.setTriggerPx(algoOrderObj.getTriggerPx());
-        algoOrder.setOrderPx(algoOrderObj.getOrderPx());
-        algoOrder.setTriggerPxType(algoOrderObj.getTriggerPxType());
+        userAlgoOrder.setInstrumentId(algoOrderObj.getInstId());
+        userAlgoOrder.setTradeMode(algoOrderObj.getTdMode());
+        userAlgoOrder.setMarginCurrency(algoOrderObj.getCcy());
+        userAlgoOrder.setOrderSide(algoOrderObj.getSide());
+        userAlgoOrder.setPositionSide(algoOrderObj.getPosSide());
+        userAlgoOrder.setOrderType(algoOrderObj.getOrdType());
+        userAlgoOrder.setQuantity(algoOrderObj.getSz());
+        userAlgoOrder.setOrderTag(algoOrderObj.getTag());
+        userAlgoOrder.setOrderQuantityUnitSetting(algoOrderObj.getTgtCcy());
+        userAlgoOrder.setClientSuppliedAlgoID(algoOrderObj.getAlgoClOrdId());
+        userAlgoOrder.setCloseFraction(algoOrderObj.getCloseFraction());
+        userAlgoOrder.setTpTriggerPx(algoOrderObj.getTpTriggerPx());
+        userAlgoOrder.setTpOrdPx(algoOrderObj.getTpOrdPx());
+        userAlgoOrder.setTpTriggerPxType(algoOrderObj.getTpTriggerPxType());
+        userAlgoOrder.setSlTriggerPx(algoOrderObj.getSlTriggerPx());
+        userAlgoOrder.setSlOrdPx(algoOrderObj.getSlOrdPx());
+        userAlgoOrder.setSlTriggerPxType(algoOrderObj.getSlTriggerPxType());
+        userAlgoOrder.setTriggerPx(algoOrderObj.getTriggerPx());
+        userAlgoOrder.setOrderPx(algoOrderObj.getOrderPx());
+        userAlgoOrder.setTriggerPxType(algoOrderObj.getTriggerPxType());
 
         jsonObject=tradeService.placeAlgoTriggerOrder(algoOrderObj);
 
@@ -235,10 +234,37 @@ public class AlgoOrderController {
         //get the value of "ordId"
         String algoOrdId=dataObject.getString("algoId");
 
-        algoOrder.setAlgoOrderId(algoOrdId);
-        algoOrderService.placeAlgoTriggerOrder(algoOrder);
+        userAlgoOrder.setAlgoOrderId(algoOrdId);
+        algoOrderService.placeAlgoTriggerOrder(userAlgoOrder);
 
         jsonObject.put("status",HttpStatus.CREATED);
         return new ResponseEntity<>(jsonObject,HttpStatus.CREATED);
+    }
+
+    @PutMapping("/updateStatusOfOrder")
+    public ResponseEntity<Object> updateStatusOfOrder(@RequestBody JSONObject json)
+    {
+        String instrumentId=json.getString("instId");
+        String orderId=json.getString("ordId");
+        jsonObject=tradeService.getOrderDetails(instrumentId,orderId);
+
+        JSONArray jsonArray=jsonObject.getJSONArray("data");
+        JSONObject dataObject=jsonArray.getJSONObject(0);
+
+        String status = dataObject.getString("state");
+
+        String message=algoOrderService.updateStatusOfOrder(orderId,status);
+
+        if(message.equals("Status updated"))
+        {
+            jsonObjectNew.put("message",message);
+            jsonObjectNew.put("status",HttpStatus.OK);
+            return new ResponseEntity<>(jsonObjectNew,HttpStatus.OK);
+        }
+        else {
+            jsonObjectNew.put("message",message);
+            jsonObjectNew.put("status",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(jsonObjectNew,HttpStatus.NOT_FOUND);
+        }
     }
 }

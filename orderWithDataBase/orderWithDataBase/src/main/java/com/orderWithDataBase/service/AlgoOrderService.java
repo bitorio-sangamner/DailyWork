@@ -2,8 +2,10 @@ package com.orderWithDataBase.service;
 
 import com.okex.open.api.bean.trade.param.AmendAlgos;
 import com.okex.open.api.bean.trade.param.CancelAlgoOrder;
-import com.orderWithDataBase.entities.AlgoOrder;
-import com.orderWithDataBase.repository.AlgoOrderRepository;
+//import com.orderWithDataBase.entities.AlgoOrder;
+import com.orderWithDataBase.entities.UserOrder;
+//import com.orderWithDataBase.repository.AlgoOrderRepository;
+import com.orderWithDataBase.repository.UserOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +14,14 @@ import java.util.List;
 @Service
 public class AlgoOrderService {
 
+//    @Autowired
+//    AlgoOrderRepository algoOrderRepository;
     @Autowired
-    AlgoOrderRepository algoOrderRepository;
+    UserOrderRepository userOrderRepository;
 
-    public AlgoOrder placeAlgoOrder(AlgoOrder algoOrderObj)
+    public UserOrder placeAlgoOrder(UserOrder algoOrderObj)
     {
-       AlgoOrder algoOrder=algoOrderRepository.save(algoOrderObj);
+        UserOrder algoOrder=userOrderRepository.save(algoOrderObj);
        return algoOrder;
     }
 
@@ -30,8 +34,8 @@ public class AlgoOrderService {
              for (int i = 0; i < size; i++) {
                  algoOrderId = cancelAlgoOrderList.get(i).getAlgoId();
                  System.out.println("algoId "+algoOrderId);
-                 AlgoOrder algoOrder=algoOrderRepository.findByAlgoOrderId(algoOrderId);
-                 algoOrderRepository.deleteById(algoOrder.getId());
+                 UserOrder algoOrder=userOrderRepository.findByAlgoOrderId(algoOrderId);
+                 userOrderRepository.deleteById(algoOrder.getId());
              }
              return "order deleted";
          }
@@ -55,72 +59,89 @@ public class AlgoOrderService {
         String newTpTriggerPxType=amendAlgosObj.getNewTpTriggerPxType();
         String newSlTriggerPxType=amendAlgosObj.getNewSlTriggerPxType();
 
-        AlgoOrder algoOrder=algoOrderRepository.findByAlgoOrderId(algoOrderId);
+        UserOrder algoOrder=userOrderRepository.findByAlgoOrderId(algoOrderId);
 
-        if(instrumentId!=null && !instrumentId.equals("") && !instrumentId.equals(" "))
+        if(algoOrder!=null)
         {
-            algoOrder.setInstrumentId(instrumentId);
+            try {
+                if (instrumentId != null && !instrumentId.equals("") && !instrumentId.equals(" ")) {
+                    algoOrder.setInstrumentId(instrumentId);
+                }
+
+                if (algoOrderId != null && !algoOrderId.equals("") && !algoOrderId.equals(" ")) {
+                    algoOrder.setAlgoOrderId(algoOrderId);
+                }
+
+                if (newSize != null && !newSize.equals("") && !newSize.equals(" ")) {
+                    algoOrder.setQuantity(newSize);
+                }
+
+                if (newTpTriggerPx != null && !newTpTriggerPx.equals("") && !newTpTriggerPx.equals(" ")) {
+                    algoOrder.setTpTriggerPx(newTpTriggerPx);
+                }
+
+                if (newTpOrdPx != null && !newTpOrdPx.equals("") && !newTpOrdPx.equals(" ")) {
+                    algoOrder.setTpOrdPx(newTpOrdPx);
+                }
+
+                if (newSlTriggerPx != null && !newSlTriggerPx.equals("") && !newSlTriggerPx.equals(" ")) {
+                    algoOrder.setSlTriggerPx(newSlTriggerPx);
+                }
+
+                if (newSlOrdPx != null && !newSlOrdPx.equals("") && !newSlOrdPx.equals(" ")) {
+                    algoOrder.setSlOrdPx(newSlOrdPx);
+                }
+
+                if (newTpTriggerPxType != null && !newTpTriggerPxType.equals("") && !newTpTriggerPxType.equals(" ")) {
+                    algoOrder.setTpTriggerPxType(newTpTriggerPxType);
+                }
+
+                if (newSlTriggerPxType != null && !newSlTriggerPxType.equals("") && !newSlTriggerPxType.equals(" ")) {
+                    algoOrder.setSlTriggerPxType(newSlTriggerPxType);
+                }
+            }//try
+            catch(Exception e)
+            {
+
+            }
         }
 
-        if(algoOrderId!=null && !algoOrderId.equals("") && !algoOrderId.equals(" "))
-        {
-            algoOrder.setAlgoOrderId(algoOrderId);
-        }
-
-        if(newSize!=null && !newSize.equals("") && !newSize.equals(" "))
-        {
-            algoOrder.setQuantity(newSize);
-        }
-
-        if(newTpTriggerPx!=null && !newTpTriggerPx.equals("") && !newTpTriggerPx.equals(" "))
-        {
-            algoOrder.setTpTriggerPx(newTpTriggerPx);
-        }
-
-        if(newTpOrdPx!=null && !newTpOrdPx.equals("") && !newTpOrdPx.equals(" "))
-        {
-            algoOrder.setTpOrdPx(newTpOrdPx);
-        }
-
-        if(newSlTriggerPx!=null && !newSlTriggerPx.equals("") && !newSlTriggerPx.equals(" "))
-        {
-            algoOrder.setSlTriggerPx(newSlTriggerPx);
-        }
-
-        if(newSlOrdPx!=null && !newSlOrdPx.equals("") && !newSlOrdPx.equals(" "))
-        {
-            algoOrder.setSlOrdPx(newSlOrdPx);
-        }
-
-        if(newTpTriggerPxType!=null && !newTpTriggerPxType.equals("") && !newTpTriggerPxType.equals(" "))
-        {
-            algoOrder.setTpTriggerPxType(newTpTriggerPxType);
-        }
-
-        if(newSlTriggerPxType!=null && !newSlTriggerPxType.equals("") && !newSlTriggerPxType.equals(" "))
-        {
-            algoOrder.setSlTriggerPxType(newSlTriggerPxType);
-        }
-
-          AlgoOrder order=algoOrderRepository.save(algoOrder);
+          UserOrder order=userOrderRepository.save(algoOrder);
         return "order updated";
     }
 
-    public AlgoOrder getAlgoOrderDetails(String algoOrderId)
+    public UserOrder getAlgoOrderDetails(String algoOrderId)
     {
-        AlgoOrder algoOrderObj=algoOrderRepository.findByAlgoOrderId(algoOrderId);
+        UserOrder algoOrderObj=userOrderRepository.findByAlgoOrderId(algoOrderId);
         return algoOrderObj;
     }
 
-    public List<AlgoOrder> getAlgoOrderList(String orderType)
+    public List<UserOrder> getAlgoOrderList(String orderType)
     {
-       List<AlgoOrder> algoOrderList=algoOrderRepository.findByOrderType(orderType);
+       List<UserOrder> algoOrderList=userOrderRepository.findByOrderType(orderType);
        return algoOrderList;
     }
 
-    public AlgoOrder placeAlgoTriggerOrder(AlgoOrder algoOrder)
+    public UserOrder placeAlgoTriggerOrder(UserOrder algoOrder)
     {
-        AlgoOrder order=algoOrderRepository.save(algoOrder);
+        UserOrder order=userOrderRepository.save(algoOrder);
         return order;
+    }
+
+    public String updateStatusOfOrder(String algoOrderId,String status)
+    {
+        UserOrder order=userOrderRepository.findByAlgoOrderId(algoOrderId);
+
+        if(order!=null)
+        {
+            order.setStatus(status);
+            userOrderRepository.save(order);
+            return "Status updated";
+        }
+        else
+        {
+            return "Order not found for orderId: " + algoOrderId;
+        }
+
     }
 }
