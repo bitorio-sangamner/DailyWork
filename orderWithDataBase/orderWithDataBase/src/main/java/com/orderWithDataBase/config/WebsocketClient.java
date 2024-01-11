@@ -171,10 +171,15 @@ public class WebsocketClient {
         sendMessage(str);
     }
 
-//    public void subscribeOrderChannel(String channelName,String instrumentType,String instFamily,String instId)
-//    {
-//        String str = "{ \"op\": \"subscribe\", \"args\": [ { \"channel\": \""+channelName+"\", \"instType\": \""+instrumentType+"\", \"instFamily\": \""+instFamily+"\", \"instId\": \""+instId+"\" } ] }";
-//        sendMessage(str);
-//    }
+    public void subscribeOrderChannel(String channelName,String instrumentType,String instFamily,String instId)
+    {
+        String str = "{ \"op\": \"subscribe\", \"args\": [ { \"channel\": \""+channelName+"\", \"instType\": \""+instrumentType+"\", \"instFamily\": \""+instFamily+"\", \"instId\": \""+instId+"\" } ] }";
+        sendMessage(str);
+    }
+    public void subscribeOrderChannel()
+    {
+        String str = "{ \"op\": \"subscribe\", \"args\": [ { \"channel\": \"orders\", \"instType\": \"FUTURES\", \"instFamily\": \"null\", \"instId\": \"null\" } ] }";
+        sendMessage(str);
+    }
 
 }

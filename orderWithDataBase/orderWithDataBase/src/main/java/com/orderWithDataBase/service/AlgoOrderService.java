@@ -102,7 +102,7 @@ public class AlgoOrderService {
             }//try
             catch(Exception e)
             {
-
+               System.out.println(e.getMessage());
             }
         }
 

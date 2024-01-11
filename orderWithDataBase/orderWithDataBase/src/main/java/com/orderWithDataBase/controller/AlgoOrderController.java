@@ -241,30 +241,36 @@ public class AlgoOrderController {
         return new ResponseEntity<>(jsonObject,HttpStatus.CREATED);
     }
 
-    @PutMapping("/updateStatusOfOrder")
-    public ResponseEntity<Object> updateStatusOfOrder(@RequestBody JSONObject json)
+    @PutMapping("/updateStatusOfAlgoOrder")
+    public ResponseEntity<Object> updateStatusOfAlgoOrder(@RequestBody JSONObject json)
     {
         String instrumentId=json.getString("instId");
-        String orderId=json.getString("ordId");
-        jsonObject=tradeService.getOrderDetails(instrumentId,orderId);
+        String algoOrderId=json.getString("ordId");
+        jsonObject=tradeService.getAlgoOrderDetails(algoOrderId);
 
         JSONArray jsonArray=jsonObject.getJSONArray("data");
-        JSONObject dataObject=jsonArray.getJSONObject(0);
 
-        String status = dataObject.getString("state");
-
-        String message=algoOrderService.updateStatusOfOrder(orderId,status);
-
-        if(message.equals("Status updated"))
+        if(jsonObject.getString("msg").equals("Order does not exist") && jsonArray.isEmpty())
         {
-            jsonObjectNew.put("message",message);
-            jsonObjectNew.put("status",HttpStatus.OK);
-            return new ResponseEntity<>(jsonObjectNew,HttpStatus.OK);
+            return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
         else {
-            jsonObjectNew.put("message",message);
-            jsonObjectNew.put("status",HttpStatus.NOT_FOUND);
-            return new ResponseEntity<>(jsonObjectNew,HttpStatus.NOT_FOUND);
+            JSONObject dataObject = jsonArray.getJSONObject(0);
+
+            String status = dataObject.getString("state");
+
+            String message = algoOrderService.updateStatusOfOrder(algoOrderId, status);
+
+            if (message.equals("Status updated")) {
+                jsonObjectNew.put("message", message);
+                jsonObjectNew.put("status", HttpStatus.OK);
+                return new ResponseEntity<>(jsonObjectNew, HttpStatus.OK);
+            } else {
+                jsonObjectNew.put("message", message);
+                jsonObjectNew.put("status", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(jsonObjectNew, HttpStatus.NOT_FOUND);
+            }
         }
     }
 }

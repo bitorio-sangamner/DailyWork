@@ -10,7 +10,10 @@ public class BusinessProductionTradingWebsocketConfig {
     @Autowired
     WebsocketClient webSocketClient;
     //private  String SERVICE_URL = "wss://wsaws.okx.com:8443/ws/v5/business";
-    private  String SERVICE_URL = "wss://ws.okx.com:8443/ws/v5/business";
+    //"wss://ws.okx.com:8443/ws/v5/business";
+    //Private WebSocket: wss://ws.okx.com:8443/ws/v5/private
+    //Private WebSocket: wss://wsaws.okx.com:8443/ws/v5/private
+    private  String SERVICE_URL = "wss://ws.okx.com:8443/ws/v5/private";
 
 
     private  String API_KEY = "e96a2dc2-daa0-478f-a01d-0163724c8980";
@@ -32,7 +35,7 @@ public class BusinessProductionTradingWebsocketConfig {
 
     public void orderChannel()
     {
-        webSocketClient.subscribeAlgoOrderChannel("orders-algo","FUTURES",null,null);
+        //webSocketClient.subscribeAlgoOrderChannel("orders-algo","FUTURES",null,null);
         //webSocketClient.subscribeAlgoOrderChannel();
         //webSocketClient.subscribeOrderChannel("orders","FUTURES","LTC-USDT","LTC-USDT-240628");
     }

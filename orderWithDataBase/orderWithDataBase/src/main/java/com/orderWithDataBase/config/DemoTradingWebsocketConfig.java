@@ -9,10 +9,10 @@ public class DemoTradingWebsocketConfig {
     @Autowired
     WebsocketClient webSocketClient;
 
-    private String SERVICE_URL = "wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999";
+    //private String SERVICE_URL = "wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999";
 
 
-    //private String SERVICE_URL = "wss://wspap.okx.com:8443/ws/v5/private?brokerId=9999";
+    private String SERVICE_URL = "wss://wspap.okx.com:8443/ws/v5/private?brokerId=9999";
 
 
 
@@ -36,8 +36,10 @@ public class DemoTradingWebsocketConfig {
 
     public void orderChannel()
     {
-        //webSocketClient.subscribeAlgoOrderChannel("orders-algo","FUTURES","","");
-        //webSocketClient.subscribeOrderChannel("orders","FUTURES","LTC-USDT","LTC-USDT-240628");
-        webSocketClient.subscribeAlgoOrderChannel();
+        webSocketClient.subscribeAlgoOrderChannel("orders-algo","SPOT",null,null);
+        //webSocketClient.subscribeAlgoOrderChannel();
+        //webSocketClient.subscribeOrderChannel("orders","FUTURES","NULL","NULL");
+
+        //webSocketClient.subscribeOrderChannel();
     }
 }

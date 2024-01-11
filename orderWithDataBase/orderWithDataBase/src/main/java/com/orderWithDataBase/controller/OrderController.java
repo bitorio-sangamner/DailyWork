@@ -138,23 +138,30 @@ public class OrderController {
         String orderId=json.getString("ordId");
         jsonObject=tradeService.getOrderDetails(instrumentId,orderId);
 
+        //System.out.println("json :"+jsonObject);
+
         JSONArray jsonArray=jsonObject.getJSONArray("data");
-        JSONObject dataObject=jsonArray.getJSONObject(0);
 
-        String status = dataObject.getString("state");
-
-        String message=userOrderService.updatedStatus(orderId,status);
-
-        if(message.equals("Status updated"))
+        if(jsonArray.isEmpty() && jsonObject.getString("msg").equals("Order does not exist"))
         {
-            jsonObjectNew.put("message",message);
-            jsonObjectNew.put("status",HttpStatus.OK);
-            return new ResponseEntity<>(jsonObjectNew,HttpStatus.OK);
+            return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
         }
         else {
-            jsonObjectNew.put("message",message);
-            jsonObjectNew.put("status",HttpStatus.NOT_FOUND);
-            return new ResponseEntity<>(jsonObjectNew,HttpStatus.NOT_FOUND);
+            JSONObject dataObject = jsonArray.getJSONObject(0);
+
+            String status = dataObject.getString("state");
+
+            String message = userOrderService.updatedStatus(orderId, status);
+
+            if (message.equals("Status updated")) {
+                jsonObjectNew.put("message", message);
+                jsonObjectNew.put("status", HttpStatus.OK);
+                return new ResponseEntity<>(jsonObjectNew, HttpStatus.OK);
+            } else {
+                jsonObjectNew.put("message", message);
+                jsonObjectNew.put("status", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(jsonObjectNew, HttpStatus.NOT_FOUND);
+            }
         }
 
 

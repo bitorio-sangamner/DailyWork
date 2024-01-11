@@ -26,7 +26,7 @@ public class OrderWithDataBaseApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		  // demoTradingWebsocketConfig.loginConnect();
+		   demoTradingWebsocketConfig.loginConnect();
 		//businessProductionTradingWebsocketConfig.loginConnect();
 
 	}

@@ -1,6 +1,5 @@
 package com.orderWithDataBase.service;
 
-import com.okex.open.api.bean.trade.param.AmendAlgos;
 import com.okex.open.api.bean.trade.param.AmendOrder;
 import com.okex.open.api.bean.trade.param.CancelAlgoOrder;
 import com.orderWithDataBase.entities.UserOrder;
@@ -89,7 +88,7 @@ public class UserOrderService {
             }
             catch(Exception e)
             {
-
+              System.out.println(e.getMessage());
             }
 
             userOrderRepository.save(userOrderObj);
@@ -116,6 +115,7 @@ public class UserOrderService {
         {
             return "Order not found for orderId: " + orderId;
         }
+
     }
 
 
