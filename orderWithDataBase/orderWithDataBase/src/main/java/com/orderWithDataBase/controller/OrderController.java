@@ -62,13 +62,14 @@ public class OrderController {
         //get the value of "ordId"
         String ordId=dataObject.getString("ordId");
 
-        userOrder.setOrderId(ordId);
-        UserOrder userOrderObj= userOrderService.saveOrder(userOrder);
+        if(!ordId.equals("")) {
+            userOrder.setOrderId(ordId);
+            UserOrder userOrderObj = userOrderService.saveOrder(userOrder);
 
-        if(!sMsgValue.equals("Order placed") && userOrderObj==null)
-        {
-            dataObject.put(STATUS_KEY,HttpStatus.BAD_REQUEST);
-            return new ResponseEntity<>(jsonObject,HttpStatus.BAD_REQUEST);
+            if (!sMsgValue.equals("Order placed") && userOrderObj == null) {
+                dataObject.put(STATUS_KEY, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(jsonObject, HttpStatus.BAD_REQUEST);
+            }
         }
 
         return new ResponseEntity<>(jsonObject, HttpStatus.CREATED);

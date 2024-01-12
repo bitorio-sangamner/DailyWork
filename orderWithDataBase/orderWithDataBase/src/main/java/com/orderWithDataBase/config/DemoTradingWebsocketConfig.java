@@ -13,10 +13,6 @@ public class DemoTradingWebsocketConfig {
 
 
     private String SERVICE_URL = "wss://wspap.okx.com:8443/ws/v5/private?brokerId=9999";
-
-
-
-
     private String API_KEY = "455577ff-5177-4177-9e27-9485836b0b14";
     private String SECRET_KEY = "ADF5FF955F2A370A1C50DF85B4CB5753";
     private String PASSPHRASE = "80c60758-beA16";

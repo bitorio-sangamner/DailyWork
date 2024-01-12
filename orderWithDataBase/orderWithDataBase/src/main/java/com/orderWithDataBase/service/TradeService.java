@@ -66,6 +66,8 @@ public class TradeService {
         return jsonObject;
     }
 
+
+
     public JSONObject getAlgoOrderList(String orderType,String algoOrderId)
     {
         jsonObject=tradeAPIService.getAlgoOrderList(algoOrderId,"FUTURES","",orderType,"","","","");

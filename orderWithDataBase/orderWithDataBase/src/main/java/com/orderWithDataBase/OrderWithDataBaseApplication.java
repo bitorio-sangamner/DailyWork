@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.Scheduled;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.orderWithDataBase"})
@@ -21,12 +22,13 @@ public class OrderWithDataBaseApplication implements CommandLineRunner {
 	public static void main(String[] args) {
 		SpringApplication.run(OrderWithDataBaseApplication.class, args);
 
-
 	}
+
+
 
 	@Override
 	public void run(String... args) throws Exception {
-		   demoTradingWebsocketConfig.loginConnect();
+		   //demoTradingWebsocketConfig.loginConnect();
 		//businessProductionTradingWebsocketConfig.loginConnect();
 
 	}

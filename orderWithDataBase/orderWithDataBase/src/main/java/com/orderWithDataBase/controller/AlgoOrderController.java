@@ -6,7 +6,6 @@ import com.okex.open.api.bean.trade.param.AmendAlgos;
 import com.okex.open.api.bean.trade.param.CancelAlgoOrder;
 import com.okex.open.api.bean.trade.param.PlaceAlgoOrder;
 import com.okex.open.api.exception.APIException;
-//import com.orderWithDataBase.entities.AlgoOrder;
 import com.orderWithDataBase.entities.UserOrder;
 import com.orderWithDataBase.service.AlgoOrderService;
 import com.orderWithDataBase.service.TradeService;
@@ -66,6 +65,8 @@ public class AlgoOrderController {
 
 
             jsonObject=tradeService.placeAlgoOrder(algoOrderObj);
+
+            System.out.println("json :"+jsonObject);
             // Get the "data" array
             JSONArray dataArray = jsonObject.getJSONArray("data");
             // Get the first object in the array
@@ -75,11 +76,13 @@ public class AlgoOrderController {
             //get the value of "ordId"
             String algoOrdId=dataObject.getString("algoId");
 
-            userAlgoOrder.setAlgoOrderId(algoOrdId);
-            algoOrderService.placeAlgoOrder(userAlgoOrder);
+           if(!algoOrdId.equals("")) {
+               userAlgoOrder.setAlgoOrderId(algoOrdId);
+               algoOrderService.placeAlgoOrder(userAlgoOrder);
 
-            jsonObject.put("status",HttpStatus.CREATED);
-            return new ResponseEntity<>(jsonObject,HttpStatus.CREATED);
+               jsonObject.put("status", HttpStatus.CREATED);
+               return new ResponseEntity<>(jsonObject, HttpStatus.CREATED);
+           }
         }
         catch(APIException e)
         {
@@ -87,6 +90,7 @@ public class AlgoOrderController {
             jsonObject.put("status",HttpStatus.NOT_ACCEPTABLE);
             return new ResponseEntity<>(jsonObject,HttpStatus.NOT_ACCEPTABLE);
         }
+        return new ResponseEntity<>(jsonObject, HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/cancelAlgoOrder")
