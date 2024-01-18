@@ -106,8 +106,16 @@ public class OrderController {
     @PostMapping("/amendOrder")
     public ResponseEntity<Object> amendOrderFromOkx(@RequestBody AmendOrder amendOrderObj)
     {
+        String msg="";
         jsonObject=tradeService.amendOrderFromOkx(amendOrderObj);
-        String msg=userOrderService.amendOrder(amendOrderObj);
+
+        JSONArray dataArray=jsonObject.getJSONArray("data");
+        JSONObject jsonObj=dataArray.getJSONObject(0);
+        String sMsg=jsonObj.getString("sMsg");
+
+        if(!sMsg.equals("Your order has already been filled or canceled")) {
+             msg = userOrderService.amendOrder(amendOrderObj);
+        }
 
         System.out.println("message :"+msg);
         if(msg.equals("order amended")) {

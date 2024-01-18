@@ -97,23 +97,42 @@ public class AlgoOrderController {
     public ResponseEntity<Object> cancelAlgoOrder(@RequestBody List<CancelAlgoOrder> cancelAlgoOrderList)
     {
         try {
-            String msg = algoOrderService.cancelAlgoOrder(cancelAlgoOrderList);
+//            String msg = algoOrderService.cancelAlgoOrder(cancelAlgoOrderList);
+//            jsonObject = tradeService.cancelAlgoOrder(cancelAlgoOrderList);
+//
+//            // Get the "data" array
+//            JSONArray dataArray = jsonObject.getJSONArray("data");
+//
+//            // Get the first object in the array
+//            JSONObject dataObject = dataArray.getJSONObject(0);
+//
+//            // Get the value of "sMsg"
+//            String sMsgValue = dataObject.getString("sMsg");
+//
+//            if(msg.equals("order deleted") && !sMsgValue.equals("Order cancellation failed as the order has been filled, canceled or does not exist"))
+//            {
+//                dataObject.put("sMsg","order deleted");
+//                return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+//            }
             jsonObject = tradeService.cancelAlgoOrder(cancelAlgoOrderList);
-
             // Get the "data" array
             JSONArray dataArray = jsonObject.getJSONArray("data");
 
-            // Get the first object in the array
-            JSONObject dataObject = dataArray.getJSONObject(0);
+            if(!dataArray.isEmpty())
+            {
+                String msg = algoOrderService.cancelAlgoOrder(cancelAlgoOrderList);
+                // Get the first object in the array
+              JSONObject dataObject = dataArray.getJSONObject(0);
+                // Get the value of "sMsg"
+              String sMsgValue = dataObject.getString("sMsg");
 
-            // Get the value of "sMsg"
-            String sMsgValue = dataObject.getString("sMsg");
-
-            if(msg.equals("order deleted") && !sMsgValue.equals("Order cancellation failed as the order has been filled, canceled or does not exist"))
+                if(msg.equals("order deleted") && !sMsgValue.equals("Order cancellation failed as the order has been filled, canceled or does not exist"))
             {
                 dataObject.put("sMsg","order deleted");
                 return new ResponseEntity<>(jsonObject, HttpStatus.OK);
             }
+         }
+
         }
         catch(APIException e)
         {

@@ -13,7 +13,7 @@ public class SchedulerConfig {
     @Autowired
     UpdateService updateService;
 
-    @Scheduled(fixedRate = 60000) // Run every 9 second
+    @Scheduled(fixedRate = 60000) // Run every 1 min
     public void myScheduledMethod() {
         //System.out.println("Scheduled task executed at: " + System.currentTimeMillis());
 

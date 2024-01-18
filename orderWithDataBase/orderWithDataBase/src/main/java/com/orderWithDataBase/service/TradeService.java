@@ -1,7 +1,6 @@
 package com.orderWithDataBase.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.okex.open.api.bean.copytrading.param.AlgoOrder;
 import com.okex.open.api.bean.trade.param.*;
 import com.okex.open.api.service.trade.TradeAPIService;
 import org.springframework.beans.factory.annotation.Autowired;

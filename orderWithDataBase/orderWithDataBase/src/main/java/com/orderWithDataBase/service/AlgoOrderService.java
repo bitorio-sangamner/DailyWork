@@ -2,9 +2,7 @@ package com.orderWithDataBase.service;
 
 import com.okex.open.api.bean.trade.param.AmendAlgos;
 import com.okex.open.api.bean.trade.param.CancelAlgoOrder;
-//import com.orderWithDataBase.entities.AlgoOrder;
 import com.orderWithDataBase.entities.UserOrder;
-//import com.orderWithDataBase.repository.AlgoOrderRepository;
 import com.orderWithDataBase.repository.UserOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,8 +12,7 @@ import java.util.List;
 @Service
 public class AlgoOrderService {
 
-//    @Autowired
-//    AlgoOrderRepository algoOrderRepository;
+
     @Autowired
     UserOrderRepository userOrderRepository;
 
