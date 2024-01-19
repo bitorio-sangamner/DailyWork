@@ -4,6 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
+
 
 
 @Entity
@@ -12,6 +16,13 @@ public class UserOrder {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private int id;
+
+
+
+    //private Date date;
+    // Use @DateTimeFormat to specify the expected date format
+    @DateTimeFormat(pattern = "dd/MM/yy")
+    private LocalDate orderDate;
     private String instrumentId;
     private String tradeMode;
     private String orderSide;
@@ -29,14 +40,7 @@ public class UserOrder {
     private String status;
     private String marginCurrency;//ccy
 
-    public String getQuantity() {
-        return Quantity;
-    }
-
-    public void setQuantity(String quantity) {
-        Quantity = quantity;
-    }
-
+    //private Date date;
     private String Quantity;
     private String orderTag;
     private String orderQuantityUnitSetting;
@@ -48,6 +52,68 @@ public class UserOrder {
     private String triggerPx;
     private String orderPx;
     private String triggerPxType;
+    private String callbackRatio;
+    private String callbackSpread;
+    private String activePrice;
+    private String quickMarginType;
+    private boolean reduceOnly=false;
+
+    public String getCallbackRatio() {
+        return callbackRatio;
+    }
+
+    public void setCallbackRatio(String callbackRatio) {
+        this.callbackRatio = callbackRatio;
+    }
+
+    public String getCallbackSpread() {
+        return callbackSpread;
+    }
+
+    public void setCallbackSpread(String callbackSpread) {
+        this.callbackSpread = callbackSpread;
+    }
+
+    public String getActivePrice() {
+        return activePrice;
+    }
+
+    public void setActivePrice(String activePrice) {
+        this.activePrice = activePrice;
+    }
+
+    public String getQuickMarginType() {
+        return quickMarginType;
+    }
+
+    public void setQuickMarginType(String quickMarginType) {
+        this.quickMarginType = quickMarginType;
+    }
+
+    public boolean getReduceOnly() {
+        return reduceOnly;
+    }
+
+    public void setReduceOnly(boolean reduceOnly) {
+        this.reduceOnly = reduceOnly;
+    }
+
+    public String getQuantity() {
+        return Quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        Quantity = quantity;
+    }
+
+
+    public LocalDate getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(LocalDate orderDate) {
+        this.orderDate = orderDate;
+    }
 
     public String getOrderTag() {
         return orderTag;

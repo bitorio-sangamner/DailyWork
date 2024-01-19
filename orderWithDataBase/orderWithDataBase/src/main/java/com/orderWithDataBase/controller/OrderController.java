@@ -13,6 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 @RestController
 public class OrderController {
 
@@ -35,9 +39,19 @@ public class OrderController {
     @PostMapping("/placeOrder")
     public ResponseEntity<Object> placeOrder(@RequestBody PlaceOrder order)
     {
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
+
+        // Format the current date into "dd/MM/yy" format
+        String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd/MM/yy"));
+
+        // Parse the formatted date string into a LocalDate
+        LocalDate orderDate = LocalDate.parse(formattedDate, DateTimeFormatter.ofPattern("dd/MM/yy"));
+
         // Instantiate the userOrder object
         userOrder = new UserOrder();
 
+        userOrder.setOrderDate(orderDate);
         userOrder.setInstrumentId(order.getInstId());
         userOrder.setTradeMode(order.getTdMode());
         userOrder.setOrderSide(order.getSide());
@@ -81,21 +95,23 @@ public class OrderController {
         String orderId=cancelOrderObj.getOrdId();
 
         jsonObject=tradeService.cancelOrderFromOkx(cancelOrderObj);
-        String msg=userOrderService.cancelOrder(orderId);
-
         // Get the "data" array
         JSONArray dataArray = jsonObject.getJSONArray("data");
 
-        // Get the first object in the array
-        JSONObject dataObject = dataArray.getJSONObject(0);
+        if(!dataArray.isEmpty())
+        {
+            String msg=userOrderService.cancelOrder(orderId);
+            // Get the first object in the array
+          JSONObject dataObject = dataArray.getJSONObject(0);
 
-        // Get the value of "sMsg"
-        String sMsgValue = dataObject.getString("sMsg");
+            // Get the value of "sMsg"
+           String sMsgValue = dataObject.getString("sMsg");
 
-        if(jsonObject.get("msg").equals("") && msg.equals("order deleted") && !sMsgValue.equals("Order cancellation failed as the order has been filled, canceled or does not exist"))
+            if(jsonObject.get("msg").equals("") && msg.equals("order deleted") && !sMsgValue.equals("Order cancellation failed as the order has been filled, canceled or does not exist"))
         {
             dataObject.put("sMsg","order deleted");
             return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+        }
         }
 
         jsonObject.put(STATUS_KEY,HttpStatus.NOT_ACCEPTABLE);

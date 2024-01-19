@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -43,8 +45,19 @@ public class AlgoOrderController {
     public ResponseEntity<Object> placeAlgoOrder(@RequestBody PlaceAlgoOrder algoOrderObj)
     {
         try {
-              userAlgoOrder =new UserOrder();
 
+            // Get the current date
+            LocalDate currentDate = LocalDate.now();
+
+            // Format the current date into "dd/MM/yy" format
+            String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd/MM/yy"));
+
+            // Parse the formatted date string into a LocalDate
+            LocalDate orderDate = LocalDate.parse(formattedDate, DateTimeFormatter.ofPattern("dd/MM/yy"));
+
+            userAlgoOrder =new UserOrder();
+
+            userAlgoOrder.setOrderDate(orderDate);
               userAlgoOrder.setInstrumentId(algoOrderObj.getInstId());
               userAlgoOrder.setTradeMode(algoOrderObj.getTdMode());
               userAlgoOrder.setMarginCurrency(algoOrderObj.getCcy());
@@ -97,23 +110,7 @@ public class AlgoOrderController {
     public ResponseEntity<Object> cancelAlgoOrder(@RequestBody List<CancelAlgoOrder> cancelAlgoOrderList)
     {
         try {
-//            String msg = algoOrderService.cancelAlgoOrder(cancelAlgoOrderList);
-//            jsonObject = tradeService.cancelAlgoOrder(cancelAlgoOrderList);
-//
-//            // Get the "data" array
-//            JSONArray dataArray = jsonObject.getJSONArray("data");
-//
-//            // Get the first object in the array
-//            JSONObject dataObject = dataArray.getJSONObject(0);
-//
-//            // Get the value of "sMsg"
-//            String sMsgValue = dataObject.getString("sMsg");
-//
-//            if(msg.equals("order deleted") && !sMsgValue.equals("Order cancellation failed as the order has been filled, canceled or does not exist"))
-//            {
-//                dataObject.put("sMsg","order deleted");
-//                return new ResponseEntity<>(jsonObject, HttpStatus.OK);
-//            }
+
             jsonObject = tradeService.cancelAlgoOrder(cancelAlgoOrderList);
             // Get the "data" array
             JSONArray dataArray = jsonObject.getJSONArray("data");
@@ -223,46 +220,124 @@ public class AlgoOrderController {
     @PostMapping("/placeAlgoTriggerOrder")
     public ResponseEntity<Object> placeAlgoTriggerOrder(@RequestBody PlaceAlgoOrder algoOrderObj)
     {
-        userAlgoOrder =new UserOrder();
+        try {
+            // Get the current date
+            LocalDate currentDate = LocalDate.now();
 
-        userAlgoOrder.setInstrumentId(algoOrderObj.getInstId());
-        userAlgoOrder.setTradeMode(algoOrderObj.getTdMode());
-        userAlgoOrder.setMarginCurrency(algoOrderObj.getCcy());
-        userAlgoOrder.setOrderSide(algoOrderObj.getSide());
-        userAlgoOrder.setPositionSide(algoOrderObj.getPosSide());
-        userAlgoOrder.setOrderType(algoOrderObj.getOrdType());
-        userAlgoOrder.setQuantity(algoOrderObj.getSz());
-        userAlgoOrder.setOrderTag(algoOrderObj.getTag());
-        userAlgoOrder.setOrderQuantityUnitSetting(algoOrderObj.getTgtCcy());
-        userAlgoOrder.setClientSuppliedAlgoID(algoOrderObj.getAlgoClOrdId());
-        userAlgoOrder.setCloseFraction(algoOrderObj.getCloseFraction());
-        userAlgoOrder.setTpTriggerPx(algoOrderObj.getTpTriggerPx());
-        userAlgoOrder.setTpOrdPx(algoOrderObj.getTpOrdPx());
-        userAlgoOrder.setTpTriggerPxType(algoOrderObj.getTpTriggerPxType());
-        userAlgoOrder.setSlTriggerPx(algoOrderObj.getSlTriggerPx());
-        userAlgoOrder.setSlOrdPx(algoOrderObj.getSlOrdPx());
-        userAlgoOrder.setSlTriggerPxType(algoOrderObj.getSlTriggerPxType());
-        userAlgoOrder.setTriggerPx(algoOrderObj.getTriggerPx());
-        userAlgoOrder.setOrderPx(algoOrderObj.getOrderPx());
-        userAlgoOrder.setTriggerPxType(algoOrderObj.getTriggerPxType());
+            // Format the current date into "dd/MM/yy" format
+            String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd/MM/yy"));
 
-        jsonObject=tradeService.placeAlgoTriggerOrder(algoOrderObj);
+            // Parse the formatted date string into a LocalDate
+            LocalDate orderDate = LocalDate.parse(formattedDate, DateTimeFormatter.ofPattern("dd/MM/yy"));
 
-        // Get the "data" array
-        JSONArray dataArray = jsonObject.getJSONArray("data");
-        // Get the first object in the array
-        JSONObject dataObject = dataArray.getJSONObject(0);
-        // Get the value of "sMsg"
-        String sMsgValue = dataObject.getString("sMsg");
-        //get the value of "ordId"
-        String algoOrdId=dataObject.getString("algoId");
+            userAlgoOrder = new UserOrder();
+            userAlgoOrder.setOrderDate(orderDate);
 
-        userAlgoOrder.setAlgoOrderId(algoOrdId);
-        algoOrderService.placeAlgoTriggerOrder(userAlgoOrder);
+            userAlgoOrder.setInstrumentId(algoOrderObj.getInstId());
+            userAlgoOrder.setTradeMode(algoOrderObj.getTdMode());
+            userAlgoOrder.setMarginCurrency(algoOrderObj.getCcy());
+            userAlgoOrder.setOrderSide(algoOrderObj.getSide());
+            userAlgoOrder.setPositionSide(algoOrderObj.getPosSide());
+            userAlgoOrder.setOrderType(algoOrderObj.getOrdType());
+            userAlgoOrder.setQuantity(algoOrderObj.getSz());
+            userAlgoOrder.setOrderTag(algoOrderObj.getTag());
+            userAlgoOrder.setOrderQuantityUnitSetting(algoOrderObj.getTgtCcy());
+            userAlgoOrder.setClientSuppliedAlgoID(algoOrderObj.getAlgoClOrdId());
+            userAlgoOrder.setCloseFraction(algoOrderObj.getCloseFraction());
+            userAlgoOrder.setTpTriggerPx(algoOrderObj.getTpTriggerPx());
+            userAlgoOrder.setTpOrdPx(algoOrderObj.getTpOrdPx());
+            userAlgoOrder.setTpTriggerPxType(algoOrderObj.getTpTriggerPxType());
+            userAlgoOrder.setSlTriggerPx(algoOrderObj.getSlTriggerPx());
+            userAlgoOrder.setSlOrdPx(algoOrderObj.getSlOrdPx());
+            userAlgoOrder.setSlTriggerPxType(algoOrderObj.getSlTriggerPxType());
+            userAlgoOrder.setTriggerPx(algoOrderObj.getTriggerPx());
+            userAlgoOrder.setOrderPx(algoOrderObj.getOrderPx());
+            userAlgoOrder.setTriggerPxType(algoOrderObj.getTriggerPxType());
 
-        jsonObject.put("status",HttpStatus.CREATED);
-        return new ResponseEntity<>(jsonObject,HttpStatus.CREATED);
+            jsonObject = tradeService.placeAlgoTriggerOrder(algoOrderObj);
+
+            // Get the "data" array
+            JSONArray dataArray = jsonObject.getJSONArray("data");
+            // Get the first object in the array
+            JSONObject dataObject = dataArray.getJSONObject(0);
+            // Get the value of "sMsg"
+            String sMsgValue = dataObject.getString("sMsg");
+            //get the value of "ordId"
+            String algoOrdId = dataObject.getString("algoId");
+
+            if (!algoOrdId.equals("")) {
+                userAlgoOrder.setAlgoOrderId(algoOrdId);
+                algoOrderService.placeAlgoOrder(userAlgoOrder);
+
+                jsonObject.put("status", HttpStatus.CREATED);
+                return new ResponseEntity<>(jsonObject, HttpStatus.CREATED);
+            }
+        }//try
+
+        catch(APIException e)
+        {
+            jsonObject.put("message",e.getMessage());
+            jsonObject.put("status",HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(jsonObject,HttpStatus.NOT_ACCEPTABLE);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.BAD_REQUEST);
     }
+
+    @PostMapping("/placeTrailingStopOrder")
+    public ResponseEntity<Object> placeTrailingStopOrder(@RequestBody PlaceAlgoOrder algoOrder)
+    {
+        try {
+
+            // Get the current date
+            LocalDate currentDate = LocalDate.now();
+
+            // Format the current date into "dd/MM/yy" format
+            String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd/MM/yy"));
+
+            // Parse the formatted date string into a LocalDate
+            LocalDate orderDate = LocalDate.parse(formattedDate, DateTimeFormatter.ofPattern("dd/MM/yy"));
+
+            userAlgoOrder = new UserOrder();
+            userAlgoOrder.setOrderDate(orderDate);
+
+            userAlgoOrder.setInstrumentId(algoOrder.getInstId());
+            userAlgoOrder.setTradeMode(algoOrder.getTdMode());
+            userAlgoOrder.setOrderSide(algoOrder.getSide());
+            userAlgoOrder.setOrderType(algoOrder.getOrdType());
+            userAlgoOrder.setPositionSide(algoOrder.getPosSide());
+            userAlgoOrder.setCallbackRatio(algoOrder.getCallbackRatio());
+            userAlgoOrder.setActivePrice(algoOrder.getActivePx());
+            //userAlgoOrder.setReduceOnly(algoOrder.getReduceOnly());
+
+            jsonObject = tradeService.placeAlgoTriggerOrder(algoOrder);
+
+            // Get the "data" array
+            JSONArray dataArray = jsonObject.getJSONArray("data");
+            // Get the first object in the array
+            JSONObject dataObject = dataArray.getJSONObject(0);
+            // Get the value of "sMsg"
+            String sMsgValue = dataObject.getString("sMsg");
+            //get the value of "ordId"
+            String algoOrdId = dataObject.getString("algoId");
+
+            if (!algoOrdId.equals("")) {
+                userAlgoOrder.setAlgoOrderId(algoOrdId);
+                algoOrderService.placeAlgoOrder(userAlgoOrder);
+
+                jsonObject.put("status", HttpStatus.CREATED);
+                return new ResponseEntity<>(jsonObject, HttpStatus.CREATED);
+            }
+        }//try
+
+        catch(APIException e)
+        {
+            jsonObject.put("message",e.getMessage());
+            jsonObject.put("status",HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(jsonObject,HttpStatus.NOT_ACCEPTABLE);
+        }
+        return new ResponseEntity<>(jsonObject, HttpStatus.BAD_REQUEST);
+    }
+
 
     @PutMapping("/updateStatusOfAlgoOrder")
     public ResponseEntity<Object> updateStatusOfAlgoOrder(@RequestBody JSONObject json)
