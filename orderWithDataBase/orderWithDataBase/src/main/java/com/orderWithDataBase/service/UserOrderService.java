@@ -94,7 +94,7 @@ public class UserOrderService {
             }
 
             userOrderRepository.save(userOrderObj);
-            return "order amended";
+            return "order updated";
         }
         else {
             return "order not found"; // Handle the case where the order is not found

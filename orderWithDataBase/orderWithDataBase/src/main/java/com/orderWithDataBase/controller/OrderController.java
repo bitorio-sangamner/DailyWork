@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.okex.open.api.bean.trade.param.AmendOrder;
 import com.okex.open.api.bean.trade.param.CancelOrder;
 import com.okex.open.api.bean.trade.param.PlaceOrder;
+import com.okex.open.api.exception.APIException;
 import com.orderWithDataBase.entities.UserOrder;
 import com.orderWithDataBase.service.TradeService;
 import com.orderWithDataBase.service.UserOrderService;
@@ -39,54 +40,57 @@ public class OrderController {
     @PostMapping("/placeOrder")
     public ResponseEntity<Object> placeOrder(@RequestBody PlaceOrder order)
     {
-        // Get the current date
-        LocalDate currentDate = LocalDate.now();
 
-        // Format the current date into "dd/MM/yy" format
-        String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd/MM/yy"));
+            // Get the current date
+            LocalDate currentDate = LocalDate.now();
 
-        // Parse the formatted date string into a LocalDate
-        LocalDate orderDate = LocalDate.parse(formattedDate, DateTimeFormatter.ofPattern("dd/MM/yy"));
+            // Format the current date into "dd/MM/yy" format
+            String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd/MM/yy"));
 
-        // Instantiate the userOrder object
-        userOrder = new UserOrder();
+            // Parse the formatted date string into a LocalDate
+            LocalDate orderDate = LocalDate.parse(formattedDate, DateTimeFormatter.ofPattern("dd/MM/yy"));
 
-        userOrder.setOrderDate(orderDate);
-        userOrder.setInstrumentId(order.getInstId());
-        userOrder.setTradeMode(order.getTdMode());
-        userOrder.setOrderSide(order.getSide());
-        userOrder.setPositionSide(order.getPosSide());
-        userOrder.setOrderType(order.getOrdType());
-        userOrder.setQuantity(order.getSz());
-        userOrder.setOrderPrice(order.getPx());
-        userOrder.setTpTriggerPx(order.getTpTriggerPx());
-        userOrder.setTpOrdPx(order.getTpOrdPx());
-        userOrder.setSlTriggerPx(order.getSlTriggerPx());
-        userOrder.setSlOrdPx(order.getSlOrdPx());
+            // Instantiate the userOrder object
+            userOrder = new UserOrder();
 
-        jsonObject=tradeService.placeOrderOnOkx(order);
+            userOrder.setOrderDate(orderDate);
+            userOrder.setInstrumentId(order.getInstId());
+            userOrder.setTradeMode(order.getTdMode());
+            userOrder.setOrderSide(order.getSide());
+            userOrder.setPositionSide(order.getPosSide());
+            userOrder.setOrderType(order.getOrdType());
+            userOrder.setQuantity(order.getSz());
+            userOrder.setOrderPrice(order.getPx());
+            userOrder.setTpTriggerPx(order.getTpTriggerPx());
+            userOrder.setTpOrdPx(order.getTpOrdPx());
+            userOrder.setSlTriggerPx(order.getSlTriggerPx());
+            userOrder.setSlOrdPx(order.getSlOrdPx());
+
+            jsonObject = tradeService.placeOrderOnOkx(order);
 
 
-        // Get the "data" array
-        JSONArray dataArray = jsonObject.getJSONArray("data");
-        // Get the first object in the array
-        JSONObject dataObject = dataArray.getJSONObject(0);
-        // Get the value of "sMsg"
-        String sMsgValue = dataObject.getString("sMsg");
-        //get the value of "ordId"
-        String ordId=dataObject.getString("ordId");
+            // Get the "data" array
+            JSONArray dataArray = jsonObject.getJSONArray("data");
+            // Get the first object in the array
+            JSONObject dataObject = dataArray.getJSONObject(0);
+            // Get the value of "sMsg"
+            String sMsgValue = dataObject.getString("sMsg");
+            //get the value of "ordId"
+            String ordId = dataObject.getString("ordId");
 
-        if(!ordId.equals("")) {
-            userOrder.setOrderId(ordId);
-            UserOrder userOrderObj = userOrderService.saveOrder(userOrder);
 
-            if (!sMsgValue.equals("Order placed") && userOrderObj == null) {
+            if (!ordId.equals("") && sMsgValue.equals("Order placed") && jsonObject.getString("msg").equals("")) {
+                userOrder.setOrderId(ordId);
+                userOrderService.saveOrder(userOrder);
+                jsonObject.put("status", HttpStatus.CREATED);
+                return new ResponseEntity<>(jsonObject, HttpStatus.CREATED);
+            }
+            else {
+
+
                 dataObject.put(STATUS_KEY, HttpStatus.BAD_REQUEST);
                 return new ResponseEntity<>(jsonObject, HttpStatus.BAD_REQUEST);
             }
-        }
-
-        return new ResponseEntity<>(jsonObject, HttpStatus.CREATED);
     }//placeOrder
 
     @PostMapping("/cancelOrderFromOkx")
@@ -122,22 +126,49 @@ public class OrderController {
     @PostMapping("/amendOrder")
     public ResponseEntity<Object> amendOrderFromOkx(@RequestBody AmendOrder amendOrderObj)
     {
-        String msg="";
-        jsonObject=tradeService.amendOrderFromOkx(amendOrderObj);
+//        String msg="";
+//        jsonObject=tradeService.amendOrderFromOkx(amendOrderObj);
+//
+//        JSONArray dataArray=jsonObject.getJSONArray("data");
+//        JSONObject jsonObj=dataArray.getJSONObject(0);
+//        String sMsg=jsonObj.getString("sMsg");
+//
+//        if(!sMsg.equals("Your order has already been filled or canceled") || sMsg.equals("") || sMsg.equals(" ") || sMsg==null) {
+//             msg = userOrderService.amendOrder(amendOrderObj);
+//        }
+//
+//        System.out.println("message :"+msg);
+//        if(msg.equals("order amended")) {
+//            return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+//        }
+//        return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
 
-        JSONArray dataArray=jsonObject.getJSONArray("data");
-        JSONObject jsonObj=dataArray.getJSONObject(0);
-        String sMsg=jsonObj.getString("sMsg");
 
-        if(!sMsg.equals("Your order has already been filled or canceled")) {
-             msg = userOrderService.amendOrder(amendOrderObj);
+        try {
+            jsonObject = tradeService.amendOrderFromOkx(amendOrderObj);
+
+            JSONArray dataArray=jsonObject.getJSONArray("data");
+            JSONObject json=dataArray.getJSONObject(0);
+            String sMsg=json.getString("sMsg");
+
+            if(sMsg.equals("") || sMsg.equals(" ") || sMsg==null) {
+                String msg = userOrderService.amendOrder(amendOrderObj);
+
+                if(msg.equals("order updated")) {
+                    return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+                }
+                else {
+                    jsonObject.put("message","order not found at local");
+                    return new ResponseEntity<>(jsonObject,HttpStatus.NOT_FOUND);
+                }
+            }
+            return new ResponseEntity<>(jsonObject,HttpStatus.BAD_REQUEST);
         }
-
-        System.out.println("message :"+msg);
-        if(msg.equals("order amended")) {
-            return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+        catch(APIException e)
+        {
+            jsonObject.put("message",e.getMessage());
+            return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/orderDetails")

@@ -55,7 +55,7 @@ public class UpdateService {
                 }
 
             }
-            else if(userOrder.getOrderType().equals("conditional") || userOrder.getOrderType().equals("trigger"))
+            else if(userOrder.getOrderType().equals("conditional") || userOrder.getOrderType().equals("trigger") || userOrder.getOrderType().equals("move_order_stop"))
             {
                 String algoOrderId=userOrder.getAlgoOrderId();
                 json=tradeService.getAlgoOrderDetails(algoOrderId);

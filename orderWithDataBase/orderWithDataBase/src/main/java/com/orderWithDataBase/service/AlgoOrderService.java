@@ -101,10 +101,13 @@ public class AlgoOrderService {
             {
                System.out.println(e.getMessage());
             }
-        }
+            UserOrder order=userOrderRepository.save(algoOrder);
+            return "order updated";
+        }//if
 
-          UserOrder order=userOrderRepository.save(algoOrder);
-        return "order updated";
+          else {
+              return "order not found";
+        }
     }
 
     public UserOrder getAlgoOrderDetails(String algoOrderId)

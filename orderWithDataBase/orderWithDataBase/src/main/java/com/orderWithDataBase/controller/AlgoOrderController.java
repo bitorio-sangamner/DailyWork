@@ -6,6 +6,7 @@ import com.okex.open.api.bean.trade.param.AmendAlgos;
 import com.okex.open.api.bean.trade.param.CancelAlgoOrder;
 import com.okex.open.api.bean.trade.param.PlaceAlgoOrder;
 import com.okex.open.api.exception.APIException;
+import com.orderWithDataBase.entities.AttachAlgoOrder;
 import com.orderWithDataBase.entities.UserOrder;
 import com.orderWithDataBase.service.AlgoOrderService;
 import com.orderWithDataBase.service.TradeService;
@@ -55,9 +56,9 @@ public class AlgoOrderController {
             // Parse the formatted date string into a LocalDate
             LocalDate orderDate = LocalDate.parse(formattedDate, DateTimeFormatter.ofPattern("dd/MM/yy"));
 
-            userAlgoOrder =new UserOrder();
+              userAlgoOrder =new UserOrder();
 
-            userAlgoOrder.setOrderDate(orderDate);
+              userAlgoOrder.setOrderDate(orderDate);
               userAlgoOrder.setInstrumentId(algoOrderObj.getInstId());
               userAlgoOrder.setTradeMode(algoOrderObj.getTdMode());
               userAlgoOrder.setMarginCurrency(algoOrderObj.getCcy());
@@ -147,8 +148,22 @@ public class AlgoOrderController {
         try {
             jsonObject = tradeService.amendAlgoOrder(amendAlgosObj);
 
-            String msg = algoOrderService.amendAlgoOrder(amendAlgosObj);
-            return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+            JSONArray dataArray=jsonObject.getJSONArray("data");
+            JSONObject json=dataArray.getJSONObject(0);
+            String sMsg=json.getString("sMsg");
+
+            if(sMsg.equals("") || sMsg.equals(" ") || sMsg==null) {
+                String msg = algoOrderService.amendAlgoOrder(amendAlgosObj);
+
+                if(msg.equals("order updated")) {
+                    return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+                }
+                else {
+                    jsonObject.put("message","order not found at local");
+                    return new ResponseEntity<>(jsonObject,HttpStatus.NOT_FOUND);
+                }
+            }
+            return new ResponseEntity<>(jsonObject,HttpStatus.BAD_REQUEST);
         }
         catch(APIException e)
         {
@@ -173,6 +188,7 @@ public class AlgoOrderController {
         catch(APIException e)
         {
             jsonObject.put("message",e.getMessage());
+            jsonObject.put("status",HttpStatus.INTERNAL_SERVER_ERROR);
             return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
         }
         jsonObjectNew.put("message :","order not found either on okx or in local database or not found at both side");
@@ -247,14 +263,18 @@ public class AlgoOrderController {
             userAlgoOrder.setTpTriggerPx(algoOrderObj.getTpTriggerPx());
             userAlgoOrder.setTpOrdPx(algoOrderObj.getTpOrdPx());
             userAlgoOrder.setTpTriggerPxType(algoOrderObj.getTpTriggerPxType());
+
+           //List<AttachAlgoOrder> attachAlgoOrderList=algoOrderObj.getAttachAlgoOrds();
             userAlgoOrder.setSlTriggerPx(algoOrderObj.getSlTriggerPx());
+            System.out.println("stop loss trigger price:"+algoOrderObj.getSlTriggerPx());
             userAlgoOrder.setSlOrdPx(algoOrderObj.getSlOrdPx());
+            System.out.println("stop loss order price:"+algoOrderObj.getSlOrdPx());
             userAlgoOrder.setSlTriggerPxType(algoOrderObj.getSlTriggerPxType());
             userAlgoOrder.setTriggerPx(algoOrderObj.getTriggerPx());
             userAlgoOrder.setOrderPx(algoOrderObj.getOrderPx());
             userAlgoOrder.setTriggerPxType(algoOrderObj.getTriggerPxType());
 
-            jsonObject = tradeService.placeAlgoTriggerOrder(algoOrderObj);
+            jsonObject = tradeService.placeAlgoOrder(algoOrderObj);
 
             // Get the "data" array
             JSONArray dataArray = jsonObject.getJSONArray("data");
@@ -301,6 +321,7 @@ public class AlgoOrderController {
             userAlgoOrder.setOrderDate(orderDate);
 
             userAlgoOrder.setInstrumentId(algoOrder.getInstId());
+            userAlgoOrder.setQuantity(algoOrder.getSz());
             userAlgoOrder.setTradeMode(algoOrder.getTdMode());
             userAlgoOrder.setOrderSide(algoOrder.getSide());
             userAlgoOrder.setOrderType(algoOrder.getOrdType());
@@ -309,7 +330,7 @@ public class AlgoOrderController {
             userAlgoOrder.setActivePrice(algoOrder.getActivePx());
             //userAlgoOrder.setReduceOnly(algoOrder.getReduceOnly());
 
-            jsonObject = tradeService.placeAlgoTriggerOrder(algoOrder);
+            jsonObject = tradeService.placeAlgoOrder(algoOrder);
 
             // Get the "data" array
             JSONArray dataArray = jsonObject.getJSONArray("data");
