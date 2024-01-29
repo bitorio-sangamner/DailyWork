@@ -4,6 +4,8 @@ package com.orderWithDataBase.config;
 
 import com.alibaba.fastjson.JSONObject;
 import com.okex.open.api.config.APIConfiguration;
+import com.okex.open.api.service.gridTrading.GridTradingAPIService;
+import com.okex.open.api.service.gridTrading.impl.GridTradingAPIServiceImpl;
 import com.okex.open.api.service.trade.TradeAPIService;
 import com.okex.open.api.service.trade.impl.TradeAPIServiceImpl;
 import org.springframework.context.annotation.Bean;
@@ -34,6 +36,11 @@ public class ConfigClass {
         return new TradeAPIServiceImpl(config);
     }
 
+   @Bean
+   public GridTradingAPIService GridApiService(APIConfiguration config)
+   {
+      return new GridTradingAPIServiceImpl(config);
+   }
 
     @Bean
     public JSONObject jsonObject() {
