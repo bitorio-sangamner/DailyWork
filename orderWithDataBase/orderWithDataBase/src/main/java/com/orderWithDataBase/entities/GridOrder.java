@@ -19,6 +19,8 @@ public class GridOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    private String algoId;
     private String instId;
     private String algoOrdType;
     private String maxPx;

@@ -174,14 +174,21 @@ public class OrderController {
     @GetMapping("/orderDetails")
     public ResponseEntity<Object> getOrderDetails(@RequestBody JSONObject json)
     {
-        String instrumentId=json.getString("instId");
-        String orderId=json.getString("ordId");
+        try {
+            String instrumentId = json.getString("instId");
+            String orderId = json.getString("ordId");
 
-        jsonObject=tradeService.getOrderDetails(instrumentId,orderId);
-        if(jsonObject.get("msg").equals(""))
+            jsonObject = tradeService.getOrderDetails(instrumentId, orderId);
+            if (jsonObject.get("msg").equals("")) {
+                jsonObject.put(STATUS_KEY, HttpStatus.OK);
+                return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+            }
+        }//try
+        catch(APIException e)
         {
-            jsonObject.put(STATUS_KEY,HttpStatus.OK);
-            return new ResponseEntity<>(jsonObject,HttpStatus.OK);
+            jsonObject.put(MESSAGE_KEY,e.getMessage());
+            jsonObject.put(STATUS_KEY,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(jsonObject,HttpStatus.BAD_REQUEST);
         }
         jsonObject.put(STATUS_KEY,HttpStatus.NOT_ACCEPTABLE);
         return new ResponseEntity<>(jsonObject, HttpStatus.NOT_ACCEPTABLE);
