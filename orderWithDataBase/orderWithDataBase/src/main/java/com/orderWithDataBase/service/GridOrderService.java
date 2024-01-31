@@ -16,4 +16,17 @@ public class GridOrderService {
         GridOrder gridOrder=gridOrderRepository.save(gridOrderObj);
         return gridOrder;
     }
+
+    public GridOrder findGridOrderByAlgoId(String algoId)
+    {
+        GridOrder gridOrder=gridOrderRepository.findByAlgoId(algoId);
+        return gridOrder;
+    }
+
+    public String stopGridOrder(String algoId)
+    {
+        GridOrder gridOrder=gridOrderRepository.findByAlgoId(algoId);
+        gridOrderRepository.delete(gridOrder);
+        return "order deleted";
+    }
 }

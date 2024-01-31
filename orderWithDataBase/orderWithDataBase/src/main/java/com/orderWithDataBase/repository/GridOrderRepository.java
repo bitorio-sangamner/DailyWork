@@ -6,4 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public interface GridOrderRepository extends CrudRepository<GridOrder,Integer> {
+
+    //custom finder methods
+    public GridOrder findByAlgoId(String algoId);
 }

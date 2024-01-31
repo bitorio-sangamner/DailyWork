@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -20,6 +23,8 @@ public class GridOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @DateTimeFormat(pattern = "dd/yy/mm")
+    private LocalDate localDate;
     private String algoId;
     private String instId;
     private String algoOrdType;
@@ -36,4 +41,5 @@ public class GridOrder {
     private String direction;
     private String lever;
     private String basePos;
+    private String state;
 }
