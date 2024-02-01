@@ -5,6 +5,8 @@ import com.orderWithDataBase.repository.GridOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class GridOrderService {
 
@@ -28,5 +30,11 @@ public class GridOrderService {
         GridOrder gridOrder=gridOrderRepository.findByAlgoId(algoId);
         gridOrderRepository.delete(gridOrder);
         return "order deleted";
+    }
+
+    public List<GridOrder> findGridOrderByType(String algoOrderType)
+    {
+        List<GridOrder> gridOrderList=gridOrderRepository.findByAlgoOrdType(algoOrderType);
+        return gridOrderList;
     }
 }

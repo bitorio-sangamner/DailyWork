@@ -9,7 +9,6 @@ import com.okex.open.api.exception.APIException;
 import com.orderWithDataBase.entities.GridOrder;
 import com.orderWithDataBase.service.GridOrderService;
 import com.orderWithDataBase.service.GridService;
-import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -100,16 +99,24 @@ public class GridOrderController {
     @GetMapping("/getGridOrderDetails")
     public ResponseEntity<Object> getGridOrderDetails(@RequestBody JSONObject json)
     {
-        String algoOrdType=json.getString("algoOrdType");
-        String algoId=json.getString("algoId");
+        try {
+            String algoOrdType = json.getString("algoOrdType");
+            String algoId = json.getString("algoId");
 
-       jsonObject=gridService.getGridOrderDetailsFromOkx(algoOrdType,algoId);
-       GridOrder gridOrderObj=gridOrderService.findGridOrderByAlgoId(algoId);
+            jsonObject = gridService.getGridOrderDetailsFromOkx(algoOrdType, algoId);
+            GridOrder gridOrderObj = gridOrderService.findGridOrderByAlgoId(algoId);
 
-       if(jsonObject.getString("msg").equals("") &&!jsonObject.getString("msg").equals("Order does not exist") && gridOrderObj!=null) {
-           jsonObject.put(STATUS_KEY,HttpStatus.FOUND);
-           return new ResponseEntity<>(jsonObject, HttpStatus.FOUND);
-       }
+            if (jsonObject.getString("msg").equals("") && !jsonObject.getString("msg").equals("Order does not exist") && gridOrderObj != null) {
+                jsonObject.put(STATUS_KEY, HttpStatus.FOUND);
+                return new ResponseEntity<>(jsonObject, HttpStatus.FOUND);
+            }
+        }//try
+        catch(APIException e)
+        {
+            jsonObject.put(MESSAGE_KEY,e.getMessage());
+            jsonObject.put(STATUS_KEY,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(jsonObject,HttpStatus.BAD_REQUEST);
+        }
 
         jsonObject.put(STATUS_KEY,HttpStatus.NOT_ACCEPTABLE);
         return new ResponseEntity<>(jsonObject, HttpStatus.NOT_ACCEPTABLE);
@@ -119,6 +126,12 @@ public class GridOrderController {
     public ResponseEntity<Object> stopGridOrder(@RequestBody List<StopOrderAlgo> stopOrderAlgoList)
     {
         StopOrderAlgo stopOrderAlgo=stopOrderAlgoList.get(0);
+
+        System.out.println("Algo id:"+stopOrderAlgo.getAlgoId());
+        System.out.println("AlgoOrdType:"+stopOrderAlgo.getAlgoOrdType());
+        System.out.println("StopType:"+stopOrderAlgo.getStopType());
+        System.out.println("InstId:"+stopOrderAlgo.getInstId());
+
        jsonObject=gridService.stopGridOrderFromOkx(stopOrderAlgo);
 
        String msg= gridOrderService.stopGridOrder(stopOrderAlgo.getAlgoId());
@@ -128,5 +141,40 @@ public class GridOrderController {
        }
 
       return new ResponseEntity<>(jsonObject,HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/getGridAlgoOrderPosition")
+    public ResponseEntity<Object> getGridAlgoOrderPosition(@RequestBody JSONObject json)
+    {
+       String algoOrdType=json.getString("algoOrdType");
+       String algoId=json.getString("algoId");
+
+        jsonObject=gridService.getGridAlgoOrderPosition(algoOrdType,algoId);
+        return new ResponseEntity<>(jsonObject,HttpStatus.FOUND);
+    }
+
+    @GetMapping("/getGridAlgoOrderList")
+    public ResponseEntity<Object> getGridAlgoOrderList(@RequestBody JSONObject json)
+    {
+        try {
+            String algoOrderType = json.getString("algoOrdType");
+            jsonObject = gridService.getGridAlgoOrderList(algoOrderType);
+
+            List<GridOrder> gridOrderList = gridOrderService.findGridOrderByType(algoOrderType);
+
+            if (!gridOrderList.isEmpty() && jsonObject.getString("msg").equals("")) {
+
+                return new ResponseEntity<>(jsonObject, HttpStatus.FOUND);
+            }
+        }//try
+        catch(APIException e)
+        {
+            jsonObject.put(MESSAGE_KEY,e.getMessage());
+            jsonObject.put(STATUS_KEY,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(jsonObject,HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(jsonObject,HttpStatus.BAD_REQUEST);
+
     }
 }

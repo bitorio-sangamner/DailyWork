@@ -8,6 +8,8 @@ import com.okex.open.api.service.gridTrading.GridTradingAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class GridService {
 
@@ -35,6 +37,22 @@ public class GridService {
         return jsonObject;
     }
 
+//    public JSONObject closePositionForGridContract(String algoId,String marketCloseAllPosition)
+//    {
+//
+//    }
+
+    public JSONObject getGridAlgoOrderPosition(String algoOrdType,String algoId)
+    {
+        jsonObject=gridTradingAPIService.getPositions(algoOrdType,algoId);
+        return jsonObject;
+    }
+
+    public JSONObject getGridAlgoOrderList(String algoOrdType)
+    {
+        jsonObject=gridTradingAPIService.getGridAlgoOrderList(algoOrdType,"","","","","","");
+        return jsonObject;
+    }
     public JSONObject amendGridOrderFromOkx(AmendOrderAlgo amendOrderAlgoObj)
     {
         jsonObject=gridTradingAPIService.amendOrderAlgo(amendOrderAlgoObj);
