@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import retrofit2.http.HTTP;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -125,20 +126,28 @@ public class GridOrderController {
     @PostMapping("/stopGridOrder")
     public ResponseEntity<Object> stopGridOrder(@RequestBody List<StopOrderAlgo> stopOrderAlgoList)
     {
-        StopOrderAlgo stopOrderAlgo=stopOrderAlgoList.get(0);
+        try {
+            StopOrderAlgo stopOrderAlgo = stopOrderAlgoList.get(0);
 
-        System.out.println("Algo id:"+stopOrderAlgo.getAlgoId());
-        System.out.println("AlgoOrdType:"+stopOrderAlgo.getAlgoOrdType());
-        System.out.println("StopType:"+stopOrderAlgo.getStopType());
-        System.out.println("InstId:"+stopOrderAlgo.getInstId());
+            System.out.println("Algo id:" + stopOrderAlgo.getAlgoId());
+            System.out.println("AlgoOrdType:" + stopOrderAlgo.getAlgoOrdType());
+            System.out.println("StopType:" + stopOrderAlgo.getStopType());
+            System.out.println("InstId:" + stopOrderAlgo.getInstId());
 
-       jsonObject=gridService.stopGridOrderFromOkx(stopOrderAlgo);
+            jsonObject = gridService.stopGridOrderFromOkx(stopOrderAlgo);
 
-       String msg= gridOrderService.stopGridOrder(stopOrderAlgo.getAlgoId());
-       if(msg.equals("order deleted"))
-       {
-           return new ResponseEntity<>(jsonObject,HttpStatus.OK);
-       }
+            String msg = gridOrderService.stopGridOrder(stopOrderAlgo.getAlgoId());
+            if (msg.equals("order deleted")) {
+                return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+            }
+        }//try
+        catch(APIException e)
+        {
+            jsonObject.put(MESSAGE_KEY,e.getMessage());
+            jsonObject.put(STATUS_KEY,HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
 
       return new ResponseEntity<>(jsonObject,HttpStatus.BAD_REQUEST);
     }
@@ -146,11 +155,22 @@ public class GridOrderController {
     @GetMapping("/getGridAlgoOrderPosition")
     public ResponseEntity<Object> getGridAlgoOrderPosition(@RequestBody JSONObject json)
     {
-       String algoOrdType=json.getString("algoOrdType");
-       String algoId=json.getString("algoId");
+        try {
 
-        jsonObject=gridService.getGridAlgoOrderPosition(algoOrdType,algoId);
-        return new ResponseEntity<>(jsonObject,HttpStatus.FOUND);
+
+            String algoOrdType = json.getString("algoOrdType");
+            String algoId = json.getString("algoId");
+
+            jsonObject = gridService.getGridAlgoOrderPosition(algoOrdType, algoId);
+            return new ResponseEntity<>(jsonObject, HttpStatus.FOUND);
+        }//try
+        catch(APIException e)
+        {
+            jsonObject.put(MESSAGE_KEY,e.getMessage());
+            jsonObject.put(STATUS_KEY,HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(jsonObject, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @GetMapping("/getGridAlgoOrderList")
@@ -177,4 +197,42 @@ public class GridOrderController {
         return new ResponseEntity<>(jsonObject,HttpStatus.BAD_REQUEST);
 
     }
+
+    @GetMapping("/getGridAlgoOrderHistory")
+    public ResponseEntity<Object> getGridAlgoOrderHistory(@RequestBody JSONObject json)
+    {
+        try {
+            String algoOrderType = json.getString("algoOrdType");
+            jsonObject = gridService.getGridAlgoOrderHistory(algoOrderType);
+
+            return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+        }//try
+        catch(APIException e)
+        {
+           jsonObject.put(MESSAGE_KEY,e.getMessage());
+           jsonObject.put(STATUS_KEY,HttpStatus.INTERNAL_SERVER_ERROR);
+           return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/getGridSubOrders")
+    public ResponseEntity<Object> getGridSubOrders(@RequestBody JSONObject json)
+    {
+        try {
+            String algoOrdType = json.getString("algoOrdType");
+            String algoId = json.getString("algoId");
+            String subOrderState = json.getString("type");
+
+            jsonObject = gridService.getGridSubOrders(algoOrdType, algoId, subOrderState);
+            return new ResponseEntity<>(jsonObject, HttpStatus.FOUND);
+        }//try
+
+        catch(APIException e)
+        {
+            jsonObject.put(MESSAGE_KEY,e.getMessage());
+            jsonObject.put(STATUS_KEY,HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(jsonObject,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

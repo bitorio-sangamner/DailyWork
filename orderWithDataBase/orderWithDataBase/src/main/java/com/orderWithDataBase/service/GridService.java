@@ -53,6 +53,18 @@ public class GridService {
         jsonObject=gridTradingAPIService.getGridAlgoOrderList(algoOrdType,"","","","","","");
         return jsonObject;
     }
+
+    public JSONObject getGridAlgoOrderHistory(String algoOrderType)
+    {
+        jsonObject=gridTradingAPIService.getGridAlgoOrderHistory(algoOrderType,"","","","","","");
+        return jsonObject;
+    }
+
+    public JSONObject getGridSubOrders(String algoOrdType,String algoId,String subOrderState)
+    {
+        jsonObject=gridTradingAPIService.getSubOrders(algoOrdType,algoId,subOrderState,"","","","");
+        return jsonObject;
+    }
     public JSONObject amendGridOrderFromOkx(AmendOrderAlgo amendOrderAlgoObj)
     {
         jsonObject=gridTradingAPIService.amendOrderAlgo(amendOrderAlgoObj);
